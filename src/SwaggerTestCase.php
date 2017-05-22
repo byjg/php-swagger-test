@@ -8,7 +8,7 @@
 namespace ByJG\Swagger;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\Request;
 use PHPUnit\Framework\TestCase;
 
@@ -84,7 +84,7 @@ abstract class SwaggerTestCase extends TestCase
             $response = $this->guzzleHttpClient->send($request);
             $responseBody = json_decode((string) $response->getBody(), true);
             $statusReturned = $response->getStatusCode();
-        } catch (ClientException $ex) {
+        } catch (BadResponseException $ex) {
             $responseBody = json_decode((string) $ex->getResponse()->getBody(), true);
             $statusReturned = $ex->getResponse()->getStatusCode();
         }
