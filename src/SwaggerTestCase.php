@@ -8,7 +8,7 @@
 namespace ByJG\Swagger;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\Request;
 use PHPUnit\Framework\TestCase;
 
@@ -52,10 +52,10 @@ abstract class SwaggerTestCase extends TestCase
      * @param string $path The REST path call
      * @param int $statusExpected
      * @param array|null $query
-     * @param array|null $body
+     * @param array|null $requestBody
      * @return mixed
      */
-    protected function makeRequest($method, $path, $statusExpected = 200, $query = null, $body = null)
+    protected function makeRequest($method, $path, $statusExpected = 200, $query = null, $requestBody = null)
     {
         $paramInQuery = null;
         if (!empty($query)) {
@@ -76,7 +76,7 @@ abstract class SwaggerTestCase extends TestCase
             $method,
             "$httpSchema://$host$basePath$path$paramInQuery",
             $header,
-            json_encode($body)
+            json_encode($requestBody)
         );
 
         $statusReturned = null;
@@ -84,7 +84,7 @@ abstract class SwaggerTestCase extends TestCase
             $response = $this->guzzleHttpClient->send($request);
             $responseBody = json_decode((string) $response->getBody(), true);
             $statusReturned = $response->getStatusCode();
-        } catch (ClientException $ex) {
+        } catch (BadResponseException $ex) {
             $responseBody = json_decode((string) $ex->getResponse()->getBody(), true);
             $statusReturned = $ex->getResponse()->getStatusCode();
         }
@@ -96,8 +96,8 @@ abstract class SwaggerTestCase extends TestCase
         $bodyRequestDef = $this->swaggerSchema->getRequestParameters("$basePath$path", $method);
         $bodyResponseDef = $this->swaggerSchema->getResponseParameters("$basePath$path", $method, $statusExpected);
 
-        if (!empty($body)) {
-            $bodyRequestDef->match($body);
+        if (!empty($requestBody)) {
+            $bodyRequestDef->match($requestBody);
         }
         $bodyResponseDef->match($responseBody);
 
