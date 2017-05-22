@@ -70,6 +70,8 @@ See an example below:
 
 ```php
 <?php
+$this->swaggerSchema = new \ByJG\Swagger\SwaggerSchema($contentsOfSwaggerJson);
+
 $this->assertEquals($status, $statusReturned);
 
 $bodyRequestDef = $this->swaggerSchema->getRequestParameters($path, $method);
@@ -86,7 +88,7 @@ $bodyResponseDef->match($responseBody);
 This tool was not developed only for unit and functional tests. You can use to validate if the required body
 parameters is the expected. 
 
-So, before your API Code you can validate using:
+So, before your API Code you can validate the request body using:
 
 ```php
 <?php
