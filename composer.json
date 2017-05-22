@@ -10,6 +10,9 @@
       "email": "joao@byjg.com.br"
     }
   ],
+  "require": {
+    "guzzlehttp/guzzle": "6.*"
+  },
   "autoload": {
     "psr-4": {
       "ByJG\\Swagger\\": "src/"
