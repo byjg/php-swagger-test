@@ -1,0 +1,18 @@
+{
+  "name": "byjg/php-swagger-test",
+  "description": "A set of tools for test your REST calls based on the swagger documentation",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "João Gilberto Magalhães",
+      "email": "joao@byjg.com.br"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "ByJG\\Swagger\\": "src/"
+    }
+  }
+}
