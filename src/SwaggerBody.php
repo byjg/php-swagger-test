@@ -68,6 +68,9 @@ abstract class SwaggerBody
     protected function matchArray($name, $schema, $body)
     {
         foreach ((array)$body as $item) {
+            if (!isset($schema['items'])) {  // If there is no type , there is no test.
+                continue;
+            }
             $this->matchSchema($name, $schema['items'], $item);
         }
         return true;
