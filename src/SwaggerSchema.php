@@ -82,7 +82,7 @@ class SwaggerSchema
     {
         $structure = $this->getPathStructure($path, $method);
 
-        return new SwaggerRequestBody($this, $structure, 'request');
+        return new SwaggerRequestBody($this, "$method $path", $structure['parameters']);
     }
 
     public function getResponseParameters($path, $method, $status)

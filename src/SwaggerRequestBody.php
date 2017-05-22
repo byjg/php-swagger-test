@@ -7,7 +7,18 @@
 
 namespace ByJG\Swagger;
 
+use ByJG\Swagger\Exception\InvalidDefinitionException;
+
 class SwaggerRequestBody extends SwaggerBody
 {
+    public function match($body)
+    {
+        foreach ($this->structure as $parameter) {
+            if ($parameter['in'] == "body") {
+                return $this->matchSchema($this->name, $parameter['schema'], $body);
+            }
+        }
 
+        throw new InvalidDefinitionException('There is no body for match');
+    }
 }
