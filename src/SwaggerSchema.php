@@ -90,6 +90,10 @@ class SwaggerSchema
     {
         $structure = $this->getPathStructure($path, $method);
 
+        if (!isset($structure['parameters'])) {
+            return new SwaggerRequestBody($this, "$method $path", []);
+        }
+
         return new SwaggerRequestBody($this, "$method $path", $structure['parameters']);
     }
 

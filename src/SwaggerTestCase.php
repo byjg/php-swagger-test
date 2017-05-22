@@ -57,21 +57,31 @@ abstract class SwaggerTestCase extends TestCase
      */
     protected function makeRequest($method, $path, $statusExpected = 200, $query = null, $requestBody = null)
     {
+        // Preparing Parameters
         $paramInQuery = null;
         if (!empty($query)) {
             $paramInQuery = '?' . http_build_query($query);
         }
 
+        // Preparing Header
         $header = array_merge([
                 'Accept' => 'application/json'
             ],
             $this->getCustomRequest()
         );
 
+        // Defining Variables
         $httpSchema = $this->swaggerSchema->getHttpSchema();
         $host = $this->swaggerSchema->getHost();
         $basePath = $this->swaggerSchema->getBasePath();
 
+        // Check if the body is the expected before request
+        $bodyRequestDef = $this->swaggerSchema->getRequestParameters("$basePath$path", $method);
+        if (!empty($requestBody)) {
+            $bodyRequestDef->match($requestBody);
+        }
+
+        // Make the request
         $request = new Request(
             $method,
             "$httpSchema://$host$basePath$path$paramInQuery",
@@ -89,16 +99,10 @@ abstract class SwaggerTestCase extends TestCase
             $statusReturned = $ex->getResponse()->getStatusCode();
         }
 
+        // Assert results
         $this->assertEquals($statusExpected, $statusReturned);
 
-        $method = strtolower($method);
-
-        $bodyRequestDef = $this->swaggerSchema->getRequestParameters("$basePath$path", $method);
         $bodyResponseDef = $this->swaggerSchema->getResponseParameters("$basePath$path", $method, $statusExpected);
-
-        if (!empty($requestBody)) {
-            $bodyRequestDef->match($requestBody);
-        }
         $bodyResponseDef->match($responseBody);
 
         return $responseBody;
