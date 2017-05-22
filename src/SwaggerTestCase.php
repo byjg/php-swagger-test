@@ -29,10 +29,15 @@ abstract class SwaggerTestCase extends TestCase
      */
     protected $guzzleHttpClient;
 
+    protected $filePath;
+
     protected function setUp()
     {
-        $filePath = __DIR__ . '/../../web/docs/swagger.json';
-        $this->swaggerSchema = new SwaggerSchema(file_get_contents($filePath));
+        if (empty($this->filePath)) {
+            throw new \Exception('You have to define the property $filePath');
+        }
+
+        $this->swaggerSchema = new SwaggerSchema(file_get_contents($this->filePath));
 
         $this->guzzleHttpClient = new Client(['headers' => ['User-Agent' => 'Swagger Test']]);
     }
@@ -44,10 +49,10 @@ abstract class SwaggerTestCase extends TestCase
 
     /**
      * @param string $method The HTTP Method: GET, PUT, DELETE, POST, etc
-     * @param $path The REST path call
+     * @param string $path The REST path call
      * @param int $statusExpected
-     * @param null $query
-     * @param null $body
+     * @param array|null $query
+     * @param array|null $body
      * @return mixed
      */
     protected function makeRequest($method, $path, $statusExpected = 200, $query = null, $body = null)
@@ -69,7 +74,7 @@ abstract class SwaggerTestCase extends TestCase
 
         $request = new Request(
             $method,
-            "$httpSchema://$host/$basePath$path$paramInQuery",
+            "$httpSchema://$host$basePath$path$paramInQuery",
             $header,
             json_encode($body)
         );

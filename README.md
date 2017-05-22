@@ -24,6 +24,8 @@ make a request to this API Method and check if the status and object returned ar
 <?php
 class MyTestCase extends \ByJG\Swagger\SwaggerTestCase
 {
+    protected $filePath = '/path/to/json/definition';
+    
     public function testGet()
     {
         $this->makeRequest('GET', "/path/for/get/ID");
