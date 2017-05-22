@@ -103,6 +103,4 @@ class SwaggerSchema
 
         return new SwaggerResponseBody($this, "$method $status $path", $structure['responses'][$status]);
     }
-
-
 }
