@@ -100,7 +100,7 @@ abstract class SwaggerTestCase extends TestCase
         }
 
         // Assert results
-        $this->assertEquals($statusExpected, $statusReturned);
+        $this->assertEquals($statusExpected, $statusReturned, json_encode($responseBody, JSON_PRETTY_PRINT));
 
         $bodyResponseDef = $this->swaggerSchema->getResponseParameters("$basePath$path", $method, $statusExpected);
         $bodyResponseDef->match($responseBody);
