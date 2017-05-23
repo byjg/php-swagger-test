@@ -42,7 +42,7 @@ abstract class SwaggerTestCase extends TestCase
         $this->guzzleHttpClient = new Client(['headers' => ['User-Agent' => 'Swagger Test']]);
     }
 
-    protected function getCustomRequest()
+    protected function getCustomHeader()
     {
         return [];
     }
@@ -67,7 +67,7 @@ abstract class SwaggerTestCase extends TestCase
         $header = array_merge([
                 'Accept' => 'application/json'
             ],
-            $this->getCustomRequest()
+            $this->getCustomHeader()
         );
 
         // Defining Variables
