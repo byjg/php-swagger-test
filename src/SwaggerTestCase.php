@@ -8,7 +8,7 @@
 namespace ByJG\Swagger;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\Request;
 use PHPUnit\Framework\TestCase;
 
@@ -42,7 +42,7 @@ abstract class SwaggerTestCase extends TestCase
         $this->guzzleHttpClient = new Client(['headers' => ['User-Agent' => 'Swagger Test']]);
     }
 
-    protected function getCustomRequest()
+    protected function getCustomHeader()
     {
         return [];
     }
@@ -52,31 +52,41 @@ abstract class SwaggerTestCase extends TestCase
      * @param string $path The REST path call
      * @param int $statusExpected
      * @param array|null $query
-     * @param array|null $body
+     * @param array|null $requestBody
      * @return mixed
      */
-    protected function makeRequest($method, $path, $statusExpected = 200, $query = null, $body = null)
+    protected function makeRequest($method, $path, $statusExpected = 200, $query = null, $requestBody = null)
     {
+        // Preparing Parameters
         $paramInQuery = null;
         if (!empty($query)) {
             $paramInQuery = '?' . http_build_query($query);
         }
 
+        // Preparing Header
         $header = array_merge([
                 'Accept' => 'application/json'
             ],
-            $this->getCustomRequest()
+            $this->getCustomHeader()
         );
 
+        // Defining Variables
         $httpSchema = $this->swaggerSchema->getHttpSchema();
         $host = $this->swaggerSchema->getHost();
         $basePath = $this->swaggerSchema->getBasePath();
 
+        // Check if the body is the expected before request
+        $bodyRequestDef = $this->swaggerSchema->getRequestParameters("$basePath$path", $method);
+        if (!empty($requestBody)) {
+            $bodyRequestDef->match($requestBody);
+        }
+
+        // Make the request
         $request = new Request(
             $method,
             "$httpSchema://$host$basePath$path$paramInQuery",
             $header,
-            json_encode($body)
+            json_encode($requestBody)
         );
 
         $statusReturned = null;
@@ -84,21 +94,15 @@ abstract class SwaggerTestCase extends TestCase
             $response = $this->guzzleHttpClient->send($request);
             $responseBody = json_decode((string) $response->getBody(), true);
             $statusReturned = $response->getStatusCode();
-        } catch (ClientException $ex) {
+        } catch (BadResponseException $ex) {
             $responseBody = json_decode((string) $ex->getResponse()->getBody(), true);
             $statusReturned = $ex->getResponse()->getStatusCode();
         }
 
-        $this->assertEquals($statusExpected, $statusReturned);
+        // Assert results
+        $this->assertEquals($statusExpected, $statusReturned, json_encode($responseBody, JSON_PRETTY_PRINT));
 
-        $method = strtolower($method);
-
-        $bodyRequestDef = $this->swaggerSchema->getRequestParameters("$basePath$path", $method);
         $bodyResponseDef = $this->swaggerSchema->getResponseParameters("$basePath$path", $method, $statusExpected);
-
-        if (!empty($body)) {
-            $bodyRequestDef->match($body);
-        }
         $bodyResponseDef->match($responseBody);
 
         return $responseBody;

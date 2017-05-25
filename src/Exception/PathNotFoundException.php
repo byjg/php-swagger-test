@@ -7,7 +7,7 @@
 
 namespace ByJG\Swagger\Exception;
 
-class PathNotFoundException extends \Exception
+class PathNotFoundException extends BaseException
 {
 
 }

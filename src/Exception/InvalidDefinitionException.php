@@ -7,7 +7,7 @@
 
 namespace ByJG\Swagger\Exception;
 
-class InvalidDefinitionException extends \Exception
+class InvalidDefinitionException extends BaseException
 {
 
 }

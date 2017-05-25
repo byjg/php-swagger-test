@@ -7,7 +7,7 @@
 
 namespace ByJG\Swagger\Exception;
 
-class HttpMethodNotFoundException extends \Exception
+class HttpMethodNotFoundException extends BaseException
 {
 
 }

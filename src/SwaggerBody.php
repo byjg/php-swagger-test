@@ -31,6 +31,9 @@ abstract class SwaggerBody
     {
         $this->swaggerSchema = $swaggerSchema;
         $this->name = $name;
+        if (!is_array($structure)) {
+            throw new \InvalidArgumentException('I expected the structure to be an array');
+        }
         $this->structure = $structure;
     }
 
@@ -40,7 +43,7 @@ abstract class SwaggerBody
     {
         if (isset($schema['enum'])) {
             if (!in_array($body, $schema['enum'])) {
-                throw new NotMatchedException("Value '$body' in '$name' not matched in ENUM");
+                throw new NotMatchedException("Value '$body' in '$name' not matched in ENUM. ", $this->structure);
             };
         }
 
@@ -50,7 +53,7 @@ abstract class SwaggerBody
     protected function matchNumber($name, $body)
     {
         if (!is_numeric($body)) {
-            throw new NotMatchedException("Expected '$name' to be numeric, but found '$body'");
+            throw new NotMatchedException("Expected '$name' to be numeric, but found '$body'. ", $this->structure);
         }
 
         return true;
@@ -59,7 +62,7 @@ abstract class SwaggerBody
     protected function matchBool($name, $body)
     {
         if (!is_bool($body)) {
-            throw new NotMatchedException("Expected '$name' to be boolean, but found '$body'");
+            throw new NotMatchedException("Expected '$name' to be boolean, but found '$body'. ", $this->structure);
         }
 
         return true;
@@ -123,9 +126,10 @@ abstract class SwaggerBody
 
             if (count($body) > 0) {
                 throw new NotMatchedException(
-                    "The properties '"
+                    "The property(ies) '"
                     . implode(', ', array_keys($body))
-                    . "' not defined in '$name'"
+                    . "' not defined in '$name'",
+                    $this->structure
                 );
             }
             return true;
