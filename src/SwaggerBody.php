@@ -126,7 +126,7 @@ abstract class SwaggerBody
 
             if (count($body) > 0) {
                 throw new NotMatchedException(
-                    "The properties '"
+                    "The property(ies) '"
                     . implode(', ', array_keys($body))
                     . "' not defined in '$name'",
                     $this->structure
