@@ -16,25 +16,40 @@ The SwaggerTest's assertion process is based on throwing exceptions if some vali
 
 ### Testing - The easy way
 
-Swagger Test provide the class `SwaggerTestCase` for you extend and create a test case. The code will try to 
-make a request to this API Method and check if the status and object returned are OK. 
+Swagger Test provide the class `SwaggerTestCase` for you extend and create a PHPUnit test case. The code will try to 
+make a request to your API Method and check if the request parameters, status and object returned are OK. 
 
 ```php
 <?php
+/**
+ * Create a TestCase inherited from SwaggerTestCase
+ */
 class MyTestCase extends \ByJG\Swagger\SwaggerTestCase
 {
     protected $filePath = '/path/to/json/definition';
     
+    /**
+     * Test if the REST address /path/for/get/ID with the method GET returns what is
+     * documented on the "swagger.json"
+     */
     public function testGet()
     {
         $this->makeRequest('GET', "/path/for/get/ID");
     }
 
+    /**
+     * Test if the REST address /path/for/get/NOTFOUND returns a status code 404.
+     */
     public function testGetNotFound()
     {
         $this->makeRequest('GET', "/path/for/get/NOTFOUND", 404);
     }
 
+    /**
+     * Test if the REST address /path/for/get/ID with the method POST returns status code 200 
+     * and returns the object ['name'=>'new name', 'field' => 'value'] as is documented in the 
+     * "swagger.json" file
+     */
     public function testPost()
     {
         $this->makeRequest('GET', "/path/for/get/ID", 200, null, ['name'=>'new name', 'field' => 'value']);
