@@ -113,23 +113,41 @@ abstract class SwaggerBody
         }
 
         if (isset($schema['properties'])) {
+            if (!isset($schema['required'])) {
+                $schema['required'] = [];
+            }
             foreach ($schema['properties'] as $prop => $def) {
+                $required = array_search($prop, $schema['required']);
                 if (!isset($body[$prop])) {
-                    // if ($required) {
-                    //     throw new NotMatchedException("Required property '$prop' in '$name' not found in object");
-                    // }
+                    if ($required !== false) {
+                         throw new NotMatchedException("Required property '$prop' in '$name' not found in object");
+                    }
+                    unset($body[$prop]);
                     continue;
                 }
                 $this->matchSchema($prop, $def, $body[$prop]);
+                unset($schema['properties'][$prop]);
+                if ($required !== false) {
+                    unset($schema['required'][$required]);
+                }
                 unset($body[$prop]);
+            }
+
+            if (count($schema['required']) > 0) {
+                throw new NotMatchedException(
+                    "The required property(ies) '"
+                    . implode(', ', $schema['required'])
+                    . "' does not exists in the body.",
+                    $this->structure
+                );
             }
 
             if (count($body) > 0) {
                 throw new NotMatchedException(
                     "The property(ies) '"
                     . implode(', ', array_keys($body))
-                    . "' not defined in '$name'",
-                    $this->structure
+                    . "' has not defined in '$name'",
+                    $body
                 );
             }
             return true;
