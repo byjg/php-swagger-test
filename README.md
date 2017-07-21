@@ -89,9 +89,7 @@ class MyTestCase extends \ByJG\Swagger\SwaggerTestCase
 If you want mock the request API and just test the expected parameters you are sending and 
 receiving you have to:
 
-Basically for use Swagger Test as functional test you have to:
-
-**1. Creating the Swagger Test Schema**
+**1. Create the Swagger Test Schema**
 
 ```php
 <?php
@@ -122,6 +120,9 @@ if (!empty($requestBody)) {
 }
 $bodyResponseDef->match($responseBody);
 ```
+
+If the request or response body does not match with the definition an exception NotMatchException will
+be throwed. 
 
 ## Using it as Runtime parameters validator
 
