@@ -107,7 +107,7 @@ class SwaggerResponseBodyTest extends TestCase
 
     /**
      * @expectedException \ByJG\Swagger\Exception\NotMatchedException
-     * @expectedExceptionMessage The property(ies) 'more' not defined in '#/definitions/Order'
+     * @expectedExceptionMessage The property(ies) 'more' has not defined in '#/definitions/Order'
      */
     public function testMatchResponseBodyMoreThanExpected()
     {
