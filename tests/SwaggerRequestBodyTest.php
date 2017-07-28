@@ -10,11 +10,6 @@ namespace Test;
 use ByJG\Swagger\SwaggerSchema;
 use PHPUnit\Framework\TestCase;
 
-// backward compatibility
-if (!class_exists('\PHPUnit\Framework\TestCase')) {
-    class_alias('\PHPUnit_Framework_TestCase', '\PHPUnit\Framework\TestCase');
-}
-
 class SwaggerRequestBodyTest extends TestCase
 {
     /**
