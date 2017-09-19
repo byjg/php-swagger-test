@@ -8,6 +8,7 @@
 namespace ByJG\Swagger;
 
 use ByJG\Swagger\Exception\InvalidDefinitionException;
+use ByJG\Swagger\Exception\RequiredArgumentNotFound;
 
 class SwaggerRequestBody extends SwaggerBody
 {
@@ -15,10 +16,15 @@ class SwaggerRequestBody extends SwaggerBody
     {
         foreach ($this->structure as $parameter) {
             if ($parameter['in'] == "body") {
+                if ($parameter['required'] === true && empty($body)) {
+                    throw new RequiredArgumentNotFound('The body is required but it is empty');
+                }
                 return $this->matchSchema($this->name, $parameter['schema'], $body);
             }
         }
 
-        throw new InvalidDefinitionException('There is no body for match');
+        if (!empty($body)) {
+            throw new InvalidDefinitionException('Body is passed but there is no request body definition');
+        }
     }
 }

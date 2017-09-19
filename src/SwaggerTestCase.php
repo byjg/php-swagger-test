@@ -77,9 +77,7 @@ abstract class SwaggerTestCase extends TestCase
 
         // Check if the body is the expected before request
         $bodyRequestDef = $this->swaggerSchema->getRequestParameters("$basePath$path", $method);
-        if (!empty($requestBody)) {
-            $bodyRequestDef->match($requestBody);
-        }
+        $bodyRequestDef->match($requestBody);
 
         // Make the request
         $request = new Request(
