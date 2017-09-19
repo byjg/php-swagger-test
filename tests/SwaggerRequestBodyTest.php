@@ -47,6 +47,15 @@ class SwaggerRequestBodyTest extends TestCase
     }
 
     /**
+     * @expectedException \Exception
+     */
+    public function testMatchRequiredRequestBodyEmpty()
+    {
+        $requestParameter = $this->object->getRequestParameters('/v2/store/order', 'post');
+        $this->assertTrue($requestParameter->match(null));
+    }
+
+    /**
      * @expectedException \ByJG\Swagger\Exception\NotMatchedException
      * @expectedExceptionMessage Required property
      */
