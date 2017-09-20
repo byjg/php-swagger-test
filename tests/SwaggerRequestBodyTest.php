@@ -76,6 +76,16 @@ class SwaggerRequestBodyTest extends TestCase
 
     /**
      * @expectedException \ByJG\Swagger\Exception\NotMatchedException
+     * @expectedExceptionMessage Path expected an integer value
+     */
+    public function testMatchDataType()
+    {
+        $this->object->getRequestParameters('/v2/pet/STRING', 'get');
+        $this->assertTrue(true);
+    }
+
+    /**
+     * @expectedException \ByJG\Swagger\Exception\NotMatchedException
      * @expectedExceptionMessage Required property
      */
     public function testMatchRequestBodyRequired1()
