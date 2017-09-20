@@ -41,94 +41,95 @@ class SwaggerSchemaTest extends TestCase
     {
         $this->assertEquals(
             [
-                "post" => [
-                    "tags"        => [
-                        "pet",
-                    ],
-                    "summary"     => "Add a new pet to the store",
-                    "description" => "",
-                    "operationId" => "addPet",
-                    "consumes"    => [
-                        "application/json",
-                        "application/xml",
-                    ],
-                    "produces"    => [
-                        "application/xml",
-                        "application/json",
-                    ],
-                    "parameters"  => [
-                        [
-                            "in"          => "body",
-                            "name"        => "body",
-                            "description" => "Pet object that needs to be added to the store",
-                            "required"    => true,
-                            "schema"      => [
-                                "\$ref" => "#/definitions/Pet",
-                            ],
-                        ],
-                    ],
-                    "responses"   => [
-                        "405" => [
-                            "description" => "Invalid input",
-                        ],
-                    ],
-                    "security"    => [
-                        [
-                            "petstore_auth" => [
-                                "write:pets",
-                                "read:pets",
-                            ],
+                "tags"        => [
+                    "pet",
+                ],
+                "summary"     => "Add a new pet to the store",
+                "description" => "",
+                "operationId" => "addPet",
+                "consumes"    => [
+                    "application/json",
+                    "application/xml",
+                ],
+                "produces"    => [
+                    "application/xml",
+                    "application/json",
+                ],
+                "parameters"  => [
+                    [
+                        "in"          => "body",
+                        "name"        => "body",
+                        "description" => "Pet object that needs to be added to the store",
+                        "required"    => true,
+                        "schema"      => [
+                            "\$ref" => "#/definitions/Pet",
                         ],
                     ],
                 ],
-                "put"  => [
-                    "tags"        => [
-                        "pet",
+                "responses"   => [
+                    "405" => [
+                        "description" => "Invalid input",
                     ],
-                    "summary"     => "Update an existing pet",
-                    "description" => "",
-                    "operationId" => "updatePet",
-                    "consumes"    => [
-                        "application/json",
-                        "application/xml",
-                    ],
-                    "produces"    => [
-                        "application/xml",
-                        "application/json",
-                    ],
-                    "parameters"  => [
-                        [
-                            "in"          => "body",
-                            "name"        => "body",
-                            "description" => "Pet object that needs to be added to the store",
-                            "required"    => true,
-                            "schema"      => [
-                                "\$ref" => "#/definitions/Pet",
-                            ],
-                        ],
-                    ],
-                    "responses"   => [
-                        "400" => [
-                            "description" => "Invalid ID supplied",
-                        ],
-                        "404" => [
-                            "description" => "Pet not found",
-                        ],
-                        "405" => [
-                            "description" => "Validation exception",
-                        ],
-                    ],
-                    "security"    => [
-                        [
-                            "petstore_auth" => [
-                                "write:pets",
-                                "read:pets",
-                            ],
+                ],
+                "security"    => [
+                    [
+                        "petstore_auth" => [
+                            "write:pets",
+                            "read:pets",
                         ],
                     ],
                 ],
             ],
-            $this->object->getPath('/v2/pet')
+            $this->object->getPathDefinition('/v2/pet', 'post')
+        );
+        $this->assertEquals(
+            [
+                "tags"        => [
+                    "pet",
+                ],
+                "summary"     => "Update an existing pet",
+                "description" => "",
+                "operationId" => "updatePet",
+                "consumes"    => [
+                    "application/json",
+                    "application/xml",
+                ],
+                "produces"    => [
+                    "application/xml",
+                    "application/json",
+                ],
+                "parameters"  => [
+                    [
+                        "in"          => "body",
+                        "name"        => "body",
+                        "description" => "Pet object that needs to be added to the store",
+                        "required"    => true,
+                        "schema"      => [
+                            "\$ref" => "#/definitions/Pet",
+                        ],
+                    ],
+                ],
+                "responses"   => [
+                    "400" => [
+                        "description" => "Invalid ID supplied",
+                    ],
+                    "404" => [
+                        "description" => "Pet not found",
+                    ],
+                    "405" => [
+                        "description" => "Validation exception",
+                    ],
+                ],
+                "security"    => [
+                    [
+                        "petstore_auth" => [
+                            "write:pets",
+                            "read:pets",
+                        ],
+                    ],
+                ],
+            ],
+            $this->object->getPathDefinition('/v2/pet', 'put')
         );
     }
 
@@ -136,145 +137,149 @@ class SwaggerSchemaTest extends TestCase
     {
         $this->assertEquals(
             [
-                "get"    => [
-                    "tags"        => [
-                        "pet",
-                    ],
-                    "summary"     => "Find pet by ID",
-                    "description" => "Returns a single pet",
-                    "operationId" => "getPetById",
-                    "produces"    => [
-                        "application/xml",
-                        "application/json",
-                    ],
-                    "parameters"  => [
-                        [
-                            "name"        => "petId",
-                            "in"          => "path",
-                            "description" => "ID of pet to return",
-                            "required"    => true,
-                            "type"        => "integer",
-                            "format"      => "int64",
-                        ],
-                    ],
-                    "responses"   => [
-                        "200" => [
-                            "description" => "successful operation",
-                            "schema"      => [
-                                "\$ref" => "#/definitions/Pet",
-                            ],
-                        ],
-                        "400" => [
-                            "description" => "Invalid ID supplied",
-                        ],
-                        "404" => [
-                            "description" => "Pet not found",
-                        ],
-                    ],
-                    "security"    => [
-                        [
-                            "api_key" => [],
-                        ],
+                "tags"        => [
+                    "pet",
+                ],
+                "summary"     => "Find pet by ID",
+                "description" => "Returns a single pet",
+                "operationId" => "getPetById",
+                "produces"    => [
+                    "application/xml",
+                    "application/json",
+                ],
+                "parameters"  => [
+                    [
+                        "name"        => "petId",
+                        "in"          => "path",
+                        "description" => "ID of pet to return",
+                        "required"    => true,
+                        "type"        => "integer",
+                        "format"      => "int64",
                     ],
                 ],
-                "post"   => [
-                    "tags"        => [
-                        "pet",
-                    ],
-                    "summary"     => "Updates a pet in the store with form data",
-                    "description" => "",
-                    "operationId" => "updatePetWithForm",
-                    "consumes"    => [
-                        "application/x-www-form-urlencoded",
-                    ],
-                    "produces"    => [
-                        "application/xml",
-                        "application/json",
-                    ],
-                    "parameters"  => [
-                        [
-                            "name"        => "petId",
-                            "in"          => "path",
-                            "description" => "ID of pet that needs to be updated",
-                            "required"    => true,
-                            "type"        => "integer",
-                            "format"      => "int64",
-                        ],
-                        [
-                            "name"        => "name",
-                            "in"          => "formData",
-                            "description" => "Updated name of the pet",
-                            "required"    => false,
-                            "type"        => "string",
-                        ],
-                        [
-                            "name"        => "status",
-                            "in"          => "formData",
-                            "description" => "Updated status of the pet",
-                            "required"    => false,
-                            "type"        => "string",
+                "responses"   => [
+                    "200" => [
+                        "description" => "successful operation",
+                        "schema"      => [
+                            "\$ref" => "#/definitions/Pet",
                         ],
                     ],
-                    "responses"   => [
-                        "405" => [
-                            "description" => "Invalid input",
-                        ],
+                    "400" => [
+                        "description" => "Invalid ID supplied",
                     ],
-                    "security"    => [
-                        [
-                            "petstore_auth" => [
-                                "write:pets",
-                                "read:pets",
-                            ],
-                        ],
+                    "404" => [
+                        "description" => "Pet not found",
                     ],
                 ],
-                "delete" => [
-                    "tags"        => [
-                        "pet",
+                "security"    => [
+                    [
+                        "api_key" => [],
                     ],
-                    "summary"     => "Deletes a pet",
-                    "description" => "",
-                    "operationId" => "deletePet",
-                    "produces"    => [
-                        "application/xml",
-                        "application/json",
+                ],
+            ],
+            $this->object->getPathDefinition('/v2/pet/10', 'get')
+        );
+        $this->assertEquals(
+            [
+                "tags"        => [
+                    "pet",
+                ],
+                "summary"     => "Updates a pet in the store with form data",
+                "description" => "",
+                "operationId" => "updatePetWithForm",
+                "consumes"    => [
+                    "application/x-www-form-urlencoded",
+                ],
+                "produces"    => [
+                    "application/xml",
+                    "application/json",
+                ],
+                "parameters"  => [
+                    [
+                        "name"        => "petId",
+                        "in"          => "path",
+                        "description" => "ID of pet that needs to be updated",
+                        "required"    => true,
+                        "type"        => "integer",
+                        "format"      => "int64",
                     ],
-                    "parameters"  => [
-                        [
-                            "name"     => "api_key",
-                            "in"       => "header",
-                            "required" => false,
-                            "type"     => "string",
-                        ],
-                        [
-                            "name"        => "petId",
-                            "in"          => "path",
-                            "description" => "Pet id to delete",
-                            "required"    => true,
-                            "type"        => "integer",
-                            "format"      => "int64",
-                        ],
+                    [
+                        "name"        => "name",
+                        "in"          => "formData",
+                        "description" => "Updated name of the pet",
+                        "required"    => false,
+                        "type"        => "string",
                     ],
-                    "responses"   => [
-                        "400" => [
-                            "description" => "Invalid ID supplied",
-                        ],
-                        "404" => [
-                            "description" => "Pet not found",
-                        ],
+                    [
+                        "name"        => "status",
+                        "in"          => "formData",
+                        "description" => "Updated status of the pet",
+                        "required"    => false,
+                        "type"        => "string",
                     ],
-                    "security"    => [
-                        [
-                            "petstore_auth" => [
-                                "write:pets",
-                                "read:pets",
-                            ],
+                ],
+                "responses"   => [
+                    "405" => [
+                        "description" => "Invalid input",
+                    ],
+                ],
+                "security"    => [
+                    [
+                        "petstore_auth" => [
+                            "write:pets",
+                            "read:pets",
                         ],
                     ],
                 ],
             ],
-            $this->object->getPath('/v2/pet/10')
+            $this->object->getPathDefinition('/v2/pet/10', 'post')
+        );
+        $this->assertEquals(
+            [
+                "tags"        => [
+                    "pet",
+                ],
+                "summary"     => "Deletes a pet",
+                "description" => "",
+                "operationId" => "deletePet",
+                "produces"    => [
+                    "application/xml",
+                    "application/json",
+                ],
+                "parameters"  => [
+                    [
+                        "name"     => "api_key",
+                        "in"       => "header",
+                        "required" => false,
+                        "type"     => "string",
+                    ],
+                    [
+                        "name"        => "petId",
+                        "in"          => "path",
+                        "description" => "Pet id to delete",
+                        "required"    => true,
+                        "type"        => "integer",
+                        "format"      => "int64",
+                    ],
+                ],
+                "responses"   => [
+                    "400" => [
+                        "description" => "Invalid ID supplied",
+                    ],
+                    "404" => [
+                        "description" => "Pet not found",
+                    ],
+                ],
+                "security"    => [
+                    [
+                        "petstore_auth" => [
+                            "write:pets",
+                            "read:pets",
+                        ],
+                    ],
+                ],
+            ],
+            $this->object->getPathDefinition('/v2/pet/10', 'delete')
         );
     }
 
@@ -282,62 +287,60 @@ class SwaggerSchemaTest extends TestCase
     {
         $this->assertEquals(
             [
-                "post" => [
-                    "tags"        => [
-                        "pet",
+                "tags"        => [
+                    "pet",
+                ],
+                "summary"     => "uploads an image",
+                "description" => "",
+                "operationId" => "uploadFile",
+                "consumes"    => [
+                    "multipart/form-data",
+                ],
+                "produces"    => [
+                    "application/json",
+                ],
+                "parameters"  => [
+                    [
+                        "name"        => "petId",
+                        "in"          => "path",
+                        "description" => "ID of pet to update",
+                        "required"    => true,
+                        "type"        => "integer",
+                        "format"      => "int64",
                     ],
-                    "summary"     => "uploads an image",
-                    "description" => "",
-                    "operationId" => "uploadFile",
-                    "consumes"    => [
-                        "multipart/form-data",
+                    [
+                        "name"        => "additionalMetadata",
+                        "in"          => "formData",
+                        "description" => "Additional data to pass to server",
+                        "required"    => false,
+                        "type"        => "string",
                     ],
-                    "produces"    => [
-                        "application/json",
+                    [
+                        "name"        => "file",
+                        "in"          => "formData",
+                        "description" => "file to upload",
+                        "required"    => false,
+                        "type"        => "file",
                     ],
-                    "parameters"  => [
-                        [
-                            "name"        => "petId",
-                            "in"          => "path",
-                            "description" => "ID of pet to update",
-                            "required"    => true,
-                            "type"        => "integer",
-                            "format"      => "int64",
-                        ],
-                        [
-                            "name"        => "additionalMetadata",
-                            "in"          => "formData",
-                            "description" => "Additional data to pass to server",
-                            "required"    => false,
-                            "type"        => "string",
-                        ],
-                        [
-                            "name"        => "file",
-                            "in"          => "formData",
-                            "description" => "file to upload",
-                            "required"    => false,
-                            "type"        => "file",
-                        ],
-                    ],
-                    "responses"   => [
-                        "200" => [
-                            "description" => "successful operation",
-                            "schema"      => [
-                                "\$ref" => "#/definitions/ApiResponse",
-                            ],
+                ],
+                "responses"   => [
+                    "200" => [
+                        "description" => "successful operation",
+                        "schema"      => [
+                            "\$ref" => "#/definitions/ApiResponse",
                         ],
                     ],
-                    "security"    => [
-                        [
-                            "petstore_auth" => [
-                                "write:pets",
-                                "read:pets",
-                            ],
+                ],
+                "security"    => [
+                    [
+                        "petstore_auth" => [
+                            "write:pets",
+                            "read:pets",
                         ],
                     ],
                 ],
             ],
-            $this->object->getPath('/v2/pet/10/uploadImage')
+            $this->object->getPathDefinition('/v2/pet/10/uploadImage', 'post')
         );
     }
 
@@ -346,20 +349,20 @@ class SwaggerSchemaTest extends TestCase
      */
     public function testGetPathFail()
     {
-        $this->object->getPath('/v2/pets');
+        $this->object->getPathDefinition('/v2/pets', 'get');
     }
 
     /**
      * @expectedException \ByJG\Swagger\Exception\HttpMethodNotFoundException
      */
-    public function testGetPathStructureFailed()
+    public function testPathExistsButMethodDont()
     {
-        $this->object->getPathStructure('/v2/pet', 'GET');
+        $this->object->getPathDefinition('/v2/pet', 'GET');
     }
 
     public function testGetPathStructure()
     {
-        $pathDefintion = $this->object->getPathStructure('/v2/pet', 'PUT');
+        $pathDefintion = $this->object->getPathDefinition('/v2/pet', 'PUT');
 
         $this->assertEquals(
             [

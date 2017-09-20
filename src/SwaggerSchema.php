@@ -10,6 +10,7 @@ namespace ByJG\Swagger;
 use ByJG\Swagger\Exception\DefinitionNotFoundException;
 use ByJG\Swagger\Exception\HttpMethodNotFoundException;
 use ByJG\Swagger\Exception\InvalidDefinitionException;
+use ByJG\Swagger\Exception\NotMatchedException;
 use ByJG\Swagger\Exception\PathNotFoundException;
 
 class SwaggerSchema
@@ -36,13 +37,18 @@ class SwaggerSchema
         return isset($this->jsonFile['basePath']) ? $this->jsonFile['basePath'] : '';
     }
 
-    public function getPath($path)
+    public function getPathDefinition($path, $method)
     {
+        $method = strtolower($method);
+
         $path = preg_replace('~^' . $this->getBasePath() . '~', '', $path);
 
         // Try direct match
         if (isset($this->jsonFile['paths'][$path])) {
-            return $this->jsonFile['paths'][$path];
+            if (isset($this->jsonFile['paths'][$path][$method])) {
+                return $this->jsonFile['paths'][$path][$method];
+            }
+            throw new HttpMethodNotFoundException("The http method '$method' not found in '$path'");
         }
 
         // Try inline parameter
@@ -51,24 +57,34 @@ class SwaggerSchema
                 continue;
             }
 
-            $pathItemPattern = '~^' . preg_replace('~\{.*?\}~', '([^/]+)', $pathItem) . '$~';
+            $pathItemPattern = '~^' . preg_replace('~\{(.*?)\}~', '(?<\1>[^/]+)', $pathItem) . '$~';
 
-            if (preg_match($pathItemPattern, $path)) {
-                return $this->jsonFile['paths'][$pathItem];
+            $matches = [];
+            if (preg_match($pathItemPattern, $path, $matches)) {
+                $pathDef = $this->jsonFile['paths'][$pathItem];
+                if (!isset($pathDef[$method])) {
+                    throw new HttpMethodNotFoundException("The http method '$method' not found in '$path'");
+                }
+
+                $this->validateArguments('path', $pathDef[$method]['parameters'], $matches);
+
+                return $pathDef[$method];
             }
         }
 
         throw new PathNotFoundException('Path "' . $path . '" not found');
     }
 
-    public function getPathStructure($path, $method)
+    private function validateArguments($parameterIn, $parameters, $arguments)
     {
-        $pathDef = $this->getPath($path);
-        $method = strtolower($method);
-        if (!isset($pathDef[$method])) {
-            throw new HttpMethodNotFoundException("The http method '$method' not found in '$path'");
+        foreach ($parameters as $parameter) {
+            if ($parameter['in'] === $parameterIn) {
+                if ($parameter['type'] === "integer"
+                    && filter_var($arguments[$parameter['name']], FILTER_VALIDATE_INT) === false) {
+                    throw new NotMatchedException('Path expected an integer value');
+                }
+            }
         }
-        return $pathDef[$method];
     }
 
     public function getDefintion($name)
@@ -88,7 +104,7 @@ class SwaggerSchema
 
     public function getRequestParameters($path, $method)
     {
-        $structure = $this->getPathStructure($path, $method);
+        $structure = $this->getPathDefinition($path, $method);
 
         if (!isset($structure['parameters'])) {
             return new SwaggerRequestBody($this, "$method $path", []);
@@ -99,7 +115,7 @@ class SwaggerSchema
 
     public function getResponseParameters($path, $method, $status)
     {
-        $structure = $this->getPathStructure($path, $method);
+        $structure = $this->getPathDefinition($path, $method);
 
         if (!isset($structure['responses'][$status])) {
             throw new InvalidDefinitionException("Could not found status code '$status' in '$path' and '$method'");

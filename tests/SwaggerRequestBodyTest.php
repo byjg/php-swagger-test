@@ -47,6 +47,44 @@ class SwaggerRequestBodyTest extends TestCase
     }
 
     /**
+     * @expectedException \ByJG\Swagger\Exception\RequiredArgumentNotFound
+     * @expectedExceptionMessage The body is required
+     */
+    public function testMatchRequiredRequestBodyEmpty()
+    {
+        $requestParameter = $this->object->getRequestParameters('/v2/store/order', 'post');
+        $this->assertTrue($requestParameter->match(null));
+    }
+
+    /**
+     * @expectedException \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @expectedExceptionMessage Body is passed but there is no request body definition
+     */
+    public function testMatchInexistantBodyDefinition()
+    {
+        $requestParameter = $this->object->getRequestParameters('/v2/pet/1', 'get');
+        $body = [
+            "id" => "10",
+            "petId" => 50,
+            "quantity" => 1,
+            "shipDate" => '2010-10-20',
+            "status" => 'placed',
+            "complete" => true
+        ];
+        $this->assertTrue($requestParameter->match($body));
+    }
+
+    /**
+     * @expectedException \ByJG\Swagger\Exception\NotMatchedException
+     * @expectedExceptionMessage Path expected an integer value
+     */
+    public function testMatchDataType()
+    {
+        $this->object->getRequestParameters('/v2/pet/STRING', 'get');
+        $this->assertTrue(true);
+    }
+
+    /**
      * @expectedException \ByJG\Swagger\Exception\NotMatchedException
      * @expectedExceptionMessage Required property
      */

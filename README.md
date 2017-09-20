@@ -141,7 +141,7 @@ $bodyRequestDef->match($requestBody);
 ## Install
 
 ```
-composer require "byjg/swagger-test=1.0.*"
+composer require "byjg/swagger-test=1.1.*"
 ```
 
 ## Questions?
