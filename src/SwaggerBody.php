@@ -1,9 +1,4 @@
 <?php
-/**
- * User: jg
- * Date: 22/05/17
- * Time: 10:52
- */
 
 namespace ByJG\Swagger;
 
@@ -80,9 +75,9 @@ abstract class SwaggerBody
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @param $schema
-     * @param $body
+     * @param array $body
      * @return bool
      * @throws \ByJG\Swagger\Exception\NotMatchedException
      * @throws \Exception
@@ -94,7 +89,7 @@ abstract class SwaggerBody
                 return $this->matchString($name, $schema, $body);
             }
 
-            if ($schema['type'] == 'integer' || $schema['type'] == 'float') {
+            if ($schema['type'] == 'integer' || $schema['type'] == 'float' || $schema['type'] == 'number') {
                 return $this->matchNumber($name, $body);
             }
 
