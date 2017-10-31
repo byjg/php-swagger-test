@@ -99,6 +99,10 @@ class SwaggerRequestBodyTest extends TestCase
     }
 
     /**
+     * It is not OK { name: null }
+     * https://stackoverflow.com/questions/45575493/what-does-required-in-openapi-really-mean
+     * @todo Add the "nullable" validation. (have to add the test case also)
+     *
      * @expectedException \ByJG\Swagger\Exception\NotMatchedException
      * @expectedExceptionMessage Required property
      */
@@ -108,6 +112,22 @@ class SwaggerRequestBodyTest extends TestCase
             "id" => "10",
             "status" => "pending",
             "name" => null,
+            "photoUrls" => ["http://example.com/1", "http://example.com/2"]
+        ];
+        $requestParameter = $this->object->getRequestParameters('/v2/pet', 'post');
+        $this->assertTrue($requestParameter->match($body));
+    }
+
+    /**
+     * It is OK: { name: ""}
+     * https://stackoverflow.com/questions/45575493/what-does-required-in-openapi-really-mean
+     */
+    public function testMatchRequestBodyRequired3()
+    {
+        $body = [
+            "id" => "10",
+            "status" => "pending",
+            "name" => "",
             "photoUrls" => ["http://example.com/1", "http://example.com/2"]
         ];
         $requestParameter = $this->object->getRequestParameters('/v2/pet', 'post');
