@@ -113,6 +113,7 @@ abstract class SwaggerBody
             }
             foreach ($schema['properties'] as $prop => $def) {
                 $required = array_search($prop, $schema['required']);
+                // if (!array_key_exists($prop, $body)) {
                 if (!isset($body[$prop])) {
                     if ($required !== false) {
                          throw new NotMatchedException("Required property '$prop' in '$name' not found in object");

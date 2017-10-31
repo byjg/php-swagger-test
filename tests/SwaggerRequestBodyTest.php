@@ -97,4 +97,20 @@ class SwaggerRequestBodyTest extends TestCase
         $requestParameter = $this->object->getRequestParameters('/v2/pet', 'post');
         $this->assertTrue($requestParameter->match($body));
     }
+
+    /**
+     * @expectedException \ByJG\Swagger\Exception\NotMatchedException
+     * @expectedExceptionMessage Required property
+     */
+    public function testMatchRequestBodyRequired2()
+    {
+        $body = [
+            "id" => "10",
+            "status" => "pending",
+            "name" => null,
+            "photoUrls" => ["http://example.com/1", "http://example.com/2"]
+        ];
+        $requestParameter = $this->object->getRequestParameters('/v2/pet', 'post');
+        $this->assertTrue($requestParameter->match($body));
+    }
 }
