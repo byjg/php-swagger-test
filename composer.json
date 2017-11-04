@@ -13,9 +13,17 @@
   "require": {
     "guzzlehttp/guzzle": "6.*"
   },
+  "require-dev": {
+    "phpunit/phpunit": "5.*"
+  },
   "autoload": {
     "psr-4": {
       "ByJG\\Swagger\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Test\\": "tests/"
     }
   }
 }
