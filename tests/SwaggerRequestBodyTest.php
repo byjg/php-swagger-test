@@ -7,31 +7,8 @@
 
 namespace Test;
 
-use ByJG\Swagger\SwaggerSchema;
-use PHPUnit\Framework\TestCase;
-
-// backward compatibility
-if (!class_exists('\PHPUnit\Framework\TestCase')) {
-    class_alias('\PHPUnit_Framework_TestCase', '\PHPUnit\Framework\TestCase');
-}
-
-class SwaggerRequestBodyTest extends TestCase
+class SwaggerRequestBodyTest extends SwaggerBodyTestCase
 {
-    /**
-     * @var SwaggerSchema
-     */
-    protected $object;
-
-    public function setUp()
-    {
-        $this->object = new SwaggerSchema(file_get_contents(__DIR__ . '/example/swagger.json'));
-    }
-
-    public function tearDown()
-    {
-        $this->object = null;
-    }
-
     public function testMatchRequestBody()
     {
         $body = [
@@ -42,7 +19,7 @@ class SwaggerRequestBodyTest extends TestCase
             "status" => 'placed',
             "complete" => true
         ];
-        $requestParameter = $this->object->getRequestParameters('/v2/store/order', 'post');
+        $requestParameter = self::swaggerSchema()->getRequestParameters('/v2/store/order', 'post');
         $this->assertTrue($requestParameter->match($body));
     }
 
@@ -52,7 +29,7 @@ class SwaggerRequestBodyTest extends TestCase
      */
     public function testMatchRequiredRequestBodyEmpty()
     {
-        $requestParameter = $this->object->getRequestParameters('/v2/store/order', 'post');
+        $requestParameter = self::swaggerSchema()->getRequestParameters('/v2/store/order', 'post');
         $this->assertTrue($requestParameter->match(null));
     }
 
@@ -62,7 +39,7 @@ class SwaggerRequestBodyTest extends TestCase
      */
     public function testMatchInexistantBodyDefinition()
     {
-        $requestParameter = $this->object->getRequestParameters('/v2/pet/1', 'get');
+        $requestParameter = self::swaggerSchema()->getRequestParameters('/v2/pet/1', 'get');
         $body = [
             "id" => "10",
             "petId" => 50,
@@ -80,7 +57,7 @@ class SwaggerRequestBodyTest extends TestCase
      */
     public function testMatchDataType()
     {
-        $this->object->getRequestParameters('/v2/pet/STRING', 'get');
+        self::swaggerSchema()->getRequestParameters('/v2/pet/STRING', 'get');
         $this->assertTrue(true);
     }
 
@@ -94,19 +71,18 @@ class SwaggerRequestBodyTest extends TestCase
             "id" => "10",
             "status" => "pending",
         ];
-        $requestParameter = $this->object->getRequestParameters('/v2/pet', 'post');
+        $requestParameter = self::swaggerSchema()->getRequestParameters('/v2/pet', 'post');
         $this->assertTrue($requestParameter->match($body));
     }
 
     /**
-     * It is not OK { name: null }
+     * It is not OK when allowNullValues is false (as by default) { name: null }
      * https://stackoverflow.com/questions/45575493/what-does-required-in-openapi-really-mean
-     * @todo Add the "nullable" validation. (have to add the test case also)
      *
      * @expectedException \ByJG\Swagger\Exception\NotMatchedException
-     * @expectedExceptionMessage Required property
+     * @expectedExceptionMessage Value of property 'name' is null, but should be of type 'string'
      */
-    public function testMatchRequestBodyRequired2()
+    public function testMatchRequestBodyRequiredNullsNotAllowed()
     {
         $body = [
             "id" => "10",
@@ -114,7 +90,20 @@ class SwaggerRequestBodyTest extends TestCase
             "name" => null,
             "photoUrls" => ["http://example.com/1", "http://example.com/2"]
         ];
-        $requestParameter = $this->object->getRequestParameters('/v2/pet', 'post');
+        $requestParameter = self::swaggerSchema()->getRequestParameters('/v2/pet', 'post');
+        $this->assertTrue($requestParameter->match($body));
+    }
+
+    public function testMatchRequestBodyRequiredNullsAllowed()
+    {
+        $allowNullValues = true;
+        $body = [
+            "id" => "10",
+            "status" => "pending",
+            "name" => null,
+            "photoUrls" => ["http://example.com/1", "http://example.com/2"]
+        ];
+        $requestParameter = self::swaggerSchema($allowNullValues)->getRequestParameters('/v2/pet', 'post');
         $this->assertTrue($requestParameter->match($body));
     }
 
@@ -130,7 +119,7 @@ class SwaggerRequestBodyTest extends TestCase
             "name" => "",
             "photoUrls" => ["http://example.com/1", "http://example.com/2"]
         ];
-        $requestParameter = $this->object->getRequestParameters('/v2/pet', 'post');
+        $requestParameter = self::swaggerSchema()->getRequestParameters('/v2/pet', 'post');
         $this->assertTrue($requestParameter->match($body));
     }
 }

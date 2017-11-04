@@ -7,33 +7,13 @@
 
 namespace Test;
 
-use ByJG\Swagger\SwaggerSchema;
-use PHPUnit\Framework\TestCase;
 
-// backward compatibility
-if (!class_exists('\PHPUnit\Framework\TestCase')) {
-    class_alias('\PHPUnit_Framework_TestCase', '\PHPUnit\Framework\TestCase');
-}
-
-class SwaggerResponseBodyTest extends TestCase
+class SwaggerResponseBodyTest extends SwaggerBodyTestCase
 {
-    /**
-     * @var SwaggerSchema
-     */
-    protected $object;
-
-    public function setUp()
-    {
-        $this->object = new SwaggerSchema(file_get_contents(__DIR__ . '/example/swagger.json'));
-    }
-
-    public function tearDown()
-    {
-        $this->object = null;
-    }
-
     public function testMatchResponseBody()
     {
+        $schema = self::swaggerSchema();
+
         $body = [
             "id" => 10,
             "petId" => 50,
@@ -42,7 +22,7 @@ class SwaggerResponseBodyTest extends TestCase
             "status" => 'placed',
             "complete" => true
         ];
-        $responseParameter = $this->object->getResponseParameters('/v2/store/order', 'post', 200);
+        $responseParameter = $schema->getResponseParameters('/v2/store/order', 'post', 200);
         $this->assertTrue($responseParameter->match($body));
 
         // Default
@@ -53,7 +33,7 @@ class SwaggerResponseBodyTest extends TestCase
             "shipDate" => '2010-10-20',
             "status" => 'placed'
         ];
-        $responseParameter = $this->object->getResponseParameters('/v2/store/order', 'post', 200);
+        $responseParameter = $schema->getResponseParameters('/v2/store/order', 'post', 200);
         $this->assertTrue($responseParameter->match($body));
 
         // Number as string
@@ -65,7 +45,7 @@ class SwaggerResponseBodyTest extends TestCase
             "status" => 'placed',
             "complete" => true
         ];
-        $responseParameter = $this->object->getResponseParameters('/v2/store/order', 'post', 200);
+        $responseParameter = $schema->getResponseParameters('/v2/store/order', 'post', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 
@@ -83,7 +63,7 @@ class SwaggerResponseBodyTest extends TestCase
             "status" => 'notfound',
             "complete" => true
         ];
-        $responseParameter = $this->object->getResponseParameters('/v2/store/order', 'post', 200);
+        $responseParameter = self::swaggerSchema()->getResponseParameters('/v2/store/order', 'post', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 
@@ -101,7 +81,7 @@ class SwaggerResponseBodyTest extends TestCase
             "status" => 'placed',
             "complete" => true
         ];
-        $responseParameter = $this->object->getResponseParameters('/v2/store/order', 'post', 200);
+        $responseParameter = self::swaggerSchema()->getResponseParameters('/v2/store/order', 'post', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 
@@ -120,7 +100,7 @@ class SwaggerResponseBodyTest extends TestCase
             "complete" => true,
             "more" => "value"
         ];
-        $responseParameter = $this->object->getResponseParameters('/v2/store/order', 'post', 200);
+        $responseParameter = self::swaggerSchema()->getResponseParameters('/v2/store/order', 'post', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 
@@ -131,14 +111,41 @@ class SwaggerResponseBodyTest extends TestCase
             "status"   => 'placed',
             "complete" => true
         ];
-        $responseParameter = $this->object->getResponseParameters('/v2/store/order', 'post', 200);
+        $responseParameter = self::swaggerSchema()->getResponseParameters('/v2/store/order', 'post', 200);
         $this->assertTrue($responseParameter->match($body));
+    }
+
+    public function testMatchResponseBodyAllowNullValues()
+    {
+        $allowNullValues = true;
+        $body = [
+            "id"       => 10,
+            "status"   => 'placed',
+            "complete" => null
+        ];
+        $responseParameter = self::swaggerSchema($allowNullValues)->getResponseParameters('/v2/store/order', 'post', 200);
+        $this->assertTrue($responseParameter->match($body));
+    }
+
+    /**
+     * @expectedException \ByJG\Swagger\Exception\NotMatchedException
+     * @expectedExceptionMessage Value of property 'complete' is null, but should be of type 'boolean'
+     */
+    public function testMatchResponseBodyNotAllowNullValues()
+    {
+        $body = [
+            "id"       => 10,
+            "status"   => 'placed',
+            "complete" => null
+        ];
+        $responseParameter = self::swaggerSchema()->getResponseParameters('/v2/store/order', 'post', 200);
+        $responseParameter->match($body);
     }
 
     public function testMatchResponseBodyEmpty()
     {
         $body = null;
-        $responseParameter = $this->object->getResponseParameters('/v2/pet/10', 'get', 400);
+        $responseParameter = self::swaggerSchema()->getResponseParameters('/v2/pet/10', 'get', 400);
         $this->assertTrue($responseParameter->match($body));
     }
 
@@ -149,7 +156,7 @@ class SwaggerResponseBodyTest extends TestCase
     public function testMatchResponseBodyNotEmpty()
     {
         $body = ['suppose'=>'not here'];
-        $responseParameter = $this->object->getResponseParameters('/v2/pet/10', 'get', 400);
+        $responseParameter = self::swaggerSchema()->getResponseParameters('/v2/pet/10', 'get', 400);
         $this->assertTrue($responseParameter->match($body));
     }
 
@@ -177,7 +184,33 @@ class SwaggerResponseBodyTest extends TestCase
             ],
             "status" => 'available'
         ];
-        $responseParameter = $this->object->getResponseParameters('/v2/pet/10', 'get', 200);
+        $responseParameter = self::swaggerSchema()->getResponseParameters('/v2/pet/10', 'get', 200);
+        $this->assertTrue($responseParameter->match($body));
+    }
+
+    public function testMatchResponseBodyWhenValueWithNestedPropertiesIsNullAndNullsAreAllowed()
+    {
+        $allowNullValues = true;
+        $body = [
+            "id" => 10,
+            "category" => null,
+            "name" => "Spike",
+            "photoUrls" => [
+                'url1',
+                'url2'
+            ],
+            "tags" => [
+                [
+                    'id' => '10',
+                    'name' => 'cute'
+                ],
+                [
+                    'name' => 'priceless'
+                ]
+            ],
+            "status" => 'available'
+        ];
+        $responseParameter = self::swaggerSchema($allowNullValues)->getResponseParameters('/v2/pet/10', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 }
