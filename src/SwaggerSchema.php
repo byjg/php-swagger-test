@@ -16,10 +16,12 @@ use ByJG\Swagger\Exception\PathNotFoundException;
 class SwaggerSchema
 {
     protected $jsonFile;
+    protected $allowNullValues;
 
-    public function __construct($jsonFile)
+    public function __construct($jsonFile, $allowNullValues = false)
     {
         $this->jsonFile = json_decode($jsonFile, true);
+        $this->allowNullValues = (bool) $allowNullValues;
     }
 
     public function getHttpSchema()
@@ -122,5 +124,16 @@ class SwaggerSchema
         }
 
         return new SwaggerResponseBody($this, "$method $status $path", $structure['responses'][$status]);
+    }
+
+    /**
+     * OpenApi 2.0 doesn't describe null values, so this flag defines,
+     * if match is ok when one of property
+     *
+     * @return bool
+     */
+    public function isAllowNullValues()
+    {
+        return $this->allowNullValues;
     }
 }

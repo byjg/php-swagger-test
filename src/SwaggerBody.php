@@ -16,13 +16,22 @@ abstract class SwaggerBody
     protected $name;
 
     /**
+     * OpenApi 2.0 does not describe null values, so this flag defines,
+     * if match is ok when one of property, which has type, is null
+     *
+     * @var bool
+     */
+    protected $allowNullValues;
+
+    /**
      * SwaggerRequestBody constructor.
      *
      * @param \ByJG\Swagger\SwaggerSchema $swaggerSchema
      * @param string $name
      * @param array $structure
+     * @param bool $allowNullValues
      */
-    public function __construct(SwaggerSchema $swaggerSchema, $name, $structure)
+    public function __construct(SwaggerSchema $swaggerSchema, $name, $structure, $allowNullValues = false)
     {
         $this->swaggerSchema = $swaggerSchema;
         $this->name = $name;
@@ -30,6 +39,7 @@ abstract class SwaggerBody
             throw new \InvalidArgumentException('I expected the structure to be an array');
         }
         $this->structure = $structure;
+        $this->allowNullValues = $allowNullValues;
     }
 
     abstract public function match($body);
@@ -85,19 +95,25 @@ abstract class SwaggerBody
     protected function matchSchema($name, $schema, $body)
     {
         if (isset($schema['type'])) {
-            if ($schema['type'] == 'string') {
+
+            $type = $schema['type'];
+            if (is_null($body)) {
+                return $this->matchNull($name, $type);
+            }
+
+            if ($type == 'string') {
                 return $this->matchString($name, $schema, $body);
             }
 
-            if ($schema['type'] == 'integer' || $schema['type'] == 'float' || $schema['type'] == 'number') {
+            if ($type == 'integer' || $type == 'float' || $schema['type'] == 'number') {
                 return $this->matchNumber($name, $body);
             }
 
-            if ($schema['type'] == 'bool' || $schema['type'] == 'boolean') {
+            if ($type == 'bool' || $schema['type'] == 'boolean') {
                 return $this->matchBool($name, $body);
             }
 
-            if ($schema['type'] == 'array') {
+            if ($type == 'array') {
                 return $this->matchArray($name, $schema, $body);
             }
         }
@@ -113,14 +129,15 @@ abstract class SwaggerBody
             }
             foreach ($schema['properties'] as $prop => $def) {
                 $required = array_search($prop, $schema['required']);
-                // if (!array_key_exists($prop, $body)) {
-                if (!isset($body[$prop])) {
+
+                if (!array_key_exists($prop, $body)) {
                     if ($required !== false) {
                          throw new NotMatchedException("Required property '$prop' in '$name' not found in object");
                     }
                     unset($body[$prop]);
                     continue;
                 }
+
                 $this->matchSchema($prop, $def, $body[$prop]);
                 unset($schema['properties'][$prop]);
                 if ($required !== false) {
@@ -150,5 +167,23 @@ abstract class SwaggerBody
         }
 
         throw new \Exception("Not all cases are defined. Please open an issue about this. Schema: $name");
+    }
+
+    /**
+     * @param $name
+     * @param $type
+     * @return bool
+     * @throws NotMatchedException
+     */
+    protected function matchNull($name, $type)
+    {
+        if (false === $this->swaggerSchema->isAllowNullValues()) {
+            throw new NotMatchedException(
+                "Value of property '$name' is null, but should be of type '$type'",
+                $this->structure
+            );
+        }
+
+        return true;
     }
 }
