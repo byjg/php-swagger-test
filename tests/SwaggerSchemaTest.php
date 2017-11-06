@@ -484,4 +484,17 @@ class SwaggerSchemaTest extends TestCase
             $order
         );
     }
+
+    public function testItNotAllowsNullValuesByDefault()
+    {
+        $schema = new SwaggerSchema('{}');
+        $this->assertFalse($schema->isAllowNullValues());
+    }
+
+    public function testItAllowsNullValues()
+    {
+        $allowNullValues = true;
+        $schema = new SwaggerSchema('{}', $allowNullValues);
+        $this->assertTrue($schema->isAllowNullValues());
+    }
 }
