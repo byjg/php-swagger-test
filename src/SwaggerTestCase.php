@@ -42,21 +42,27 @@ abstract class SwaggerTestCase extends TestCase
         $this->guzzleHttpClient = new Client(['headers' => ['User-Agent' => 'Swagger Test']]);
     }
 
-    protected function getCustomHeader()
-    {
-        return [];
-    }
-
     /**
      * @param string $method The HTTP Method: GET, PUT, DELETE, POST, etc
      * @param string $path The REST path call
      * @param int $statusExpected
      * @param array|null $query
      * @param array|null $requestBody
+     * @param array $requestHeader
      * @return mixed
+     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\Swagger\Exception\NotMatchedException
+     * @throws \ByJG\Swagger\Exception\RequiredArgumentNotFound
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    protected function makeRequest($method, $path, $statusExpected = 200, $query = null, $requestBody = null)
-    {
+    protected function makeRequest(
+        $method,
+        $path,
+        $statusExpected = 200,
+        $query = null,
+        $requestBody = null,
+        $requestHeader = []
+    ) {
         // Preparing Parameters
         $paramInQuery = null;
         if (!empty($query)) {
@@ -64,10 +70,14 @@ abstract class SwaggerTestCase extends TestCase
         }
 
         // Preparing Header
-        $header = array_merge([
+        if (empty($requestHeader)) {
+            $requestHeader = [];
+        }
+        $header = array_merge(
+            [
                 'Accept' => 'application/json'
             ],
-            $this->getCustomHeader()
+            $requestHeader
         );
 
         // Defining Variables
