@@ -44,6 +44,13 @@ abstract class SwaggerBody
 
     abstract public function match($body);
 
+    /**
+     * @param $name
+     * @param $schema
+     * @param $body
+     * @return bool
+     * @throws \ByJG\Swagger\Exception\NotMatchedException
+     */
     protected function matchString($name, $schema, $body)
     {
         if (isset($schema['enum'])) {
@@ -55,6 +62,12 @@ abstract class SwaggerBody
         return true;
     }
 
+    /**
+     * @param $name
+     * @param $body
+     * @return bool
+     * @throws \ByJG\Swagger\Exception\NotMatchedException
+     */
     protected function matchNumber($name, $body)
     {
         if (!is_numeric($body)) {
@@ -64,6 +77,12 @@ abstract class SwaggerBody
         return true;
     }
 
+    /**
+     * @param $name
+     * @param $body
+     * @return bool
+     * @throws \ByJG\Swagger\Exception\NotMatchedException
+     */
     protected function matchBool($name, $body)
     {
         if (!is_bool($body)) {
@@ -73,6 +92,14 @@ abstract class SwaggerBody
         return true;
     }
 
+    /**
+     * @param $name
+     * @param $schema
+     * @param $body
+     * @return bool
+     * @throws \ByJG\Swagger\Exception\NotMatchedException
+     * @throws \Exception
+     */
     protected function matchArray($name, $schema, $body)
     {
         foreach ((array)$body as $item) {

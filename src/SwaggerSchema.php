@@ -39,6 +39,14 @@ class SwaggerSchema
         return isset($this->jsonFile['basePath']) ? $this->jsonFile['basePath'] : '';
     }
 
+    /**
+     * @param $path
+     * @param $method
+     * @return mixed
+     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\Swagger\Exception\NotMatchedException
+     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     */
     public function getPathDefinition($path, $method)
     {
         $method = strtolower($method);
@@ -77,6 +85,12 @@ class SwaggerSchema
         throw new PathNotFoundException('Path "' . $path . '" not found');
     }
 
+    /**
+     * @param $parameterIn
+     * @param $parameters
+     * @param $arguments
+     * @throws \ByJG\Swagger\Exception\NotMatchedException
+     */
     private function validateArguments($parameterIn, $parameters, $arguments)
     {
         foreach ($parameters as $parameter) {
@@ -89,6 +103,12 @@ class SwaggerSchema
         }
     }
 
+    /**
+     * @param $name
+     * @return mixed
+     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
+     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     */
     public function getDefintion($name)
     {
         $nameParts = explode('/', $name);
@@ -104,6 +124,14 @@ class SwaggerSchema
         return $this->jsonFile[$nameParts[1]][$nameParts[2]];
     }
 
+    /**
+     * @param $path
+     * @param $method
+     * @return \ByJG\Swagger\SwaggerRequestBody
+     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\Swagger\Exception\NotMatchedException
+     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     */
     public function getRequestParameters($path, $method)
     {
         $structure = $this->getPathDefinition($path, $method);
@@ -115,6 +143,16 @@ class SwaggerSchema
         return new SwaggerRequestBody($this, "$method $path", $structure['parameters']);
     }
 
+    /**
+     * @param $path
+     * @param $method
+     * @param $status
+     * @return \ByJG\Swagger\SwaggerResponseBody
+     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\Swagger\Exception\NotMatchedException
+     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     */
     public function getResponseParameters($path, $method, $status)
     {
         $structure = $this->getPathDefinition($path, $method);
@@ -135,5 +173,16 @@ class SwaggerSchema
     public function isAllowNullValues()
     {
         return $this->allowNullValues;
+    }
+
+    /**
+     * OpenApi 2.0 doesn't describe null values, so this flag defines,
+     * if match is ok when one of property
+     *
+     * @param $value
+     */
+    public function setAllowNullValues($value)
+    {
+        $this->allowNullValues = (bool) $value;
     }
 }

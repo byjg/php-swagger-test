@@ -1,9 +1,4 @@
 <?php
-/**
- * User: jg
- * Date: 22/05/17
- * Time: 15:32
- */
 
 namespace ByJG\Swagger;
 
@@ -31,6 +26,9 @@ abstract class SwaggerTestCase extends TestCase
 
     protected $filePath;
 
+    /**
+     * @throws \Exception
+     */
     protected function setUp()
     {
         if (empty($this->filePath)) {
@@ -50,9 +48,12 @@ abstract class SwaggerTestCase extends TestCase
      * @param array|null $requestBody
      * @param array $requestHeader
      * @return mixed
+     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
      * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
      * @throws \ByJG\Swagger\Exception\NotMatchedException
+     * @throws \ByJG\Swagger\Exception\PathNotFoundException
      * @throws \ByJG\Swagger\Exception\RequiredArgumentNotFound
+     * @throws \Exception
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     protected function makeRequest(

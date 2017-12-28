@@ -12,6 +12,14 @@ use ByJG\Swagger\Exception\RequiredArgumentNotFound;
 
 class SwaggerRequestBody extends SwaggerBody
 {
+    /**
+     * @param $body
+     * @return bool
+     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\Swagger\Exception\NotMatchedException
+     * @throws \ByJG\Swagger\Exception\RequiredArgumentNotFound
+     * @throws \Exception
+     */
     public function match($body)
     {
         foreach ($this->structure as $parameter) {

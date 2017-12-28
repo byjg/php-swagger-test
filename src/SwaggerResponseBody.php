@@ -11,6 +11,12 @@ use ByJG\Swagger\Exception\NotMatchedException;
 
 class SwaggerResponseBody extends SwaggerBody
 {
+    /**
+     * @param $body
+     * @return bool
+     * @throws \ByJG\Swagger\Exception\NotMatchedException
+     * @throws \Exception
+     */
     public function match($body)
     {
         if (!isset($this->structure['schema'])) {
