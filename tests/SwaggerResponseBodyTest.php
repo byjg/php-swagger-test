@@ -297,18 +297,56 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
             false
         );
 
-        $body = [
+        $body =
+        [
             [
-                "isoCode" => "fr",
-                "label" => "French",
-                "isDefault" => true
-            ],
-            [
-                "isoCode" => "br",
-                "label" => "Brazilian",
-                "isDefault" => false
+                [
+                    "isoCode" => "fr",
+                    "label" => "French",
+                    "isDefault" => true
+                ],
+                [
+                    "isoCode" => "br",
+                    "label" => "Brazilian",
+                    "isDefault" => false
+                ]
             ],
         ];
+        $responseParameter = $swaggerSchema->getResponseParameters('/v2/languages', 'get', 200);
+        $this->assertTrue($responseParameter->match($body));
+    }
+
+    /**
+     * Issue #9
+     *
+     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\Swagger\Exception\NotMatchedException
+     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws \Exception
+     * @expectedException \ByJG\Swagger\Exception\InvalidRequestException
+     * @expectedExceptionMessageRegExp "I expected an array here.*"
+     */
+    public function testIssue9Error()
+    {
+        $swaggerSchema = new SwaggerSchema(
+            file_get_contents(__DIR__ . '/example/swagger2.json'),
+            false
+        );
+
+        $body =
+            [
+                [
+                    "isoCode" => "fr",
+                    "label" => "French",
+                    "isDefault" => true
+                ],
+                [
+                    "isoCode" => "br",
+                    "label" => "Brazilian",
+                    "isDefault" => false
+                ]
+            ];
         $responseParameter = $swaggerSchema->getResponseParameters('/v2/languages', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
     }
