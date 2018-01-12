@@ -182,7 +182,7 @@ class SwaggerRequester
         if ($this->statusExpected != $statusReturned) {
             throw new StatusCodeNotMatchedException(
                 "Status code not matched $statusReturned",
-                json_encode($responseBody, JSON_PRETTY_PRINT)
+                $responseBody
             );
         }
 
