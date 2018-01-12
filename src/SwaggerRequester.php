@@ -144,7 +144,7 @@ class SwaggerRequester
         $path = $this->path;
 
         // Check if the body is the expected before request
-        $bodyRequestDef = $this->swaggerSchema->getRequestParameters("$basePath$path", $method);
+        $bodyRequestDef = $this->swaggerSchema->getRequestParameters("$basePath$path", $this->method);
         $bodyRequestDef->match($this->requestBody);
 
         // Make the request
@@ -178,7 +178,7 @@ class SwaggerRequester
 
         $bodyResponseDef = $this->swaggerSchema->getResponseParameters(
             "$basePath$path",
-            $method,
+            $this->method,
             $this->statusExpected
         );
         $bodyResponseDef->match($responseBody);
