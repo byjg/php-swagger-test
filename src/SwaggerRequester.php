@@ -68,6 +68,11 @@ class SwaggerRequester
      */
     public function withRequestHeader($requestHeader)
     {
+        if (is_null($requestHeader)) {
+            $this->requestHeader = [];
+            return $this;
+        }
+
         $this->requestHeader = array_merge($this->requestHeader, $requestHeader);
 
         return $this;
@@ -79,6 +84,11 @@ class SwaggerRequester
      */
     public function withQuery($query)
     {
+        if (is_null($query)) {
+            $this->query = [];
+            return $this;
+        }
+
         $this->query = array_merge($this->query, $query);
 
         return $this;
@@ -185,10 +195,10 @@ class SwaggerRequester
 
         if (count($this->assertHeader) > 0) {
             foreach ($this->assertHeader as $key => $value) {
-                if (!isset($responseHeader[$key]) || strpos($responseHeader[$key], $value) === false) {
+                if (!isset($responseHeader[$key]) || strpos($responseHeader[$key][0], $value) === false) {
                     throw new NotMatchedException(
-                        "Does not exists header '$header' with value '$value'",
-                        json_encode($responseHeader, JSON_PRETTY_PRINT)
+                        "Does not exists header '$key' with value '$value'",
+                        $responseHeader
                     );
                 }
             }
