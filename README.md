@@ -38,7 +38,12 @@ class MyTestCase extends \ByJG\Swagger\SwaggerTestCase
      */
     public function testGet()
     {
-        $this->makeRequest('GET', "/path/for/get/ID");
+        $request = new \ByJG\Swagger\SwaggerRequester();
+        $request
+            ->withMethod('GET')
+            ->withPath("/path/for/get/1");
+
+        $this->assertRequest($request);
     }
 
     /**
@@ -46,7 +51,13 @@ class MyTestCase extends \ByJG\Swagger\SwaggerTestCase
      */
     public function testGetNotFound()
     {
-        $this->makeRequest('GET', "/path/for/get/NOTFOUND", 404);
+        $request = new \ByJG\Swagger\SwaggerRequester();
+        $request
+            ->withMethod('GET')
+            ->withPath("/path/for/get/NOTFOUND")
+            ->assertResponseCode(404);
+
+        $this->assertRequest($request);
     }
 
     /**
@@ -56,13 +67,13 @@ class MyTestCase extends \ByJG\Swagger\SwaggerTestCase
      */
     public function testPost()
     {
-        $this->makeRequest(
-            'POST',                                      // The method
-            "/path/for/post/ID",                         // The path defined in the swagger.json
-            200,                                         // The expected status code
-            null,                                        // The parameters 'in path'
-            ['name'=>'new name', 'field' => 'value']     // The request body
-        );
+        $request = new \ByJG\Swagger\SwaggerRequester();
+        $request
+            ->withMethod('POST')
+            ->withPath("/path/for/post/2")
+            ->withRequestBody(['name'=>'new name', 'field' => 'value']);
+
+        $this->assertRequest($request);
     }
 
     /**
@@ -72,13 +83,14 @@ class MyTestCase extends \ByJG\Swagger\SwaggerTestCase
      */
     public function testPost2()
     {
-        $this->makeRequest(
-            'POST',                                     // The method
-            "/another/path/for/post/{id}",              // The path defined in the swagger.json
-            200,                                        // The expected status code
-            ['id'=>10],                                 // The parameters 'in path'
-            ['name'=>'new name', 'field' => 'value']    // The requested body
-        );
+        $request = new \ByJG\Swagger\SwaggerRequester();
+        $request
+            ->withMethod('POST')
+            ->withPath("/path/for/post/3")
+            ->withQuery(['id'=>10])
+            ->withRequestBody(['name'=>'new name', 'field' => 'value']);
+
+        $this->assertRequest($request);
     }
 
 }
@@ -141,7 +153,7 @@ $bodyRequestDef->match($requestBody);
 ## Install
 
 ```
-composer require "byjg/swagger-test=1.1.*"
+composer require "byjg/swagger-test=1.2.*"
 ```
 
 ## Questions?
