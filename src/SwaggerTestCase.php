@@ -100,7 +100,7 @@ abstract class SwaggerTestCase extends TestCase
 
         $statusReturned = null;
         try {
-            $response = $this->guzzleHttpClient->send($request);
+            $response = $this->guzzleHttpClient->send($request, ['allow_redirects' => false]);
             $responseBody = json_decode((string) $response->getBody(), true);
             $statusReturned = $response->getStatusCode();
         } catch (BadResponseException $ex) {
