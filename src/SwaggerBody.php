@@ -2,6 +2,7 @@
 
 namespace ByJG\Swagger;
 
+use ByJG\Swagger\Exception\InvalidRequestException;
 use ByJG\Swagger\Exception\NotMatchedException;
 
 abstract class SwaggerBody
@@ -151,6 +152,13 @@ abstract class SwaggerBody
         }
 
         if (isset($schema['properties'])) {
+            if (!is_array($body)) {
+                throw new InvalidRequestException(
+                    "I expected an array here, but I got an string. Maybe you did wrong request?",
+                    $body
+                );
+            }
+
             if (!isset($schema['required'])) {
                 $schema['required'] = [];
             }
