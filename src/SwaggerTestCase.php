@@ -19,11 +19,6 @@ abstract class SwaggerTestCase extends TestCase
      */
     protected $swaggerSchema;
 
-    /**
-     * @var \GuzzleHttp\ClientInterface
-     */
-    protected $guzzleHttpClient;
-
     protected $filePath;
 
     /**
@@ -36,8 +31,6 @@ abstract class SwaggerTestCase extends TestCase
         }
 
         $this->swaggerSchema = new SwaggerSchema(file_get_contents($this->filePath));
-
-        $this->guzzleHttpClient = new Client(['headers' => ['User-Agent' => 'Swagger Test']]);
     }
 
     /**
@@ -48,6 +41,7 @@ abstract class SwaggerTestCase extends TestCase
      * @param array|null $requestBody
      * @param array $requestHeader
      * @return mixed
+     * @deprecated Use assertRequest instead
      * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
      * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
      * @throws \ByJG\Swagger\Exception\NotMatchedException
@@ -64,56 +58,49 @@ abstract class SwaggerTestCase extends TestCase
         $requestBody = null,
         $requestHeader = []
     ) {
-        // Preparing Parameters
-        $paramInQuery = null;
-        if (!empty($query)) {
-            $paramInQuery = '?' . http_build_query($query);
-        }
+        $requester = new SwaggerRequester();
+        $body = $requester
+            ->withSwaggerSchema($this->swaggerSchema)
+            ->withMethod($method)
+            ->withPath($path)
+            ->withQuery($query)
+            ->withRequestBody($requestBody)
+            ->withRequestHeader($requestHeader)
+            ->assertResponseCode($statusExpected)
+            ->send();
 
-        // Preparing Header
-        if (empty($requestHeader)) {
-            $requestHeader = [];
-        }
-        $header = array_merge(
-            [
-                'Accept' => 'application/json'
-            ],
-            $requestHeader
-        );
+        // Note:
+        // This code is only reached if the send is successful and
+        // all matches are satisfied. Otherwise an error is throwed before
+        // reach this;
+        $this->assertTrue(true);
 
-        // Defining Variables
-        $httpSchema = $this->swaggerSchema->getHttpSchema();
-        $host = $this->swaggerSchema->getHost();
-        $basePath = $this->swaggerSchema->getBasePath();
+        return $body;
+    }
 
-        // Check if the body is the expected before request
-        $bodyRequestDef = $this->swaggerSchema->getRequestParameters("$basePath$path", $method);
-        $bodyRequestDef->match($requestBody);
+    /**
+     * @param \ByJG\Swagger\SwaggerRequester $request
+     * @return mixed
+     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\Swagger\Exception\NotMatchedException
+     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws \ByJG\Swagger\Exception\RequiredArgumentNotFound
+     * @throws \Exception
+     */
+    public function assertRequest(SwaggerRequester $request)
+    {
+        // Request based on the Swagger Request definitios
+        $body = $request
+            ->withSwaggerSchema($this->swaggerSchema)
+            ->send();
 
-        // Make the request
-        $request = new Request(
-            $method,
-            "$httpSchema://$host$basePath$path$paramInQuery",
-            $header,
-            json_encode($requestBody)
-        );
+        // Note:
+        // This code is only reached if the send is successful and
+        // all matches are satisfied. Otherwise an error is throwed before
+        // reach this;
+        $this->assertTrue(true);
 
-        $statusReturned = null;
-        try {
-            $response = $this->guzzleHttpClient->send($request);
-            $responseBody = json_decode((string) $response->getBody(), true);
-            $statusReturned = $response->getStatusCode();
-        } catch (BadResponseException $ex) {
-            $responseBody = json_decode((string) $ex->getResponse()->getBody(), true);
-            $statusReturned = $ex->getResponse()->getStatusCode();
-        }
-
-        // Assert results
-        $this->assertEquals($statusExpected, $statusReturned, json_encode($responseBody, JSON_PRETTY_PRINT));
-
-        $bodyResponseDef = $this->swaggerSchema->getResponseParameters("$basePath$path", $method, $statusExpected);
-        $bodyResponseDef->match($responseBody);
-
-        return $responseBody;
+        return $body;
     }
 }
