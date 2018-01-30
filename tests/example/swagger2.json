@@ -1,0 +1,83 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is a sample server Petstore server.  You can find out more about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test the authorization filters.",
+    "version": "1.0.0",
+    "title": "Swagger Petstore",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "email": "apiteam@swagger.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host": "petstore.swagger.io",
+  "basePath": "/v2",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/languages" : {
+      "get" : {
+        "tags" : [ "general" ],
+        "summary" : "Get list of languages details for the specified site",
+        "consumes" : [ "text/plain; charset=utf-8" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "site",
+          "in" : "query",
+          "description" : "Application context<br />\nExample: 'sl'\n",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "JSON object",
+            "schema" : {
+              "type" : "array",
+              "description" : "languages result",
+              "items" : {
+                "$ref" : "#/definitions/LanguageData"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "LanguageData" : {
+      "type" : "array",
+      "description" : "Languages data",
+      "items" : {
+        "$ref" : "#/definitions/LanguageData_inner"
+      }
+    },
+    "LanguageData_inner" : {
+      "properties" : {
+        "isoCode" : {
+          "$ref" : "#/definitions/Language"
+        },
+        "label" : {
+          "type" : "string",
+          "description" : "Language label in extracted language"
+        },
+        "isDefault" : {
+          "type" : "boolean",
+          "description" : "Is the default language for the site"
+        }
+      }
+    },
+    "Language" : {
+      "type" : "string",
+      "description" : "Language ISO 639-1 (2 characters)",
+      "example" : "fr"
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  }
+}

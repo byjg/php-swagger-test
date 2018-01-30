@@ -1,9 +1,4 @@
 <?php
-/**
- * User: jg
- * Date: 22/05/17
- * Time: 09:31
- */
 
 namespace Test;
 
@@ -37,6 +32,11 @@ class SwaggerSchemaTest extends TestCase
         $this->assertEquals('/v2', $this->object->getBasePath());
     }
 
+    /**
+     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\Swagger\Exception\NotMatchedException
+     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     */
     public function testGetPathDirectMatch()
     {
         $this->assertEquals(
@@ -133,6 +133,11 @@ class SwaggerSchemaTest extends TestCase
         );
     }
 
+    /**
+     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\Swagger\Exception\NotMatchedException
+     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     */
     public function testGetPathPatternMatch()
     {
         $this->assertEquals(
@@ -283,6 +288,11 @@ class SwaggerSchemaTest extends TestCase
         );
     }
 
+    /**
+     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\Swagger\Exception\NotMatchedException
+     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     */
     public function testGetPathPatternMatch2()
     {
         $this->assertEquals(
@@ -346,6 +356,9 @@ class SwaggerSchemaTest extends TestCase
 
     /**
      * @expectedException \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\Swagger\Exception\NotMatchedException
+     * @throws \ByJG\Swagger\Exception\PathNotFoundException
      */
     public function testGetPathFail()
     {
@@ -354,12 +367,20 @@ class SwaggerSchemaTest extends TestCase
 
     /**
      * @expectedException \ByJG\Swagger\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\Swagger\Exception\NotMatchedException
+     * @throws \ByJG\Swagger\Exception\PathNotFoundException
      */
     public function testPathExistsButMethodDont()
     {
         $this->object->getPathDefinition('/v2/pet', 'GET');
     }
 
+    /**
+     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\Swagger\Exception\NotMatchedException
+     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     */
     public function testGetPathStructure()
     {
         $pathDefintion = $this->object->getPathDefinition('/v2/pet', 'PUT');
@@ -417,6 +438,8 @@ class SwaggerSchemaTest extends TestCase
 
     /**
      * @expectedException \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
+     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
      */
     public function testGetDefinitionFailed()
     {
@@ -425,6 +448,8 @@ class SwaggerSchemaTest extends TestCase
 
     /**
      * @expectedException \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
+     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
      */
     public function testGetDefinitionFailed2()
     {
@@ -433,12 +458,18 @@ class SwaggerSchemaTest extends TestCase
 
     /**
      * @expectedException \ByJG\Swagger\Exception\DefinitionNotFoundException
+     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
+     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
      */
     public function testGetDefinitionFailed3()
     {
         $this->object->getDefintion('#/definitions/OrderNOtFound');
     }
 
+    /**
+     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
+     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     */
     public function testGetDefinition()
     {
         $order = $this->object->getDefintion('#/definitions/Order');
