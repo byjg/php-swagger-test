@@ -34,5 +34,7 @@ class SwaggerRequestBody extends SwaggerBody
         if (!empty($body)) {
             throw new InvalidDefinitionException('Body is passed but there is no request body definition');
         }
+
+        return false;
     }
 }

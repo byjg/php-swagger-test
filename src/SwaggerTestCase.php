@@ -2,15 +2,7 @@
 
 namespace ByJG\Swagger;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\BadResponseException;
-use GuzzleHttp\Psr7\Request;
 use PHPUnit\Framework\TestCase;
-
-// backward compatibility
-if (!class_exists('\PHPUnit\Framework\TestCase')) {
-    class_alias('\PHPUnit_Framework_TestCase', '\PHPUnit\Framework\TestCase');
-}
 
 abstract class SwaggerTestCase extends TestCase
 {

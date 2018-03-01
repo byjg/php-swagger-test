@@ -166,7 +166,6 @@ class SwaggerRequester
         );
 
         $statusReturned = null;
-        $responseHeader = [];
         try {
             $response = $this->guzzleHttpClient->send($request, ['allow_redirects' => false]);
             $responseHeader = $response->getHeaders();
