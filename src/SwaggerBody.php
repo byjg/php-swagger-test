@@ -25,26 +25,14 @@ abstract class SwaggerBody
     protected $allowNullValues;
 
     /**
-     * OpenApi 2.0 does not describe ANY object value
-     * But there is hack that makes ANY object possible, described in link
-     *
-     * @link https://stackoverflow.com/questions/32841298/swagger-2-0-what-schema-to-accept-any-complex-json-value
-     *
-     * @var bool
-     */
-    protected $allowAnyObjectNotation;
-
-
-    /**
      * SwaggerRequestBody constructor.
      *
      * @param \ByJG\Swagger\SwaggerSchema $swaggerSchema
      * @param string $name
      * @param array $structure
      * @param bool $allowNullValues
-     * @param bool $allowAnyObjectNotation
      */
-    public function __construct(SwaggerSchema $swaggerSchema, $name, $structure, $allowNullValues = false, $allowAnyObjectNotation = false)
+    public function __construct(SwaggerSchema $swaggerSchema, $name, $structure, $allowNullValues = false)
     {
         $this->swaggerSchema = $swaggerSchema;
         $this->name = $name;
@@ -53,7 +41,6 @@ abstract class SwaggerBody
         }
         $this->structure = $structure;
         $this->allowNullValues = $allowNullValues;
-        $this->allowAnyObjectNotation = $allowAnyObjectNotation;
     }
 
     abstract public function match($body);
@@ -214,7 +201,13 @@ abstract class SwaggerBody
             return true;
         }
 
-        if ($this->allowAnyObjectNotation && $schema === []) {
+        /**
+         * OpenApi 2.0 does not describe ANY object value
+         * But there is hack that makes ANY object possible, described in link below
+         * To make that hack works, we need such condition
+         * @link https://stackoverflow.com/questions/32841298/swagger-2-0-what-schema-to-accept-any-complex-json-value
+         */
+        if ($schema === []) {
             return true;
         }
 
