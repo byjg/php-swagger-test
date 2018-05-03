@@ -55,9 +55,7 @@
           "200" : {
             "description" : "Returns any value",
             "schema" : {
-              "items" : {
-                "$ref" : "#/definitions/AnyValue"
-              }
+              "$ref" : "#/definitions/AnyValue"
             }
           }
         }
@@ -93,7 +91,6 @@
       "example" : "fr"
     },
     "AnyValue": {
-      "description": "Can be anything: string, number, array, object, etc."
     }
   },
   "externalDocs": {
