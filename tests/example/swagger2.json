@@ -45,6 +45,23 @@
           }
         }
       }
+    },
+    "/anyvalue" : {
+      "get" : {
+        "tags" : [ "general" ],
+        "summary" : "Get a response that could be any value",
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns any value",
+            "schema" : {
+              "items" : {
+                "$ref" : "#/definitions/AnyValue"
+              }
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -74,6 +91,9 @@
       "type" : "string",
       "description" : "Language ISO 639-1 (2 characters)",
       "example" : "fr"
+    },
+    "AnyValue": {
+      "description": "Can be anything: string, number, array, object, etc."
     }
   },
   "externalDocs": {
