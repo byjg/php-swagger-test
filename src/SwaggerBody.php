@@ -201,6 +201,16 @@ abstract class SwaggerBody
             return true;
         }
 
+        /**
+         * OpenApi 2.0 does not describe ANY object value
+         * But there is hack that makes ANY object possible, described in link below
+         * To make that hack works, we need such condition
+         * @link https://stackoverflow.com/questions/32841298/swagger-2-0-what-schema-to-accept-any-complex-json-value
+         */
+        if ($schema === []) {
+            return true;
+        }
+
         throw new \Exception("Not all cases are defined. Please open an issue about this. Schema: $name");
     }
 

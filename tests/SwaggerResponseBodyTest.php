@@ -350,4 +350,33 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
         $responseParameter = $swaggerSchema->getResponseParameters('/v2/languages', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
     }
+
+    /**
+     * Issue #9
+     *
+     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\Swagger\Exception\NotMatchedException
+     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws \Exception
+     */
+    public function testMatchAnyValue()
+    {
+        $swaggerSchema = new SwaggerSchema(
+            file_get_contents(__DIR__ . '/example/swagger2.json'),
+            false
+        );
+
+        $body = "string";
+        $responseParameter = $swaggerSchema->getResponseParameters('/v2/anyvalue', 'get', 200);
+        $this->assertTrue($responseParameter->match($body));
+
+        $body = 1000;
+        $responseParameter = $swaggerSchema->getResponseParameters('/v2/anyvalue', 'get', 200);
+        $this->assertTrue($responseParameter->match($body));
+
+        $body = [ "test" => "10"];
+        $responseParameter = $swaggerSchema->getResponseParameters('/v2/anyvalue', 'get', 200);
+        $this->assertTrue($responseParameter->match($body));
+    }
 }
