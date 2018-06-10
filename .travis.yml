@@ -13,4 +13,4 @@ install:
 
 script:
   - vendor/bin/phpunit --coverage-clover phpunit.coverage.xml --log-junit phpunit.report.xml
-  - sonar-scanner-$SONARSCANNER_VERSION-linux/bin/sonar-scanner -Dsonar.login=$SONAR_LOGIN
+  - sonar-scanner-$SONARSCANNER_VERSION-linux/bin/sonar-scanner -Dsonar.login=$SONAR_LOGIN -Dsonar.branch.name=$TRAVIS_BRANCH -Dsonar.branch.target=master
