@@ -6,8 +6,11 @@ php:
   - "5.6"
 
 install:
+  - export SONARSCANNER_VERSION=3.2.0.1227
+  - wget https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONARSCANNER_VERSION-linux.zip
+  - unzip sonar-scanner-cli-$SONARSCANNER_VERSION-linux.zip
   - composer install
 
-script: 
-  - vendor/bin/phpunit
-
+script:
+  - vendor/bin/phpunit --coverage-clover phpunit.coverage.xml --log-junit phpunit.report.xml
+  - sonar-scanner-$SONARSCANNER_VERSION-linux/bin/sonar-scanner -Dsonar.login=$SONAR_LOGIN
