@@ -1,9 +1,4 @@
 <?php
-/**
- * User: jg
- * Date: 22/05/17
- * Time: 10:52
- */
 
 namespace ByJG\Swagger;
 
@@ -14,8 +9,11 @@ class SwaggerResponseBody extends SwaggerBody
     /**
      * @param $body
      * @return bool
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \Exception
+     * @throws Exception\DefinitionNotFoundException
+     * @throws Exception\GenericSwaggerException
+     * @throws Exception\InvalidDefinitionException
+     * @throws Exception\InvalidRequestException
+     * @throws NotMatchedException
      */
     public function match($body)
     {

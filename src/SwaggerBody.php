@@ -2,11 +2,15 @@
 
 namespace ByJG\Swagger;
 
+use ByJG\Swagger\Exception\GenericSwaggerException;
 use ByJG\Swagger\Exception\InvalidRequestException;
 use ByJG\Swagger\Exception\NotMatchedException;
 
 abstract class SwaggerBody
 {
+    const SWAGGER_PROPERTIES="properties";
+    const SWAGGER_REQUIRED="required";
+    
     /**
      * @var \ByJG\Swagger\SwaggerSchema
      */
@@ -54,10 +58,8 @@ abstract class SwaggerBody
      */
     protected function matchString($name, $schema, $body)
     {
-        if (isset($schema['enum'])) {
-            if (!in_array($body, $schema['enum'])) {
-                throw new NotMatchedException("Value '$body' in '$name' not matched in ENUM. ", $this->structure);
-            };
+        if (isset($schema['enum']) && !in_array($body, $schema['enum'])) {
+            throw new NotMatchedException("Value '$body' in '$name' not matched in ENUM. ", $this->structure);
         }
 
         return true;
@@ -98,8 +100,11 @@ abstract class SwaggerBody
      * @param $schema
      * @param $body
      * @return bool
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \Exception
+     * @throws Exception\DefinitionNotFoundException
+     * @throws Exception\InvalidDefinitionException
+     * @throws GenericSwaggerException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
      */
     protected function matchArray($name, $schema, $body)
     {
@@ -117,8 +122,11 @@ abstract class SwaggerBody
      * @param $schema
      * @param array $body
      * @return bool
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \Exception
+     * @throws Exception\DefinitionNotFoundException
+     * @throws Exception\InvalidDefinitionException
+     * @throws GenericSwaggerException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
      */
     protected function matchSchema($name, $schema, $body)
     {
@@ -151,7 +159,7 @@ abstract class SwaggerBody
             return $this->matchSchema($schema['$ref'], $defintion, $body);
         }
 
-        if (isset($schema['properties'])) {
+        if (isset($schema[self::SWAGGER_PROPERTIES])) {
             if (!is_array($body)) {
                 throw new InvalidRequestException(
                     "I expected an array here, but I got an string. Maybe you did wrong request?",
@@ -159,11 +167,11 @@ abstract class SwaggerBody
                 );
             }
 
-            if (!isset($schema['required'])) {
-                $schema['required'] = [];
+            if (!isset($schema[self::SWAGGER_REQUIRED])) {
+                $schema[self::SWAGGER_REQUIRED] = [];
             }
-            foreach ($schema['properties'] as $prop => $def) {
-                $required = array_search($prop, $schema['required']);
+            foreach ($schema[self::SWAGGER_PROPERTIES] as $prop => $def) {
+                $required = array_search($prop, $schema[self::SWAGGER_REQUIRED]);
 
                 if (!array_key_exists($prop, $body)) {
                     if ($required !== false) {
@@ -174,17 +182,17 @@ abstract class SwaggerBody
                 }
 
                 $this->matchSchema($prop, $def, $body[$prop]);
-                unset($schema['properties'][$prop]);
+                unset($schema[self::SWAGGER_PROPERTIES][$prop]);
                 if ($required !== false) {
-                    unset($schema['required'][$required]);
+                    unset($schema[self::SWAGGER_REQUIRED][$required]);
                 }
                 unset($body[$prop]);
             }
 
-            if (count($schema['required']) > 0) {
+            if (count($schema[self::SWAGGER_REQUIRED]) > 0) {
                 throw new NotMatchedException(
                     "The required property(ies) '"
-                    . implode(', ', $schema['required'])
+                    . implode(', ', $schema[self::SWAGGER_REQUIRED])
                     . "' does not exists in the body.",
                     $this->structure
                 );
@@ -211,7 +219,7 @@ abstract class SwaggerBody
             return true;
         }
 
-        throw new \Exception("Not all cases are defined. Please open an issue about this. Schema: $name");
+        throw new GenericSwaggerException("Not all cases are defined. Please open an issue about this. Schema: $name");
     }
 
     /**

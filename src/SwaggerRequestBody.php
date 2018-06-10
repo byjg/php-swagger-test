@@ -15,10 +15,12 @@ class SwaggerRequestBody extends SwaggerBody
     /**
      * @param $body
      * @return bool
-     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \ByJG\Swagger\Exception\RequiredArgumentNotFound
-     * @throws \Exception
+     * @throws Exception\DefinitionNotFoundException
+     * @throws Exception\GenericSwaggerException
+     * @throws Exception\InvalidRequestException
+     * @throws Exception\NotMatchedException
+     * @throws InvalidDefinitionException
+     * @throws RequiredArgumentNotFound
      */
     public function match($body)
     {
