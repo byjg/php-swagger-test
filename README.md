@@ -1,5 +1,15 @@
 # PHP Swagger Test
 [![Build Status](https://travis-ci.org/byjg/php-swagger-test.svg?branch=master)](https://travis-ci.org/byjg/php-swagger-test)
+[![Maintainable Rate](https://sonarcloud.io/api/project_badges/measure?project=php-swagger-test&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=php-swagger-test)
+[![Reliability Rate](https://sonarcloud.io/api/project_badges/measure?project=php-swagger-test&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=php-swagger-test)
+[![Security Rate](https://sonarcloud.io/api/project_badges/measure?project=php-swagger-test&metric=security_rating)](https://sonarcloud.io/dashboard?id=php-swagger-test)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=php-swagger-test&metric=alert_status)](https://sonarcloud.io/dashboard?id=php-swagger-test)
+[![Code Coverage](https://sonarcloud.io/api/project_badges/measure?project=php-swagger-test&metric=coverage)](https://sonarcloud.io/dashboard?id=php-swagger-test)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=php-swagger-test&metric=bugs)](https://sonarcloud.io/dashboard?id=php-swagger-test)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=php-swagger-test&metric=code_smells)](https://sonarcloud.io/dashboard?id=php-swagger-test)
+[![Techinical Debt](https://sonarcloud.io/api/project_badges/measure?project=php-swagger-test&metric=sqale_index)](https://sonarcloud.io/dashboard?id=php-swagger-test)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=php-swagger-test&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=php-swagger-test)
+
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/byjg/php-swagger-test/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/byjg/php-swagger-test/?branch=master)
 
 A set of tools for test your REST calls based on the swagger documentation using PHPUnit.
