@@ -2,6 +2,8 @@
 
 namespace Test;
 
+use ByJG\Swagger\SwaggerSchema;
+
 class SwaggerRequestBodyTest extends SwaggerBodyTestCase
 {
     /**
@@ -166,5 +168,55 @@ class SwaggerRequestBodyTest extends SwaggerBodyTestCase
         ];
         $requestParameter = self::swaggerSchema()->getRequestParameters('/v2/pet', 'post');
         $this->assertTrue($requestParameter->match($body));
+    }
+
+    /**
+     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\Swagger\Exception\NotMatchedException
+     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws \ByJG\Swagger\Exception\RequiredArgumentNotFound
+     * @throws \Exception
+     */
+    public function testMatchRequestBodyRequired_Issue21()
+    {
+        $swaggerSchema = new SwaggerSchema(
+            file_get_contents(__DIR__ . '/example/swagger2.json'),
+            false
+        );
+
+        // Full Request
+        $body = [
+            "wallet_uuid" => "502a1aa3-5239-4d4b-af09-4dc24ac5f034",
+            "user_uuid" => "e7f6c18b-8094-4c2c-9987-1be5b7c46678"
+        ];
+        $requestParameter = $swaggerSchema->getRequestParameters('/accounts/create', 'post');
+        $this->assertTrue($requestParameter->match($body));
+    }
+
+    /**
+     * @expectedException \ByJG\Swagger\Exception\NotMatchedException
+     * @expectedExceptionMessage Required property 'user_uuid'
+     *
+     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\Swagger\Exception\NotMatchedException
+     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws \ByJG\Swagger\Exception\RequiredArgumentNotFound
+     * @throws \Exception
+     */
+    public function testMatchRequestBodyRequired_Issue21_Required()
+    {
+        $swaggerSchema = new SwaggerSchema(
+            file_get_contents(__DIR__ . '/example/swagger2.json'),
+            false
+        );
+
+        // Missing Request
+        $body = [
+            "wallet_uuid" => "502a1aa3-5239-4d4b-af09-4dc24ac5f034",
+        ];
+        $requestParameter = $swaggerSchema->getRequestParameters('/accounts/create', 'post');
+        $requestParameter->match($body);
     }
 }
