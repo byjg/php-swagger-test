@@ -351,6 +351,7 @@ class SwaggerSchemaTest extends TestCase
 
     /**
      * @expectedException \ByJG\Swagger\Exception\PathNotFoundException
+     *
      * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
      * @throws \ByJG\Swagger\Exception\NotMatchedException
      * @throws \ByJG\Swagger\Exception\PathNotFoundException
@@ -362,6 +363,7 @@ class SwaggerSchemaTest extends TestCase
 
     /**
      * @expectedException \ByJG\Swagger\Exception\HttpMethodNotFoundException
+     *
      * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
      * @throws \ByJG\Swagger\Exception\NotMatchedException
      * @throws \ByJG\Swagger\Exception\PathNotFoundException
@@ -433,6 +435,7 @@ class SwaggerSchemaTest extends TestCase
 
     /**
      * @expectedException \ByJG\Swagger\Exception\InvalidDefinitionException
+     *
      * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
      * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
      */
@@ -443,6 +446,7 @@ class SwaggerSchemaTest extends TestCase
 
     /**
      * @expectedException \ByJG\Swagger\Exception\InvalidDefinitionException
+     *
      * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
      * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
      */
@@ -453,6 +457,7 @@ class SwaggerSchemaTest extends TestCase
 
     /**
      * @expectedException \ByJG\Swagger\Exception\DefinitionNotFoundException
+     *
      * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
      * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
      */
