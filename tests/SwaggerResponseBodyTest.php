@@ -294,11 +294,6 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
      */
     public function testIssue9()
     {
-        $swaggerSchema = new SwaggerSchema(
-            file_get_contents(__DIR__ . '/example/swagger2.json'),
-            false
-        );
-
         $body =
         [
             [
@@ -314,7 +309,7 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
                 ]
             ],
         ];
-        $responseParameter = $swaggerSchema->getResponseParameters('/v2/languages', 'get', 200);
+        $responseParameter = $this->swaggerSchema2()->getResponseParameters('/v2/languages', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 
@@ -331,11 +326,6 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
      */
     public function testIssue9Error()
     {
-        $swaggerSchema = new SwaggerSchema(
-            file_get_contents(__DIR__ . '/example/swagger2.json'),
-            false
-        );
-
         $body =
             [
                 [
@@ -349,7 +339,7 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
                     "isDefault" => false
                 ]
             ];
-        $responseParameter = $swaggerSchema->getResponseParameters('/v2/languages', 'get', 200);
+        $responseParameter = $this->swaggerSchema2()->getResponseParameters('/v2/languages', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 
@@ -364,21 +354,16 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
      */
     public function testMatchAnyValue()
     {
-        $swaggerSchema = new SwaggerSchema(
-            file_get_contents(__DIR__ . '/example/swagger2.json'),
-            false
-        );
-
         $body = "string";
-        $responseParameter = $swaggerSchema->getResponseParameters('/v2/anyvalue', 'get', 200);
+        $responseParameter = $this->swaggerSchema2()->getResponseParameters('/v2/anyvalue', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
 
         $body = 1000;
-        $responseParameter = $swaggerSchema->getResponseParameters('/v2/anyvalue', 'get', 200);
+        $responseParameter = $this->swaggerSchema2()->getResponseParameters('/v2/anyvalue', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
 
         $body = [ "test" => "10"];
-        $responseParameter = $swaggerSchema->getResponseParameters('/v2/anyvalue', 'get', 200);
+        $responseParameter = $this->swaggerSchema2()->getResponseParameters('/v2/anyvalue', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 }
