@@ -7,7 +7,7 @@ php:
 
 install:
   - export SONARSCANNER_VERSION=3.2.0.1227
-  - wget https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONARSCANNER_VERSION-linux.zip
+  - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONARSCANNER_VERSION-linux.zip
   - unzip sonar-scanner-cli-$SONARSCANNER_VERSION-linux.zip
   - composer install
 
