@@ -28,7 +28,7 @@ You can use the Swagger Test as:
 - Unit test cases
 - Runtime parameters validator
 
-## Using it as Functional Test cases
+# Using it as Functional Test cases
 
 Swagger Test provide the class `SwaggerTestCase` for you extend and create a PHPUnit test case. The code will try to 
 make a request to your API Method and check if the request parameters, status and object returned are OK. 
@@ -106,7 +106,7 @@ class MyTestCase extends \ByJG\Swagger\SwaggerTestCase
 }
 ```
 
-## Using it as Unit Test cases
+# Using it as Unit Test cases
 
 If you want mock the request API and just test the expected parameters you are sending and 
 receiving you have to:
@@ -160,12 +160,13 @@ $bodyRequestDef = $swaggerSchema->getRequestParameters($path, $method);
 $bodyRequestDef->match($requestBody);
 ```
 
-## Install
+# Install
 
 ```
 composer require "byjg/swagger-test=1.2.*"
 ```
 
-## Questions?
+# Questions?
 
 Use the Github issue.
+
