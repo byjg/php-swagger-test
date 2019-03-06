@@ -28,10 +28,15 @@ You can use the Swagger Test as:
 - Unit test cases
 - Runtime parameters validator
 
+# OpenAPI 3 Support
+
+Basic OpenAPI 3 Support has been added. This means that a Swagger specification that has been migrated to OpenAPI 3 should work here. The
+new OpenAPI 3 features, like callbacks and links, were not implemented. Previous specification versions are still supported.
+
 # Using it as Functional Test cases
 
 Swagger Test provide the class `SwaggerTestCase` for you extend and create a PHPUnit test case. The code will try to 
-make a request to your API Method and check if the request parameters, status and object returned are OK. 
+make a request to your API Method and check if the request parameters, status and object returned are OK.
 
 ```php
 <?php

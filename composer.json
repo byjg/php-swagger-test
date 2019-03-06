@@ -1,13 +1,13 @@
 {
-  "name": "byjg/swagger-test",
-  "description": "A set of tools for test your REST calls based on the swagger documentation using PHPUnit",
+  "name": "redhotmagma/swagger-test",
+  "description": "A set of tools for test your REST calls based on the swagger documentation using PHPUnit. Project forked from https://github.com/byjg/php-swagger-test",
   "minimum-stability": "dev",
   "prefer-stable": true,
   "license": "MIT",
   "authors": [
     {
-      "name": "João Gilberto Magalhães",
-      "email": "joao@byjg.com.br"
+      "name": "Redhotmagma GmbH",
+      "email": "it@redhotmagma.de"
     }
   ],
   "require": {
