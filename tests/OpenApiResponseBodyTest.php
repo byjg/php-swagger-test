@@ -2,7 +2,7 @@
 
 namespace Test;
 
-class SwaggerResponseBodyTest extends SwaggerBodyTestCase
+class OpenApiResponseBodyTest extends OpenApiBodyTestCase
 {
     /**
      * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
@@ -15,7 +15,7 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
      */
     public function testMatchResponseBody()
     {
-        $schema = self::swaggerSchema();
+        $openApiSchema = self::openApiSchema();
 
         $body = [
             "id" => 10,
@@ -25,7 +25,8 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
             "status" => 'placed',
             "complete" => true
         ];
-        $responseParameter = $schema->getResponseParameters('/v2/store/order', 'post', 200);
+
+        $responseParameter = $openApiSchema->getResponseParameters('/v2/store/order', 'post', 200);
         $this->assertTrue($responseParameter->match($body));
 
         // Default
@@ -36,7 +37,8 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
             "shipDate" => '2010-10-20',
             "status" => 'placed'
         ];
-        $responseParameter = $schema->getResponseParameters('/v2/store/order', 'post', 200);
+
+        $responseParameter = $openApiSchema->getResponseParameters('/v2/store/order', 'post', 200);
         $this->assertTrue($responseParameter->match($body));
 
         // Number as string
@@ -48,7 +50,8 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
             "status" => 'placed',
             "complete" => true
         ];
-        $responseParameter = $schema->getResponseParameters('/v2/store/order', 'post', 200);
+
+        $responseParameter = $openApiSchema->getResponseParameters('/v2/store/order', 'post', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 
@@ -74,7 +77,8 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
             "status" => 'notfound',
             "complete" => true
         ];
-        $responseParameter = self::swaggerSchema()->getResponseParameters('/v2/store/order', 'post', 200);
+
+        $responseParameter = self::openApiSchema()->getResponseParameters('/v2/store/order', 'post', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 
@@ -100,13 +104,14 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
             "status" => 'placed',
             "complete" => true
         ];
-        $responseParameter = self::swaggerSchema()->getResponseParameters('/v2/store/order', 'post', 200);
+
+        $responseParameter = self::openApiSchema()->getResponseParameters('/v2/store/order', 'post', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 
     /**
      * @expectedException \ByJG\Swagger\Exception\NotMatchedException
-     * @expectedExceptionMessage The property(ies) 'more' has not defined in '#/definitions/Order'
+     * @expectedExceptionMessage The property(ies) 'more' has not defined in '#/components/schemas/Order'
      *
      * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
      * @throws \ByJG\Swagger\Exception\GenericSwaggerException
@@ -127,7 +132,8 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
             "complete" => true,
             "more" => "value"
         ];
-        $responseParameter = self::swaggerSchema()->getResponseParameters('/v2/store/order', 'post', 200);
+
+        $responseParameter = self::openApiSchema()->getResponseParameters('/v2/store/order', 'post', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 
@@ -147,7 +153,8 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
             "status"   => 'placed',
             "complete" => true
         ];
-        $responseParameter = self::swaggerSchema()->getResponseParameters('/v2/store/order', 'post', 200);
+
+        $responseParameter = self::openApiSchema()->getResponseParameters('/v2/store/order', 'post', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 
@@ -168,7 +175,8 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
             "status"   => 'placed',
             "complete" => null
         ];
-        $responseParameter = self::swaggerSchema($allowNullValues)->getResponseParameters(
+
+        $responseParameter = self::openApiSchema($allowNullValues)->getResponseParameters(
             '/v2/store/order',
             'post',
             200
@@ -195,7 +203,8 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
             "status"   => 'placed',
             "complete" => null
         ];
-        $responseParameter = self::swaggerSchema()->getResponseParameters('/v2/store/order', 'post', 200);
+
+        $responseParameter = self::openApiSchema()->getResponseParameters('/v2/store/order', 'post', 200);
         $responseParameter->match($body);
     }
 
@@ -211,7 +220,8 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     public function testMatchResponseBodyEmpty()
     {
         $body = null;
-        $responseParameter = self::swaggerSchema()->getResponseParameters('/v2/pet/10', 'get', 400);
+
+        $responseParameter = self::openApiSchema()->getResponseParameters('/v2/pet/10', 'get', 400);
         $this->assertTrue($responseParameter->match($body));
     }
 
@@ -230,7 +240,8 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     public function testMatchResponseBodyNotEmpty()
     {
         $body = ['suppose'=>'not here'];
-        $responseParameter = self::swaggerSchema()->getResponseParameters('/v2/pet/10', 'get', 400);
+
+        $responseParameter = self::openApiSchema()->getResponseParameters('/v2/pet/10', 'get', 400);
         $this->assertTrue($responseParameter->match($body));
     }
 
@@ -267,7 +278,8 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
             ],
             "status" => 'available'
         ];
-        $responseParameter = self::swaggerSchema()->getResponseParameters('/v2/pet/10', 'get', 200);
+
+        $responseParameter = self::openApiSchema()->getResponseParameters('/v2/pet/10', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 
@@ -302,7 +314,8 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
             ],
             "status" => 'available'
         ];
-        $responseParameter = self::swaggerSchema($allowNullValues)->getResponseParameters('/v2/pet/10', 'get', 200);
+
+        $responseParameter = self::openApiSchema($allowNullValues)->getResponseParameters('/v2/pet/10', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 
@@ -320,21 +333,22 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     public function testIssue9()
     {
         $body =
-        [
             [
                 [
-                    "isoCode" => "fr",
-                    "label" => "French",
-                    "isDefault" => true
+                    [
+                        "isoCode" => "fr",
+                        "label" => "French",
+                        "isDefault" => true
+                    ],
+                    [
+                        "isoCode" => "br",
+                        "label" => "Brazilian",
+                        "isDefault" => false
+                    ]
                 ],
-                [
-                    "isoCode" => "br",
-                    "label" => "Brazilian",
-                    "isDefault" => false
-                ]
-            ],
-        ];
-        $responseParameter = $this->swaggerSchema2()->getResponseParameters('/v2/languages', 'get', 200);
+            ];
+
+        $responseParameter = $this->openApiSchema2()->getResponseParameters('/v2/languages', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 
@@ -366,7 +380,8 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
                     "isDefault" => false
                 ]
             ];
-        $responseParameter = $this->swaggerSchema2()->getResponseParameters('/v2/languages', 'get', 200);
+
+        $responseParameter = $this->openApiSchema2()->getResponseParameters('/v2/languages', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 
@@ -384,15 +399,15 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     public function testMatchAnyValue()
     {
         $body = "string";
-        $responseParameter = $this->swaggerSchema2()->getResponseParameters('/v2/anyvalue', 'get', 200);
+        $responseParameter = $this->openApiSchema2()->getResponseParameters('/v2/anyvalue', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
 
         $body = 1000;
-        $responseParameter = $this->swaggerSchema2()->getResponseParameters('/v2/anyvalue', 'get', 200);
+        $responseParameter = $this->openApiSchema2()->getResponseParameters('/v2/anyvalue', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
 
         $body = [ "test" => "10"];
-        $responseParameter = $this->swaggerSchema2()->getResponseParameters('/v2/anyvalue', 'get', 200);
+        $responseParameter = $this->openApiSchema2()->getResponseParameters('/v2/anyvalue', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 }

@@ -152,10 +152,16 @@ class SwaggerRequester
         );
 
         // Defining Variables
-        $httpSchema = $this->swaggerSchema->getHttpSchema();
-        $host = $this->swaggerSchema->getHost();
-        $basePath = $this->swaggerSchema->getBasePath();
-        $pathName = $this->path;
+        $serverUrl = null;
+        if ($this->swaggerSchema->getSpecificationVersion() === '3') {
+            $serverUrl = $this->swaggerSchema->getServerUrl();
+        } else {
+            $httpSchema = $this->swaggerSchema->getHttpSchema();
+            $host = $this->swaggerSchema->getHost();
+            $basePath = $this->swaggerSchema->getBasePath();
+            $pathName = $this->path;
+            $serverUrl = "$httpSchema://$host$basePath$pathName$paramInQuery";
+        }
 
         // Check if the body is the expected before request
         $bodyRequestDef = $this->swaggerSchema->getRequestParameters("$basePath$pathName", $this->method);
@@ -164,7 +170,7 @@ class SwaggerRequester
         // Make the request
         $request = new Request(
             $this->method,
-            "$httpSchema://$host$basePath$pathName$paramInQuery",
+            $serverUrl,
             $header,
             json_encode($this->requestBody)
         );

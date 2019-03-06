@@ -17,7 +17,8 @@ class SwaggerSchema
 {
     protected $jsonFile;
     protected $allowNullValues;
-    
+    protected $specificationVersion;
+
     const SWAGGER_PATHS="paths";
     const SWAGGER_PARAMETERS="parameters";
 
@@ -25,6 +26,21 @@ class SwaggerSchema
     {
         $this->jsonFile = json_decode($jsonFile, true);
         $this->allowNullValues = (bool) $allowNullValues;
+        $this->specificationVersion = isset($this->jsonFile['swagger']) ? '2' : '3';
+    }
+
+    /**
+     * Returns the major specification version
+     * @return string
+     */
+    public function getSpecificationVersion()
+    {
+        return $this->specificationVersion;
+    }
+
+    public function getServerUrl()
+    {
+        return isset($this->jsonFile['servers']) ? $this->jsonFile['servers'][0]['url'] : '';
     }
 
     public function getHttpSchema()
@@ -39,6 +55,11 @@ class SwaggerSchema
 
     public function getBasePath()
     {
+        if ($this->getSpecificationVersion() === '3') {
+            $basePath =isset($this->jsonFile['servers']) ? explode('/', $this->jsonFile['servers'][0]['url']) : '';
+            return is_array($basePath) ? '/' . end($basePath) : $basePath;
+        }
+
         return isset($this->jsonFile['basePath']) ? $this->jsonFile['basePath'] : '';
     }
 
@@ -96,6 +117,16 @@ class SwaggerSchema
      */
     private function validateArguments($parameterIn, $parameters, $arguments)
     {
+        if ($this->getSpecificationVersion() === '3') {
+            foreach ($parameters as $parameter) {
+                if ($parameter['schema']['type'] === "integer"
+                    && filter_var($arguments[$parameter['name']], FILTER_VALIDATE_INT) === false) {
+                    throw new NotMatchedException('Path expected an integer value');
+                }
+            }
+            return;
+        }
+
         foreach ($parameters as $parameter) {
             if ($parameter['in'] === $parameterIn
                 && $parameter['type'] === "integer"
@@ -115,7 +146,19 @@ class SwaggerSchema
     {
         $nameParts = explode('/', $name);
 
-        if (count($nameParts) < 3 || $nameParts[0] != '#') {
+        if ($this->getSpecificationVersion() === '3') {
+            if (count($nameParts) < 4 || $nameParts[0] !== '#') {
+                throw new InvalidDefinitionException('Invalid Component');
+            }
+
+            if (!isset($this->jsonFile[$nameParts[1]][$nameParts[2]][$nameParts[3]])) {
+                throw new DefinitionNotFoundException("Component'$name' not found");
+            }
+
+            return $this->jsonFile[$nameParts[1]][$nameParts[2]][$nameParts[3]];
+        }
+
+        if (count($nameParts) < 3 || $nameParts[0] !== '#') {
             throw new InvalidDefinitionException('Invalid Definition');
         }
 
@@ -138,10 +181,16 @@ class SwaggerSchema
     {
         $structure = $this->getPathDefinition($path, $method);
 
+        if($this->getSpecificationVersion() === '3') {
+            if (!isset($structure['requestBody'])) {
+                return new SwaggerRequestBody($this, "$method $path", []);
+            }
+            return new SwaggerRequestBody($this, "$method $path", $structure['requestBody']);
+        }
+
         if (!isset($structure[self::SWAGGER_PARAMETERS])) {
             return new SwaggerRequestBody($this, "$method $path", []);
         }
-
         return new SwaggerRequestBody($this, "$method $path", $structure[self::SWAGGER_PARAMETERS]);
     }
 
