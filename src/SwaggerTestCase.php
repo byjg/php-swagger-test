@@ -2,15 +2,8 @@
 
 namespace ByJG\Swagger;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\BadResponseException;
-use GuzzleHttp\Psr7\Request;
+use ByJG\Swagger\Exception\GenericSwaggerException;
 use PHPUnit\Framework\TestCase;
-
-// backward compatibility
-if (!class_exists('\PHPUnit\Framework\TestCase')) {
-    class_alias('\PHPUnit_Framework_TestCase', '\PHPUnit\Framework\TestCase');
-}
 
 abstract class SwaggerTestCase extends TestCase
 {
@@ -22,12 +15,12 @@ abstract class SwaggerTestCase extends TestCase
     protected $filePath;
 
     /**
-     * @throws \Exception
+     * @throws GenericSwaggerException
      */
     protected function setUp()
     {
         if (empty($this->filePath)) {
-            throw new \Exception('You have to define the property $filePath');
+            throw new GenericSwaggerException('You have to define the property $filePath');
         }
 
         $this->swaggerSchema = new SwaggerSchema(file_get_contents($this->filePath));
@@ -41,14 +34,17 @@ abstract class SwaggerTestCase extends TestCase
      * @param array|null $requestBody
      * @param array $requestHeader
      * @return mixed
-     * @deprecated Use assertRequest instead
-     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \ByJG\Swagger\Exception\PathNotFoundException
-     * @throws \ByJG\Swagger\Exception\RequiredArgumentNotFound
-     * @throws \Exception
+     * @throws Exception\DefinitionNotFoundException
+     * @throws Exception\HttpMethodNotFoundException
+     * @throws Exception\InvalidDefinitionException
+     * @throws Exception\InvalidRequestException
+     * @throws Exception\NotMatchedException
+     * @throws Exception\PathNotFoundException
+     * @throws Exception\RequiredArgumentNotFound
+     * @throws Exception\StatusCodeNotMatchedException
+     * @throws GenericSwaggerException
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @deprecated Use assertRequest instead
      */
     protected function makeRequest(
         $method,
@@ -72,7 +68,7 @@ abstract class SwaggerTestCase extends TestCase
         // Note:
         // This code is only reached if the send is successful and
         // all matches are satisfied. Otherwise an error is throwed before
-        // reach this;
+        // reach this
         $this->assertTrue(true);
 
         return $body;
@@ -81,12 +77,16 @@ abstract class SwaggerTestCase extends TestCase
     /**
      * @param \ByJG\Swagger\SwaggerRequester $request
      * @return mixed
-     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \ByJG\Swagger\Exception\PathNotFoundException
-     * @throws \ByJG\Swagger\Exception\RequiredArgumentNotFound
-     * @throws \Exception
+     * @throws Exception\DefinitionNotFoundException
+     * @throws Exception\HttpMethodNotFoundException
+     * @throws Exception\InvalidDefinitionException
+     * @throws Exception\InvalidRequestException
+     * @throws Exception\NotMatchedException
+     * @throws Exception\PathNotFoundException
+     * @throws Exception\RequiredArgumentNotFound
+     * @throws Exception\StatusCodeNotMatchedException
+     * @throws GenericSwaggerException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function assertRequest(SwaggerRequester $request)
     {
@@ -98,7 +98,7 @@ abstract class SwaggerTestCase extends TestCase
         // Note:
         // This code is only reached if the send is successful and
         // all matches are satisfied. Otherwise an error is throwed before
-        // reach this;
+        // reach this
         $this->assertTrue(true);
 
         return $body;

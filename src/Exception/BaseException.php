@@ -27,12 +27,4 @@ class BaseException extends \Exception
     {
         return $this->body;
     }
-
-    /**
-     * @param mixed $body
-     */
-    public function setBody($body)
-    {
-        $this->body = $body;
-    }
 }

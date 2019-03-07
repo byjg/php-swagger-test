@@ -45,6 +45,75 @@
           }
         }
       }
+    },
+    "/anyvalue" : {
+      "get" : {
+        "tags" : [ "general" ],
+        "summary" : "Get a response that could be any value",
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns any value",
+            "schema" : {
+              "$ref" : "#/definitions/AnyValue"
+            }
+          }
+        }
+      }
+    },
+    "/accounts/create": {
+      "post": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "create an account",
+        "description": "create an account",
+        "operationId": "createAccount",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "name of the account",
+            "schema": {
+              "type": "object",
+              "required": [
+                "wallet_uuid",
+                "user_uuid"
+              ],
+              "properties": {
+                "wallet_uuid": {
+                  "description": "wallet id",
+                  "type": "string",
+                  "format": "uuid",
+                  "default": "502a1aa3-5239-4d4b-af09-4dc24ac5f034"
+                },
+                "user_uuid": {
+                  "description": "user id",
+                  "type": "string",
+                  "format": "uuid",
+                  "default": "e7f6c18b-8094-4c2c-9987-1be5b7c46678"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "204": {
+            "description": "Account not found"
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -74,6 +143,8 @@
       "type" : "string",
       "description" : "Language ISO 639-1 (2 characters)",
       "example" : "fr"
+    },
+    "AnyValue": {
     }
   },
   "externalDocs": {

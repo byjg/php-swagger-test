@@ -7,11 +7,13 @@ use ByJG\Swagger\SwaggerSchema;
 class SwaggerResponseBodyTest extends SwaggerBodyTestCase
 {
     /**
+     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
+     * @throws \ByJG\Swagger\Exception\GenericSwaggerException
      * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
      * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\Swagger\Exception\InvalidRequestException
      * @throws \ByJG\Swagger\Exception\NotMatchedException
      * @throws \ByJG\Swagger\Exception\PathNotFoundException
-     * @throws \Exception
      */
     public function testMatchResponseBody()
     {
@@ -55,11 +57,14 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     /**
      * @expectedException \ByJG\Swagger\Exception\NotMatchedException
      * @expectedExceptionMessage Value 'notfound' in 'status' not matched in ENUM
+     *
+     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
+     * @throws \ByJG\Swagger\Exception\GenericSwaggerException
      * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
      * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\Swagger\Exception\InvalidRequestException
      * @throws \ByJG\Swagger\Exception\NotMatchedException
      * @throws \ByJG\Swagger\Exception\PathNotFoundException
-     * @throws \Exception
      */
     public function testMatchResponseBodyEnumError()
     {
@@ -78,11 +83,14 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     /**
      * @expectedException \ByJG\Swagger\Exception\NotMatchedException
      * @expectedExceptionMessage Expected 'id' to be numeric, but found 'ABC'
+     *
+     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
+     * @throws \ByJG\Swagger\Exception\GenericSwaggerException
      * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
      * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\Swagger\Exception\InvalidRequestException
      * @throws \ByJG\Swagger\Exception\NotMatchedException
      * @throws \ByJG\Swagger\Exception\PathNotFoundException
-     * @throws \Exception
      */
     public function testMatchResponseBodyWrongNumber()
     {
@@ -101,11 +109,14 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     /**
      * @expectedException \ByJG\Swagger\Exception\NotMatchedException
      * @expectedExceptionMessage The property(ies) 'more' has not defined in '#/definitions/Order'
+     *
+     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
+     * @throws \ByJG\Swagger\Exception\GenericSwaggerException
      * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
      * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\Swagger\Exception\InvalidRequestException
      * @throws \ByJG\Swagger\Exception\NotMatchedException
      * @throws \ByJG\Swagger\Exception\PathNotFoundException
-     * @throws \Exception
      */
     public function testMatchResponseBodyMoreThanExpected()
     {
@@ -123,11 +134,13 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     }
 
     /**
+     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
+     * @throws \ByJG\Swagger\Exception\GenericSwaggerException
      * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
      * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\Swagger\Exception\InvalidRequestException
      * @throws \ByJG\Swagger\Exception\NotMatchedException
      * @throws \ByJG\Swagger\Exception\PathNotFoundException
-     * @throws \Exception
      */
     public function testMatchResponseBodyLessFields()
     {
@@ -141,11 +154,13 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     }
 
     /**
+     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
+     * @throws \ByJG\Swagger\Exception\GenericSwaggerException
      * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
      * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\Swagger\Exception\InvalidRequestException
      * @throws \ByJG\Swagger\Exception\NotMatchedException
      * @throws \ByJG\Swagger\Exception\PathNotFoundException
-     * @throws \Exception
      */
     public function testMatchResponseBodyAllowNullValues()
     {
@@ -166,11 +181,14 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     /**
      * @expectedException \ByJG\Swagger\Exception\NotMatchedException
      * @expectedExceptionMessage Value of property 'complete' is null, but should be of type 'boolean'
+     *
+     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
+     * @throws \ByJG\Swagger\Exception\GenericSwaggerException
      * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
      * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\Swagger\Exception\InvalidRequestException
      * @throws \ByJG\Swagger\Exception\NotMatchedException
      * @throws \ByJG\Swagger\Exception\PathNotFoundException
-     * @throws \Exception
      */
     public function testMatchResponseBodyNotAllowNullValues()
     {
@@ -184,11 +202,13 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     }
 
     /**
+     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
+     * @throws \ByJG\Swagger\Exception\GenericSwaggerException
      * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
      * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\Swagger\Exception\InvalidRequestException
      * @throws \ByJG\Swagger\Exception\NotMatchedException
      * @throws \ByJG\Swagger\Exception\PathNotFoundException
-     * @throws \Exception
      */
     public function testMatchResponseBodyEmpty()
     {
@@ -200,11 +220,14 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     /**
      * @expectedException \ByJG\Swagger\Exception\NotMatchedException
      * @expectedExceptionMessage Expected empty body for
+     *
+     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
+     * @throws \ByJG\Swagger\Exception\GenericSwaggerException
      * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
      * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\Swagger\Exception\InvalidRequestException
      * @throws \ByJG\Swagger\Exception\NotMatchedException
      * @throws \ByJG\Swagger\Exception\PathNotFoundException
-     * @throws \Exception
      */
     public function testMatchResponseBodyNotEmpty()
     {
@@ -214,11 +237,13 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     }
 
     /**
+     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
+     * @throws \ByJG\Swagger\Exception\GenericSwaggerException
      * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
      * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\Swagger\Exception\InvalidRequestException
      * @throws \ByJG\Swagger\Exception\NotMatchedException
      * @throws \ByJG\Swagger\Exception\PathNotFoundException
-     * @throws \Exception
      */
     public function testMatchResponseBodyComplex()
     {
@@ -249,11 +274,13 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     }
 
     /**
+     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
+     * @throws \ByJG\Swagger\Exception\GenericSwaggerException
      * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
      * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\Swagger\Exception\InvalidRequestException
      * @throws \ByJG\Swagger\Exception\NotMatchedException
      * @throws \ByJG\Swagger\Exception\PathNotFoundException
-     * @throws \Exception
      */
     public function testMatchResponseBodyWhenValueWithNestedPropertiesIsNullAndNullsAreAllowed()
     {
@@ -284,19 +311,16 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     /**
      * Issue #9
      *
+     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
+     * @throws \ByJG\Swagger\Exception\GenericSwaggerException
      * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
      * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\Swagger\Exception\InvalidRequestException
      * @throws \ByJG\Swagger\Exception\NotMatchedException
      * @throws \ByJG\Swagger\Exception\PathNotFoundException
-     * @throws \Exception
      */
     public function testIssue9()
     {
-        $swaggerSchema = new SwaggerSchema(
-            file_get_contents(__DIR__ . '/example/swagger2.json'),
-            false
-        );
-
         $body =
         [
             [
@@ -312,28 +336,25 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
                 ]
             ],
         ];
-        $responseParameter = $swaggerSchema->getResponseParameters('/v2/languages', 'get', 200);
+        $responseParameter = $this->swaggerSchema2()->getResponseParameters('/v2/languages', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 
     /**
      * Issue #9
-     *
-     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \ByJG\Swagger\Exception\PathNotFoundException
-     * @throws \Exception
      * @expectedException \ByJG\Swagger\Exception\InvalidRequestException
      * @expectedExceptionMessageRegExp "I expected an array here.*"
+     *
+     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
+     * @throws \ByJG\Swagger\Exception\GenericSwaggerException
+     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\Swagger\Exception\InvalidRequestException
+     * @throws \ByJG\Swagger\Exception\NotMatchedException
+     * @throws \ByJG\Swagger\Exception\PathNotFoundException
      */
     public function testIssue9Error()
     {
-        $swaggerSchema = new SwaggerSchema(
-            file_get_contents(__DIR__ . '/example/swagger2.json'),
-            false
-        );
-
         $body =
             [
                 [
@@ -347,7 +368,33 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
                     "isDefault" => false
                 ]
             ];
-        $responseParameter = $swaggerSchema->getResponseParameters('/v2/languages', 'get', 200);
+        $responseParameter = $this->swaggerSchema2()->getResponseParameters('/v2/languages', 'get', 200);
+        $this->assertTrue($responseParameter->match($body));
+    }
+
+    /**
+     * Issue #9
+     *
+     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
+     * @throws \ByJG\Swagger\Exception\GenericSwaggerException
+     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\Swagger\Exception\InvalidRequestException
+     * @throws \ByJG\Swagger\Exception\NotMatchedException
+     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     */
+    public function testMatchAnyValue()
+    {
+        $body = "string";
+        $responseParameter = $this->swaggerSchema2()->getResponseParameters('/v2/anyvalue', 'get', 200);
+        $this->assertTrue($responseParameter->match($body));
+
+        $body = 1000;
+        $responseParameter = $this->swaggerSchema2()->getResponseParameters('/v2/anyvalue', 'get', 200);
+        $this->assertTrue($responseParameter->match($body));
+
+        $body = [ "test" => "10"];
+        $responseParameter = $this->swaggerSchema2()->getResponseParameters('/v2/anyvalue', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 }

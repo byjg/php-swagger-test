@@ -5,11 +5,6 @@ namespace Test;
 use ByJG\Swagger\SwaggerSchema;
 use PHPUnit\Framework\TestCase;
 
-// backward compatibility
-if (!class_exists('\PHPUnit\Framework\TestCase')) {
-    class_alias('\PHPUnit_Framework_TestCase', '\PHPUnit\Framework\TestCase');
-}
-
 class SwaggerSchemaTest extends TestCase
 {
     /**
@@ -356,6 +351,7 @@ class SwaggerSchemaTest extends TestCase
 
     /**
      * @expectedException \ByJG\Swagger\Exception\PathNotFoundException
+     *
      * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
      * @throws \ByJG\Swagger\Exception\NotMatchedException
      * @throws \ByJG\Swagger\Exception\PathNotFoundException
@@ -367,6 +363,7 @@ class SwaggerSchemaTest extends TestCase
 
     /**
      * @expectedException \ByJG\Swagger\Exception\HttpMethodNotFoundException
+     *
      * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
      * @throws \ByJG\Swagger\Exception\NotMatchedException
      * @throws \ByJG\Swagger\Exception\PathNotFoundException
@@ -438,6 +435,7 @@ class SwaggerSchemaTest extends TestCase
 
     /**
      * @expectedException \ByJG\Swagger\Exception\InvalidDefinitionException
+     *
      * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
      * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
      */
@@ -448,6 +446,7 @@ class SwaggerSchemaTest extends TestCase
 
     /**
      * @expectedException \ByJG\Swagger\Exception\InvalidDefinitionException
+     *
      * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
      * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
      */
@@ -458,6 +457,7 @@ class SwaggerSchemaTest extends TestCase
 
     /**
      * @expectedException \ByJG\Swagger\Exception\DefinitionNotFoundException
+     *
      * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
      * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
      */
