@@ -90,10 +90,13 @@ abstract class SwaggerTestCase extends TestCase
      */
     public function assertRequest(SwaggerRequester $request)
     {
+        // Add own swagger if nothing is passed.
+        if (!$request->hasSwaggerSchema()) {
+            $request->withSwaggerSchema($this->swaggerSchema);
+        }
+
         // Request based on the Swagger Request definitios
-        $body = $request
-            ->withSwaggerSchema($this->swaggerSchema)
-            ->send();
+        $body = $request->send();
 
         // Note:
         // This code is only reached if the send is successful and
