@@ -24,6 +24,24 @@ class SwaggerRequestBody extends SwaggerBody
      */
     public function match($body)
     {
+        if ($this->swaggerSchema->getSpecificationVersion() === '3') {
+            if (isset($this->structure['content']) || isset($this->structure['$ref'])) {
+                if (isset($this->structure['required']) && $this->structure['required'] === true && empty($body)) {
+                    throw new RequiredArgumentNotFound('The body is required but it is empty');
+                }
+
+                if (isset($this->structure['$ref'])) {
+                    return $this->matchSchema($this->name, $this->structure, $body);
+                }
+
+                return $this->matchSchema($this->name, $this->structure['content'][key($this->structure['content'])]['schema'], $body);
+            }
+
+            if (!empty($body)) {
+                throw new InvalidDefinitionException('Body is passed but there is no request body definition');
+            }
+        }
+
         foreach ($this->structure as $parameter) {
             if ($parameter['in'] == "body") {
                 if (isset($parameter['required']) && $parameter['required'] === true && empty($body)) {
@@ -36,6 +54,8 @@ class SwaggerRequestBody extends SwaggerBody
         if (!empty($body)) {
             throw new InvalidDefinitionException('Body is passed but there is no request body definition');
         }
+
+
 
         return false;
     }

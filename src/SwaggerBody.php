@@ -10,7 +10,7 @@ abstract class SwaggerBody
 {
     const SWAGGER_PROPERTIES="properties";
     const SWAGGER_REQUIRED="required";
-    
+
     /**
      * @var \ByJG\Swagger\SwaggerSchema
      */
@@ -264,6 +264,10 @@ abstract class SwaggerBody
         // Match Single Types
         if ($this->matchTypes($name, $schema, $body)) {
             return true;
+        }
+
+        if(!isset($schema['$ref']) && isset($schema['content'])) {
+            $schema['$ref'] = $schema['content'][key($schema['content'])]['schema']['$ref'];
         }
 
         // Get References and try to match it again
