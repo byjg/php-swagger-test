@@ -12,6 +12,7 @@ use ByJG\Swagger\Exception\HttpMethodNotFoundException;
 use ByJG\Swagger\Exception\InvalidDefinitionException;
 use ByJG\Swagger\Exception\NotMatchedException;
 use ByJG\Swagger\Exception\PathNotFoundException;
+use ByJG\Util\Uri;
 
 class SwaggerSchema
 {
@@ -77,10 +78,12 @@ class SwaggerSchema
 
         $path = preg_replace('~^' . $this->getBasePath() . '~', '', $path);
 
+        $uri = new Uri($path);
+
         // Try direct match
-        if (isset($this->jsonFile[self::SWAGGER_PATHS][$path])) {
-            if (isset($this->jsonFile[self::SWAGGER_PATHS][$path][$method])) {
-                return $this->jsonFile[self::SWAGGER_PATHS][$path][$method];
+        if (isset($this->jsonFile[self::SWAGGER_PATHS][$uri->getPath()])) {
+            if (isset($this->jsonFile[self::SWAGGER_PATHS][$uri->getPath()][$method])) {
+                return $this->jsonFile[self::SWAGGER_PATHS][$uri->getPath()][$method];
             }
             throw new HttpMethodNotFoundException("The http method '$method' not found in '$path'");
         }
@@ -94,7 +97,7 @@ class SwaggerSchema
             $pathItemPattern = '~^' . preg_replace('~\{(.*?)\}~', '(?<\1>[^/]+)', $pathItem) . '$~';
 
             $matches = [];
-            if (preg_match($pathItemPattern, $path, $matches)) {
+            if (preg_match($pathItemPattern, $uri->getPath(), $matches)) {
                 $pathDef = $this->jsonFile[self::SWAGGER_PATHS][$pathItem];
                 if (!isset($pathDef[$method])) {
                     throw new HttpMethodNotFoundException("The http method '$method' not found in '$path'");

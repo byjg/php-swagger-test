@@ -90,6 +90,22 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
         $this->assertTrue(true);
     }
 
+    // @todo Validate query
+    // @todo Validate values in query and type
+    public function testMatchParameterInQuery()
+    {
+        self::openApiSchema()->getRequestParameters('/v2/pet/findByStatus?status=pending', 'get');
+        $this->assertTrue(true);
+    }
+
+    // @todo Validate $ref in parameter in path and query
+    public function testMatchParameterInQuery2()
+    {
+        self::openApiSchema3()->getRequestParameters('/tests/STRING?count=20&offset=2', 'get');
+        $this->assertTrue(true);
+    }
+
+
     /**
      * @expectedException \ByJG\Swagger\Exception\NotMatchedException
      * @expectedExceptionMessage Required property
