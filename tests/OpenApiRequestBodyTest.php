@@ -80,7 +80,9 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
      * @expectedException \ByJG\Swagger\Exception\NotMatchedException
      * @expectedExceptionMessage Path expected an integer value
      *
+     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
      * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
      * @throws \ByJG\Swagger\Exception\NotMatchedException
      * @throws \ByJG\Swagger\Exception\PathNotFoundException
      */
@@ -90,16 +92,30 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
         $this->assertTrue(true);
     }
 
-    // @todo Validate query
-    // @todo Validate values in query and type
+    // @todo Validate parameters in query
     public function testMatchParameterInQuery()
     {
         self::openApiSchema()->getRequestParameters('/v2/pet/findByStatus?status=pending', 'get');
         $this->assertTrue(true);
     }
 
-    // @todo Validate $ref in parameter in path and query
     public function testMatchParameterInQuery2()
+    {
+        self::openApiSchema3()->getRequestParameters('/tests/12345?count=20&offset=2', 'get');
+        $this->assertTrue(true);
+    }
+
+    /**
+     * @expectedException \ByJG\Swagger\Exception\NotMatchedException
+     * @expectedExceptionMessage Path expected an integer value
+     *
+     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
+     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\Swagger\Exception\NotMatchedException
+     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     */
+    public function testMatchParameterInQuery3()
     {
         self::openApiSchema3()->getRequestParameters('/tests/STRING?count=20&offset=2', 'get');
         $this->assertTrue(true);

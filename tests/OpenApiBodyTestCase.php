@@ -38,7 +38,7 @@ class OpenApiBodyTestCase extends TestCase
     protected static function openApiSchema3($allowNullValues = false)
     {
         return new SwaggerSchema(
-            self::getOpenApiJsonContent_No2(),
+            self::getOpenApiJsonContent_No3(),
             $allowNullValues
         );
     }
