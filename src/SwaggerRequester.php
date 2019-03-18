@@ -33,11 +33,23 @@ class SwaggerRequester
         $this->guzzleHttpClient = new Client(['headers' => ['User-Agent' => 'Swagger Test']]);
     }
 
+    /**
+     * @param SwaggerSchema $schema
+     * @return $this
+     */
     public function withSwaggerSchema($schema)
     {
         $this->swaggerSchema = $schema;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasSwaggerSchema()
+    {
+        return !empty($this->swaggerSchema);
     }
 
     /**
