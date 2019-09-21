@@ -1,9 +1,4 @@
 <?php
-/**
- * User: jg
- * Date: 22/05/17
- * Time: 09:29
- */
 
 namespace ByJG\Swagger;
 
@@ -97,7 +92,7 @@ class SwaggerSchema
                 continue;
             }
 
-            $pathItemPattern = '~^' . preg_replace('~\{(.*?)\}~', '(?<\1>[^/]+)', $pathItem) . '$~';
+            $pathItemPattern = '~^' . preg_replace('~{(.*?)}~', '(?<\1>[^/]+)', $pathItem) . '$~';
 
             $matches = [];
             if (preg_match($pathItemPattern, $uri->getPath(), $matches)) {
@@ -206,7 +201,7 @@ class SwaggerSchema
     /**
      * @param $path
      * @param $method
-     * @return \ByJG\Swagger\SwaggerRequestBody
+     * @return SwaggerRequestBody
      * @throws DefinitionNotFoundException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
@@ -234,11 +229,11 @@ class SwaggerSchema
      * @param $path
      * @param $method
      * @param $status
-     * @return \ByJG\Swagger\SwaggerResponseBody
-     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @return SwaggerResponseBody
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
      * @throws DefinitionNotFoundException
      */
     public function getResponseParameters($path, $method, $status)

@@ -5,6 +5,7 @@ namespace ByJG\Swagger;
 use ByJG\Swagger\Exception\GenericSwaggerException;
 use ByJG\Swagger\Exception\InvalidRequestException;
 use ByJG\Swagger\Exception\NotMatchedException;
+use InvalidArgumentException;
 
 abstract class SwaggerBody
 {
@@ -12,7 +13,7 @@ abstract class SwaggerBody
     const SWAGGER_REQUIRED="required";
 
     /**
-     * @var \ByJG\Swagger\SwaggerSchema
+     * @var SwaggerSchema
      */
     protected $swaggerSchema;
 
@@ -31,7 +32,7 @@ abstract class SwaggerBody
     /**
      * SwaggerRequestBody constructor.
      *
-     * @param \ByJG\Swagger\SwaggerSchema $swaggerSchema
+     * @param SwaggerSchema $swaggerSchema
      * @param string $name
      * @param array $structure
      * @param bool $allowNullValues
@@ -41,7 +42,7 @@ abstract class SwaggerBody
         $this->swaggerSchema = $swaggerSchema;
         $this->name = $name;
         if (!is_array($structure)) {
-            throw new \InvalidArgumentException('I expected the structure to be an array');
+            throw new InvalidArgumentException('I expected the structure to be an array');
         }
         $this->structure = $structure;
         $this->allowNullValues = $allowNullValues;

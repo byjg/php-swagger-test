@@ -5,7 +5,9 @@ namespace ByJG\Swagger;
 use ByJG\Swagger\Exception\NotMatchedException;
 use ByJG\Swagger\Exception\StatusCodeNotMatchedException;
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 
 class SwaggerRequester
@@ -16,7 +18,7 @@ class SwaggerRequester
     protected $query = [];
     protected $requestBody = null;
     /**
-     * @var \ByJG\Swagger\SwaggerSchema
+     * @var SwaggerSchema
      */
     protected $swaggerSchema = null;
 
@@ -24,7 +26,7 @@ class SwaggerRequester
     protected $assertHeader = [];
 
     /**
-     * @var \GuzzleHttp\ClientInterface
+     * @var ClientInterface
      */
     protected $guzzleHttpClient;
 
@@ -142,7 +144,7 @@ class SwaggerRequester
      * @throws Exception\RequiredArgumentNotFound
      * @throws NotMatchedException
      * @throws StatusCodeNotMatchedException
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function send()
     {
@@ -165,6 +167,8 @@ class SwaggerRequester
 
         // Defining Variables
         $serverUrl = null;
+        $basePath = "";
+        $pathName = "";
         if ($this->swaggerSchema->getSpecificationVersion() === '3') {
             $serverUrl = $this->swaggerSchema->getServerUrl();
         } else {
