@@ -13,14 +13,6 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/byjg/php-swagger-test/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/byjg/php-swagger-test/?branch=master)
 
 
-
-# MIGRATION to OAS 3.0
-
-## https://blog.readme.io/an-example-filled-guide-to-swagger-3-2/
-## https://blog.runscope.com/posts/tutorial-upgrading-swagger-2-api-definition-to-openapi-3
-
-
-
 A set of tools for test your REST calls based on the swagger documentation using PHPUnit.
 
 PHP Swagger Test can help you to test your REST Api. You can use this tool both for Unit Tests or Functional Tests.
