@@ -12,6 +12,7 @@ use ByJG\Swagger\Exception\HttpMethodNotFoundException;
 use ByJG\Swagger\Exception\InvalidDefinitionException;
 use ByJG\Swagger\Exception\NotMatchedException;
 use ByJG\Swagger\Exception\PathNotFoundException;
+use ByJG\Util\Uri;
 
 class SwaggerSchema
 {
@@ -21,6 +22,7 @@ class SwaggerSchema
 
     const SWAGGER_PATHS="paths";
     const SWAGGER_PARAMETERS="parameters";
+    const SWAGGER_COMPONENTS="components";
 
     public function __construct($jsonFile, $allowNullValues = false)
     {
@@ -67,9 +69,11 @@ class SwaggerSchema
      * @param $path
      * @param $method
      * @return mixed
-     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
      */
     public function getPathDefinition($path, $method)
     {
@@ -77,10 +81,12 @@ class SwaggerSchema
 
         $path = preg_replace('~^' . $this->getBasePath() . '~', '', $path);
 
+        $uri = new Uri($path);
+
         // Try direct match
-        if (isset($this->jsonFile[self::SWAGGER_PATHS][$path])) {
-            if (isset($this->jsonFile[self::SWAGGER_PATHS][$path][$method])) {
-                return $this->jsonFile[self::SWAGGER_PATHS][$path][$method];
+        if (isset($this->jsonFile[self::SWAGGER_PATHS][$uri->getPath()])) {
+            if (isset($this->jsonFile[self::SWAGGER_PATHS][$uri->getPath()][$method])) {
+                return $this->jsonFile[self::SWAGGER_PATHS][$uri->getPath()][$method];
             }
             throw new HttpMethodNotFoundException("The http method '$method' not found in '$path'");
         }
@@ -94,13 +100,24 @@ class SwaggerSchema
             $pathItemPattern = '~^' . preg_replace('~\{(.*?)\}~', '(?<\1>[^/]+)', $pathItem) . '$~';
 
             $matches = [];
-            if (preg_match($pathItemPattern, $path, $matches)) {
+            if (preg_match($pathItemPattern, $uri->getPath(), $matches)) {
                 $pathDef = $this->jsonFile[self::SWAGGER_PATHS][$pathItem];
                 if (!isset($pathDef[$method])) {
                     throw new HttpMethodNotFoundException("The http method '$method' not found in '$path'");
                 }
 
-                $this->validateArguments('path', $pathDef[$method][self::SWAGGER_PARAMETERS], $matches);
+                $parametersPathMethod = [];
+                $parametersPath = [];
+
+                if (isset($pathDef[$method][self::SWAGGER_PARAMETERS])) {
+                    $parametersPathMethod = $pathDef[$method][self::SWAGGER_PARAMETERS];
+                }
+
+                if (isset($pathDef[self::SWAGGER_PARAMETERS])) {
+                    $parametersPath = $pathDef[self::SWAGGER_PARAMETERS];
+                }
+
+                $this->validateArguments('path', array_merge($parametersPathMethod, $parametersPath), $matches);
 
                 return $pathDef[$method];
             }
@@ -113,13 +130,30 @@ class SwaggerSchema
      * @param $parameterIn
      * @param $parameters
      * @param $arguments
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
+     * @throws DefinitionNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws NotMatchedException
      */
     private function validateArguments($parameterIn, $parameters, $arguments)
     {
         if ($this->getSpecificationVersion() === '3') {
             foreach ($parameters as $parameter) {
-                if ($parameter['schema']['type'] === "integer"
+                if (isset($parameter['$ref'])) {
+                    $paramParts = explode("/", $parameter['$ref']);
+                    if (count($paramParts) != 4 || $paramParts[0] != "#" || $paramParts[1] != self::SWAGGER_COMPONENTS || $paramParts[2] != self::SWAGGER_PARAMETERS) {
+                        throw new InvalidDefinitionException(
+                            "Not get the reference in the expected format #/components/parameters/<NAME>"
+                        );
+                    }
+                    if (!isset($this->jsonFile[self::SWAGGER_COMPONENTS][self::SWAGGER_PARAMETERS][$paramParts[3]])) {
+                        throw new DefinitionNotFoundException(
+                            "Not find reference #/components/parameters/${paramParts[3]}"
+                        );
+                    }
+                    $parameter = $this->jsonFile[self::SWAGGER_COMPONENTS][self::SWAGGER_PARAMETERS][$paramParts[3]];
+                }
+                if ($parameter['in'] === $parameterIn &&
+                    $parameter['schema']['type'] === "integer"
                     && filter_var($arguments[$parameter['name']], FILTER_VALIDATE_INT) === false) {
                     throw new NotMatchedException('Path expected an integer value');
                 }
@@ -173,9 +207,11 @@ class SwaggerSchema
      * @param $path
      * @param $method
      * @return \ByJG\Swagger\SwaggerRequestBody
-     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
      */
     public function getRequestParameters($path, $method)
     {
@@ -203,6 +239,7 @@ class SwaggerSchema
      * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
      * @throws \ByJG\Swagger\Exception\NotMatchedException
      * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
      */
     public function getResponseParameters($path, $method, $status)
     {
