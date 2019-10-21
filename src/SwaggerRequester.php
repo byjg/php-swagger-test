@@ -5,7 +5,9 @@ namespace ByJG\Swagger;
 use ByJG\Swagger\Exception\NotMatchedException;
 use ByJG\Swagger\Exception\StatusCodeNotMatchedException;
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 
 class SwaggerRequester
@@ -16,7 +18,7 @@ class SwaggerRequester
     protected $query = [];
     protected $requestBody = null;
     /**
-     * @var \ByJG\Swagger\SwaggerSchema
+     * @var SwaggerSchema
      */
     protected $swaggerSchema = null;
 
@@ -24,7 +26,7 @@ class SwaggerRequester
     protected $assertHeader = [];
 
     /**
-     * @var \GuzzleHttp\ClientInterface
+     * @var ClientInterface
      */
     protected $guzzleHttpClient;
 
@@ -33,11 +35,23 @@ class SwaggerRequester
         $this->guzzleHttpClient = new Client(['headers' => ['User-Agent' => 'Swagger Test']]);
     }
 
+    /**
+     * @param SwaggerSchema $schema
+     * @return $this
+     */
     public function withSwaggerSchema($schema)
     {
         $this->swaggerSchema = $schema;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasSwaggerSchema()
+    {
+        return !empty($this->swaggerSchema);
     }
 
     /**
@@ -130,7 +144,7 @@ class SwaggerRequester
      * @throws Exception\RequiredArgumentNotFound
      * @throws NotMatchedException
      * @throws StatusCodeNotMatchedException
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function send()
     {
@@ -152,10 +166,18 @@ class SwaggerRequester
         );
 
         // Defining Variables
-        $httpSchema = $this->swaggerSchema->getHttpSchema();
-        $host = $this->swaggerSchema->getHost();
-        $basePath = $this->swaggerSchema->getBasePath();
-        $pathName = $this->path;
+        $serverUrl = null;
+        $basePath = "";
+        $pathName = "";
+        if ($this->swaggerSchema->getSpecificationVersion() === '3') {
+            $serverUrl = $this->swaggerSchema->getServerUrl();
+        } else {
+            $httpSchema = $this->swaggerSchema->getHttpSchema();
+            $host = $this->swaggerSchema->getHost();
+            $basePath = $this->swaggerSchema->getBasePath();
+            $pathName = $this->path;
+            $serverUrl = "$httpSchema://$host$basePath$pathName$paramInQuery";
+        }
 
         // Check if the body is the expected before request
         $bodyRequestDef = $this->swaggerSchema->getRequestParameters("$basePath$pathName", $this->method);
@@ -164,7 +186,7 @@ class SwaggerRequester
         // Make the request
         $request = new Request(
             $this->method,
-            "$httpSchema://$host$basePath$pathName$paramInQuery",
+            $serverUrl,
             $header,
             json_encode($this->requestBody)
         );

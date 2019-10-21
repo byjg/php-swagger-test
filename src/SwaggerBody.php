@@ -5,14 +5,15 @@ namespace ByJG\Swagger;
 use ByJG\Swagger\Exception\GenericSwaggerException;
 use ByJG\Swagger\Exception\InvalidRequestException;
 use ByJG\Swagger\Exception\NotMatchedException;
+use InvalidArgumentException;
 
 abstract class SwaggerBody
 {
     const SWAGGER_PROPERTIES="properties";
     const SWAGGER_REQUIRED="required";
-    
+
     /**
-     * @var \ByJG\Swagger\SwaggerSchema
+     * @var SwaggerSchema
      */
     protected $swaggerSchema;
 
@@ -31,7 +32,7 @@ abstract class SwaggerBody
     /**
      * SwaggerRequestBody constructor.
      *
-     * @param \ByJG\Swagger\SwaggerSchema $swaggerSchema
+     * @param SwaggerSchema $swaggerSchema
      * @param string $name
      * @param array $structure
      * @param bool $allowNullValues
@@ -41,7 +42,7 @@ abstract class SwaggerBody
         $this->swaggerSchema = $swaggerSchema;
         $this->name = $name;
         if (!is_array($structure)) {
-            throw new \InvalidArgumentException('I expected the structure to be an array');
+            throw new InvalidArgumentException('I expected the structure to be an array');
         }
         $this->structure = $structure;
         $this->allowNullValues = $allowNullValues;
@@ -264,6 +265,10 @@ abstract class SwaggerBody
         // Match Single Types
         if ($this->matchTypes($name, $schema, $body)) {
             return true;
+        }
+
+        if(!isset($schema['$ref']) && isset($schema['content'])) {
+            $schema['$ref'] = $schema['content'][key($schema['content'])]['schema']['$ref'];
         }
 
         // Get References and try to match it again

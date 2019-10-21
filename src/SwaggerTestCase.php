@@ -3,12 +3,13 @@
 namespace ByJG\Swagger;
 
 use ByJG\Swagger\Exception\GenericSwaggerException;
+use GuzzleHttp\Exception\GuzzleException;
 use PHPUnit\Framework\TestCase;
 
 abstract class SwaggerTestCase extends TestCase
 {
     /**
-     * @var \ByJG\Swagger\SwaggerSchema
+     * @var SwaggerSchema
      */
     protected $swaggerSchema;
 
@@ -43,7 +44,7 @@ abstract class SwaggerTestCase extends TestCase
      * @throws Exception\RequiredArgumentNotFound
      * @throws Exception\StatusCodeNotMatchedException
      * @throws GenericSwaggerException
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      * @deprecated Use assertRequest instead
      */
     protected function makeRequest(
@@ -75,7 +76,7 @@ abstract class SwaggerTestCase extends TestCase
     }
 
     /**
-     * @param \ByJG\Swagger\SwaggerRequester $request
+     * @param SwaggerRequester $request
      * @return mixed
      * @throws Exception\DefinitionNotFoundException
      * @throws Exception\HttpMethodNotFoundException
@@ -86,14 +87,17 @@ abstract class SwaggerTestCase extends TestCase
      * @throws Exception\RequiredArgumentNotFound
      * @throws Exception\StatusCodeNotMatchedException
      * @throws GenericSwaggerException
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function assertRequest(SwaggerRequester $request)
     {
+        // Add own swagger if nothing is passed.
+        if (!$request->hasSwaggerSchema()) {
+            $request->withSwaggerSchema($this->swaggerSchema);
+        }
+
         // Request based on the Swagger Request definitios
-        $body = $request
-            ->withSwaggerSchema($this->swaggerSchema)
-            ->send();
+        $body = $request->send();
 
         // Note:
         // This code is only reached if the send is successful and
