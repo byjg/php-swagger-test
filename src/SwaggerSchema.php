@@ -37,6 +37,7 @@ class SwaggerSchema
 
     public function getServerUrl()
     {
+        //@todo add variables here issue #31
         return isset($this->jsonFile['servers']) ? $this->jsonFile['servers'][0]['url'] : '';
     }
 
@@ -53,8 +54,8 @@ class SwaggerSchema
     public function getBasePath()
     {
         if ($this->getSpecificationVersion() === '3') {
-            $basePath =isset($this->jsonFile['servers']) ? explode('/', $this->jsonFile['servers'][0]['url']) : '';
-            return is_array($basePath) ? '/' . end($basePath) : $basePath;
+            $uriServer = new Uri($this->getServerUrl());
+            return $uriServer->getPath();
         }
 
         return isset($this->jsonFile['basePath']) ? $this->jsonFile['basePath'] : '';
