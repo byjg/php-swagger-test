@@ -10,7 +10,7 @@ use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 
-class SwaggerRequester
+class ApiRequester
 {
     protected $method = 'get';
     protected $path = '/';
@@ -56,7 +56,7 @@ class SwaggerRequester
 
     /**
      * @param string $method
-     * @return SwaggerRequester
+     * @return ApiRequester
      */
     public function withMethod($method)
     {
@@ -67,7 +67,7 @@ class SwaggerRequester
 
     /**
      * @param string $path
-     * @return SwaggerRequester
+     * @return ApiRequester
      */
     public function withPath($path)
     {
@@ -78,7 +78,7 @@ class SwaggerRequester
 
     /**
      * @param array $requestHeader
-     * @return SwaggerRequester
+     * @return ApiRequester
      */
     public function withRequestHeader($requestHeader)
     {
@@ -94,7 +94,7 @@ class SwaggerRequester
 
     /**
      * @param array $query
-     * @return SwaggerRequester
+     * @return ApiRequester
      */
     public function withQuery($query)
     {
@@ -110,7 +110,7 @@ class SwaggerRequester
 
     /**
      * @param null $requestBody
-     * @return SwaggerRequester
+     * @return ApiRequester
      */
     public function withRequestBody($requestBody)
     {

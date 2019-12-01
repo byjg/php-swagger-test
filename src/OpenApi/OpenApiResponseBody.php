@@ -3,9 +3,9 @@
 namespace ByJG\ApiTools\OpenApi;
 
 use ByJG\ApiTools\Exception\NotMatchedException;
-use ByJG\ApiTools\SwaggerBody;
+use ByJG\ApiTools\Base\Body;
 
-class OpenApiResponseBody extends SwaggerBody
+class OpenApiResponseBody extends Body
 {
     /**
      * @param $body

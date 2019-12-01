@@ -7,7 +7,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use PHPUnit\Framework\TestCase;
 use ByJG\ApiTools\Base\Schema;
 
-abstract class SwaggerTestCase extends TestCase
+abstract class ApiTestCase extends TestCase
 {
     /**
      * @var SwaggerSchema
@@ -56,7 +56,7 @@ abstract class SwaggerTestCase extends TestCase
         $requestBody = null,
         $requestHeader = []
     ) {
-        $requester = new SwaggerRequester();
+        $requester = new ApiRequester();
         $body = $requester
             ->withSwaggerSchema($this->swaggerSchema)
             ->withMethod($method)
@@ -77,7 +77,7 @@ abstract class SwaggerTestCase extends TestCase
     }
 
     /**
-     * @param SwaggerRequester $request
+     * @param ApiRequester $request
      * @return mixed
      * @throws Exception\DefinitionNotFoundException
      * @throws Exception\HttpMethodNotFoundException
@@ -90,7 +90,7 @@ abstract class SwaggerTestCase extends TestCase
      * @throws GenericSwaggerException
      * @throws GuzzleException
      */
-    public function assertRequest(SwaggerRequester $request)
+    public function assertRequest(ApiRequester $request)
     {
         // Add own swagger if nothing is passed.
         if (!$request->hasSwaggerSchema()) {

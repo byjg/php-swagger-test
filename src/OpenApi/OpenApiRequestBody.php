@@ -2,12 +2,12 @@
 
 namespace ByJG\ApiTools\OpenApi;
 
+use ByJG\ApiTools\Base\Body;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
-use ByJG\ApiTools\SwaggerBody;
 
-class OpenApiRequestBody extends SwaggerBody
+class OpenApiRequestBody extends Body
 {
     /**
      * @param $body

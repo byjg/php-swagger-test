@@ -5,9 +5,9 @@ namespace ByJG\ApiTools\Swagger;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
-use ByJG\ApiTools\SwaggerBody;
+use ByJG\ApiTools\Base\Body;
 
-class SwaggerRequestBody extends SwaggerBody
+class SwaggerRequestBody extends Body
 {
     /**
      * @param $body

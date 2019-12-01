@@ -44,7 +44,7 @@ make a request to your API Method and check if the request parameters, status an
 /**
  * Create a TestCase inherited from SwaggerTestCase
  */
-class MyTestCase extends \ByJG\ApiTools\SwaggerTestCase
+class MyTestCase extends \ByJG\ApiTools\ApiTestCase
 {
     protected $filePath = '/path/to/json/definition';
     
@@ -54,7 +54,7 @@ class MyTestCase extends \ByJG\ApiTools\SwaggerTestCase
      */
     public function testGet()
     {
-        $request = new \ByJG\ApiTools\SwaggerRequester();
+        $request = new \ByJG\ApiTools\ApiRequester();
         $request
             ->withMethod('GET')
             ->withPath("/path/for/get/1");
@@ -67,7 +67,7 @@ class MyTestCase extends \ByJG\ApiTools\SwaggerTestCase
      */
     public function testGetNotFound()
     {
-        $request = new \ByJG\ApiTools\SwaggerRequester();
+        $request = new \ByJG\ApiTools\ApiRequester();
         $request
             ->withMethod('GET')
             ->withPath("/path/for/get/NOTFOUND")
@@ -83,7 +83,7 @@ class MyTestCase extends \ByJG\ApiTools\SwaggerTestCase
      */
     public function testPost()
     {
-        $request = new \ByJG\ApiTools\SwaggerRequester();
+        $request = new \ByJG\ApiTools\ApiRequester();
         $request
             ->withMethod('POST')
             ->withPath("/path/for/post/2")
@@ -99,7 +99,7 @@ class MyTestCase extends \ByJG\ApiTools\SwaggerTestCase
      */
     public function testPost2()
     {
-        $request = new \ByJG\ApiTools\SwaggerRequester();
+        $request = new \ByJG\ApiTools\ApiRequester();
         $request
             ->withMethod('POST')
             ->withPath("/path/for/post/3")
