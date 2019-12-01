@@ -1,6 +1,6 @@
 <?php
 
-namespace ByJG\Swagger\Exception;
+namespace ByJG\ApiTools\Exception;
 
 use Exception;
 use Throwable;

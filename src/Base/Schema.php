@@ -1,16 +1,16 @@
 <?php
 
-namespace ByJG\Swagger\Base;
+namespace ByJG\ApiTools\Base;
 
-use ByJG\Swagger\Exception\DefinitionNotFoundException;
-use ByJG\Swagger\Exception\HttpMethodNotFoundException;
-use ByJG\Swagger\Exception\InvalidDefinitionException;
-use ByJG\Swagger\Exception\NotMatchedException;
-use ByJG\Swagger\Exception\PathNotFoundException;
-use ByJG\Swagger\OpenApiResponseBody;
-use ByJG\Swagger\OpenApiSchema;
-use ByJG\Swagger\SwaggerResponseBody;
-use ByJG\Swagger\SwaggerSchema;
+use ByJG\ApiTools\Exception\DefinitionNotFoundException;
+use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
+use ByJG\ApiTools\Exception\InvalidDefinitionException;
+use ByJG\ApiTools\Exception\NotMatchedException;
+use ByJG\ApiTools\Exception\PathNotFoundException;
+use ByJG\ApiTools\OpenApi\OpenApiResponseBody;
+use ByJG\ApiTools\OpenApi\OpenApiSchema;
+use ByJG\ApiTools\Swagger\SwaggerResponseBody;
+use ByJG\ApiTools\Swagger\SwaggerSchema;
 use ByJG\Util\Uri;
 
 abstract class Schema

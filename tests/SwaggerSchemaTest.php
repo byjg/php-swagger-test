@@ -2,7 +2,7 @@
 
 namespace Test;
 
-use ByJG\Swagger\SwaggerSchema;
+use ByJG\ApiTools\Swagger\SwaggerSchema;
 use PHPUnit\Framework\TestCase;
 
 class SwaggerSchemaTest extends TestCase
@@ -14,7 +14,7 @@ class SwaggerSchemaTest extends TestCase
 
     public function setUp()
     {
-        $this->object = \ByJG\Swagger\Base\Schema::getInstance(file_get_contents(__DIR__ . '/example/swagger.json'));
+        $this->object = \ByJG\ApiTools\Base\Schema::getInstance(file_get_contents(__DIR__ . '/example/swagger.json'));
     }
 
     public function tearDown()
@@ -28,9 +28,9 @@ class SwaggerSchemaTest extends TestCase
     }
 
     /**
-     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\ApiTools\Exception\NotMatchedException
+     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      */
     public function testGetPathDirectMatch()
     {
@@ -129,9 +129,9 @@ class SwaggerSchemaTest extends TestCase
     }
 
     /**
-     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\ApiTools\Exception\NotMatchedException
+     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      */
     public function testGetPathPatternMatch()
     {
@@ -284,11 +284,11 @@ class SwaggerSchemaTest extends TestCase
     }
 
     /**
-     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
-     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
+     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
+     * @throws \ByJG\ApiTools\Exception\NotMatchedException
+     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      */
     public function testGetPathPatternMatch2()
     {
@@ -352,11 +352,11 @@ class SwaggerSchemaTest extends TestCase
     }
 
     /**
-     * @expectedException \ByJG\Swagger\Exception\PathNotFoundException
+     * @expectedException \ByJG\ApiTools\Exception\PathNotFoundException
      *
-     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\ApiTools\Exception\NotMatchedException
+     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      */
     public function testGetPathFail()
     {
@@ -364,11 +364,11 @@ class SwaggerSchemaTest extends TestCase
     }
 
     /**
-     * @expectedException \ByJG\Swagger\Exception\HttpMethodNotFoundException
+     * @expectedException \ByJG\ApiTools\Exception\HttpMethodNotFoundException
      *
-     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\ApiTools\Exception\NotMatchedException
+     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      */
     public function testPathExistsButMethodDont()
     {
@@ -376,9 +376,9 @@ class SwaggerSchemaTest extends TestCase
     }
 
     /**
-     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\ApiTools\Exception\NotMatchedException
+     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      */
     public function testGetPathStructure()
     {
@@ -436,10 +436,10 @@ class SwaggerSchemaTest extends TestCase
     }
 
     /**
-     * @expectedException \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @expectedException \ByJG\ApiTools\Exception\InvalidDefinitionException
      *
-     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
-     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
+     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
      */
     public function testGetDefinitionFailed()
     {
@@ -447,10 +447,10 @@ class SwaggerSchemaTest extends TestCase
     }
 
     /**
-     * @expectedException \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @expectedException \ByJG\ApiTools\Exception\InvalidDefinitionException
      *
-     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
-     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
+     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
      */
     public function testGetDefinitionFailed2()
     {
@@ -458,10 +458,10 @@ class SwaggerSchemaTest extends TestCase
     }
 
     /**
-     * @expectedException \ByJG\Swagger\Exception\DefinitionNotFoundException
+     * @expectedException \ByJG\ApiTools\Exception\DefinitionNotFoundException
      *
-     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
-     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
+     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
      */
     public function testGetDefinitionFailed3()
     {
@@ -469,8 +469,8 @@ class SwaggerSchemaTest extends TestCase
     }
 
     /**
-     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
-     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
+     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
      */
     public function testGetDefinition()
     {
@@ -520,14 +520,14 @@ class SwaggerSchemaTest extends TestCase
 
     public function testItNotAllowsNullValuesByDefault()
     {
-        $schema = \ByJG\Swagger\Base\Schema::getInstance('{"swagger": "2.0"}');
+        $schema = \ByJG\ApiTools\Base\Schema::getInstance('{"swagger": "2.0"}');
         $this->assertFalse($schema->isAllowNullValues());
     }
 
     public function testItAllowsNullValues()
     {
         $allowNullValues = true;
-        $schema = \ByJG\Swagger\Base\Schema::getInstance('{"swagger": "2.0"}', $allowNullValues);
+        $schema = \ByJG\ApiTools\Base\Schema::getInstance('{"swagger": "2.0"}', $allowNullValues);
         $this->assertTrue($schema->isAllowNullValues());
     }
 }

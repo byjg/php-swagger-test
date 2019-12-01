@@ -1,11 +1,11 @@
 <?php
 
-namespace ByJG\Swagger;
+namespace ByJG\ApiTools;
 
-use ByJG\Swagger\Exception\GenericSwaggerException;
+use ByJG\ApiTools\Exception\GenericSwaggerException;
 use GuzzleHttp\Exception\GuzzleException;
 use PHPUnit\Framework\TestCase;
-use ByJG\Swagger\Base\Schema;
+use ByJG\ApiTools\Base\Schema;
 
 abstract class SwaggerTestCase extends TestCase
 {

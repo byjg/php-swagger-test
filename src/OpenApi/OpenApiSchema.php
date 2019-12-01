@@ -1,13 +1,13 @@
 <?php
 
-namespace ByJG\Swagger;
+namespace ByJG\ApiTools\OpenApi;
 
-use ByJG\Swagger\Base\Schema;
-use ByJG\Swagger\Exception\DefinitionNotFoundException;
-use ByJG\Swagger\Exception\HttpMethodNotFoundException;
-use ByJG\Swagger\Exception\InvalidDefinitionException;
-use ByJG\Swagger\Exception\NotMatchedException;
-use ByJG\Swagger\Exception\PathNotFoundException;
+use ByJG\ApiTools\Base\Schema;
+use ByJG\ApiTools\Exception\DefinitionNotFoundException;
+use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
+use ByJG\ApiTools\Exception\InvalidDefinitionException;
+use ByJG\ApiTools\Exception\NotMatchedException;
+use ByJG\ApiTools\Exception\PathNotFoundException;
 use ByJG\Util\Uri;
 
 class OpenApiSchema extends Schema

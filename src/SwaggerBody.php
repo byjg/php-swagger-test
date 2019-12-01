@@ -1,11 +1,11 @@
 <?php
 
-namespace ByJG\Swagger;
+namespace ByJG\ApiTools;
 
-use ByJG\Swagger\Exception\GenericSwaggerException;
-use ByJG\Swagger\Exception\InvalidRequestException;
-use ByJG\Swagger\Exception\NotMatchedException;
-use ByJG\Swagger\Base\Schema;
+use ByJG\ApiTools\Exception\GenericSwaggerException;
+use ByJG\ApiTools\Exception\InvalidRequestException;
+use ByJG\ApiTools\Exception\NotMatchedException;
+use ByJG\ApiTools\Base\Schema;
 use InvalidArgumentException;
 
 abstract class SwaggerBody

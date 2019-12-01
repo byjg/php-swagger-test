@@ -2,7 +2,7 @@
 
 namespace Test;
 
-use ByJG\Swagger\OpenApiSchema;
+use ByJG\ApiTools\OpenApi\OpenApiSchema;
 use PHPUnit\Framework\TestCase;
 
 class OpenApiSchemaTest extends TestCase
@@ -28,9 +28,9 @@ class OpenApiSchemaTest extends TestCase
     }
 
     /**
-     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\ApiTools\Exception\NotMatchedException
+     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      */
     public function testGetPathDirectMatch()
     {
@@ -97,9 +97,9 @@ class OpenApiSchemaTest extends TestCase
     }
 
     /**
-     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\ApiTools\Exception\NotMatchedException
+     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      */
     public function testGetPathPatternMatch()
     {
@@ -259,9 +259,9 @@ class OpenApiSchemaTest extends TestCase
     }
 
     /**
-     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\ApiTools\Exception\NotMatchedException
+     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      */
     public function testGetPathPatternMatch2()
     {
@@ -332,11 +332,11 @@ class OpenApiSchemaTest extends TestCase
     }
 
     /**
-     * @expectedException \ByJG\Swagger\Exception\PathNotFoundException
+     * @expectedException \ByJG\ApiTools\Exception\PathNotFoundException
      *
-     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\ApiTools\Exception\NotMatchedException
+     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      */
     public function testGetPathFail()
     {
@@ -344,11 +344,11 @@ class OpenApiSchemaTest extends TestCase
     }
 
     /**
-     * @expectedException \ByJG\Swagger\Exception\HttpMethodNotFoundException
+     * @expectedException \ByJG\ApiTools\Exception\HttpMethodNotFoundException
      *
-     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\ApiTools\Exception\NotMatchedException
+     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      */
     public function testPathExistsButMethodDont()
     {
@@ -356,9 +356,9 @@ class OpenApiSchemaTest extends TestCase
     }
 
     /**
-     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\ApiTools\Exception\NotMatchedException
+     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      */
     public function testGetPathStructure()
     {
@@ -399,10 +399,10 @@ class OpenApiSchemaTest extends TestCase
     }
 
     /**
-     * @expectedException \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @expectedException \ByJG\ApiTools\Exception\InvalidDefinitionException
      *
-     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
-     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
+     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
      */
     public function testGetDefinitionFailed()
     {
@@ -410,10 +410,10 @@ class OpenApiSchemaTest extends TestCase
     }
 
     /**
-     * @expectedException \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @expectedException \ByJG\ApiTools\Exception\InvalidDefinitionException
      *
-     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
-     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
+     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
      */
     public function testGetDefinitionFailed2()
     {
@@ -421,10 +421,10 @@ class OpenApiSchemaTest extends TestCase
     }
 
     /**
-     * @expectedException \ByJG\Swagger\Exception\DefinitionNotFoundException
+     * @expectedException \ByJG\ApiTools\Exception\DefinitionNotFoundException
      *
-     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
-     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
+     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
      */
     public function testGetDefinitionFailed3()
     {
@@ -432,8 +432,8 @@ class OpenApiSchemaTest extends TestCase
     }
 
     /**
-     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
-     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
+     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
      */
     public function testGetDefinition()
     {

@@ -1,10 +1,11 @@
 <?php
 
-namespace ByJG\Swagger;
+namespace ByJG\ApiTools\OpenApi;
 
-use ByJG\Swagger\Exception\InvalidDefinitionException;
-use ByJG\Swagger\Exception\NotMatchedException;
-use ByJG\Swagger\Exception\RequiredArgumentNotFound;
+use ByJG\ApiTools\Exception\InvalidDefinitionException;
+use ByJG\ApiTools\Exception\NotMatchedException;
+use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
+use ByJG\ApiTools\SwaggerBody;
 
 class OpenApiRequestBody extends SwaggerBody
 {

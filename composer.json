@@ -21,7 +21,7 @@
   },
   "autoload": {
     "psr-4": {
-      "ByJG\\Swagger\\": "src/"
+      "ByJG\\ApiTools\\": "src/"
     }
   },
   "autoload-dev": {

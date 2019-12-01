@@ -2,8 +2,8 @@
 
 namespace Test;
 
-use ByJG\Swagger\Exception\BaseException;
-use ByJG\Swagger\Exception\GenericSwaggerException;
+use ByJG\ApiTools\Exception\BaseException;
+use ByJG\ApiTools\Exception\GenericSwaggerException;
 use PHPUnit\Framework\TestCase;
 
 class BaseExceptionTest extends TestCase

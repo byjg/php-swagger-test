@@ -44,7 +44,7 @@ make a request to your API Method and check if the request parameters, status an
 /**
  * Create a TestCase inherited from SwaggerTestCase
  */
-class MyTestCase extends \ByJG\Swagger\SwaggerTestCase
+class MyTestCase extends \ByJG\ApiTools\SwaggerTestCase
 {
     protected $filePath = '/path/to/json/definition';
     
@@ -54,7 +54,7 @@ class MyTestCase extends \ByJG\Swagger\SwaggerTestCase
      */
     public function testGet()
     {
-        $request = new \ByJG\Swagger\SwaggerRequester();
+        $request = new \ByJG\ApiTools\SwaggerRequester();
         $request
             ->withMethod('GET')
             ->withPath("/path/for/get/1");
@@ -67,7 +67,7 @@ class MyTestCase extends \ByJG\Swagger\SwaggerTestCase
      */
     public function testGetNotFound()
     {
-        $request = new \ByJG\Swagger\SwaggerRequester();
+        $request = new \ByJG\ApiTools\SwaggerRequester();
         $request
             ->withMethod('GET')
             ->withPath("/path/for/get/NOTFOUND")
@@ -83,7 +83,7 @@ class MyTestCase extends \ByJG\Swagger\SwaggerTestCase
      */
     public function testPost()
     {
-        $request = new \ByJG\Swagger\SwaggerRequester();
+        $request = new \ByJG\ApiTools\SwaggerRequester();
         $request
             ->withMethod('POST')
             ->withPath("/path/for/post/2")
@@ -99,7 +99,7 @@ class MyTestCase extends \ByJG\Swagger\SwaggerTestCase
      */
     public function testPost2()
     {
-        $request = new \ByJG\Swagger\SwaggerRequester();
+        $request = new \ByJG\ApiTools\SwaggerRequester();
         $request
             ->withMethod('POST')
             ->withPath("/path/for/post/3")
@@ -121,7 +121,7 @@ receiving you have to:
 
 ```php
 <?php
-$swaggerSchema = new \ByJG\Swagger\SwaggerSchema($contentsOfSwaggerJson);
+$swaggerSchema = new \ByJG\ApiTools\Swagger\SwaggerSchema($contentsOfSwaggerJson);
 ```
 
 **2. Get the definitions for your path**
@@ -161,7 +161,7 @@ So, before your API Code you can validate the request body using:
 
 ```php
 <?php
-$swaggerSchema = new \ByJG\Swagger\SwaggerSchema($contentsOfSwaggerJson);
+$swaggerSchema = new \ByJG\ApiTools\Swagger\SwaggerSchema($contentsOfSwaggerJson);
 $bodyRequestDef = $swaggerSchema->getRequestParameters($path, $method);
 $bodyRequestDef->match($requestBody);
 ```

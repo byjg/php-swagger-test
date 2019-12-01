@@ -1,10 +1,11 @@
 <?php
 
-namespace ByJG\Swagger;
+namespace ByJG\ApiTools\Swagger;
 
-use ByJG\Swagger\Exception\NotMatchedException;
+use ByJG\ApiTools\Exception\NotMatchedException;
+use ByJG\ApiTools\SwaggerBody;
 
-class OpenApiResponseBody extends SwaggerBody
+class SwaggerResponseBody extends SwaggerBody
 {
     /**
      * @param $body
@@ -17,12 +18,12 @@ class OpenApiResponseBody extends SwaggerBody
      */
     public function match($body)
     {
-        if (!isset($this->structure['content'])) {
+        if (!isset($this->structure['schema'])) {
             if (!empty($body)) {
                 throw new NotMatchedException("Expected empty body for " . $this->name);
             }
             return true;
         }
-        return $this->matchSchema($this->name, $this->structure['content'][key($this->structure['content'])]['schema'], $body);
+        return $this->matchSchema($this->name, $this->structure['schema'], $body);
     }
 }

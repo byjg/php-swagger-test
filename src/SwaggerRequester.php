@@ -1,9 +1,9 @@
 <?php
 
-namespace ByJG\Swagger;
+namespace ByJG\ApiTools;
 
-use ByJG\Swagger\Exception\NotMatchedException;
-use ByJG\Swagger\Exception\StatusCodeNotMatchedException;
+use ByJG\ApiTools\Exception\NotMatchedException;
+use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
