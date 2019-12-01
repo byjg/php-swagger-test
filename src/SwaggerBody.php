@@ -5,6 +5,7 @@ namespace ByJG\Swagger;
 use ByJG\Swagger\Exception\GenericSwaggerException;
 use ByJG\Swagger\Exception\InvalidRequestException;
 use ByJG\Swagger\Exception\NotMatchedException;
+use ByJG\Swagger\Base\Schema;
 use InvalidArgumentException;
 
 abstract class SwaggerBody
@@ -32,12 +33,12 @@ abstract class SwaggerBody
     /**
      * SwaggerRequestBody constructor.
      *
-     * @param SwaggerSchema $swaggerSchema
+     * @param Schema $swaggerSchema
      * @param string $name
      * @param array $structure
      * @param bool $allowNullValues
      */
-    public function __construct(SwaggerSchema $swaggerSchema, $name, $structure, $allowNullValues = false)
+    public function __construct(Schema $swaggerSchema, $name, $structure, $allowNullValues = false)
     {
         $this->swaggerSchema = $swaggerSchema;
         $this->name = $name;
@@ -145,11 +146,12 @@ abstract class SwaggerBody
         }
 
         $type = $schema['type'];
+        $nullable = isset($schema['nullable']) ? (bool)$schema['nullable'] : $this->swaggerSchema->isAllowNullValues();
 
         $validators = [
-            function () use ($name, $body, $type)
+            function () use ($name, $body, $type, $nullable)
             {
-                return $this->matchNull($name, $body, $type);
+                return $this->matchNull($name, $body, $type, $nullable);
             },
 
             function () use ($name, $schema, $body, $type)
@@ -299,16 +301,17 @@ abstract class SwaggerBody
      * @param $name
      * @param $body
      * @param $type
+     * @param $nullable
      * @return bool
      * @throws NotMatchedException
      */
-    protected function matchNull($name, $body, $type)
+    protected function matchNull($name, $body, $type, $nullable)
     {
         if (!is_null($body)) {
             return null;
         }
 
-        if (false === $this->swaggerSchema->isAllowNullValues()) {
+        if (!$nullable) {
             throw new NotMatchedException(
                 "Value of property '$name' is null, but should be of type '$type'",
                 $this->structure

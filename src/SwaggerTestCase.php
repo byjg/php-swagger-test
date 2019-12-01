@@ -5,6 +5,7 @@ namespace ByJG\Swagger;
 use ByJG\Swagger\Exception\GenericSwaggerException;
 use GuzzleHttp\Exception\GuzzleException;
 use PHPUnit\Framework\TestCase;
+use ByJG\Swagger\Base\Schema;
 
 abstract class SwaggerTestCase extends TestCase
 {
@@ -24,7 +25,7 @@ abstract class SwaggerTestCase extends TestCase
             throw new GenericSwaggerException('You have to define the property $filePath');
         }
 
-        $this->swaggerSchema = new SwaggerSchema(file_get_contents($this->filePath));
+        $this->swaggerSchema = Schema::getInstance(file_get_contents($this->filePath));
     }
 
     /**

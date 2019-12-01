@@ -195,7 +195,7 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
             "photoUrls" => ["http://example.com/1", "http://example.com/2"]
         ];
 
-        $requestParameter = self::openApiSchema($allowNullValues)->getRequestParameters('/v2/pet', 'post');
+        $requestParameter = self::openApiSchema($allowNullValues)->getRequestParameters('/v2/petnull', 'post');
         $this->assertTrue($requestParameter->match($body));
     }
 

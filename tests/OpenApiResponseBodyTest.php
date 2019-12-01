@@ -177,7 +177,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
         ];
 
         $responseParameter = self::openApiSchema($allowNullValues)->getResponseParameters(
-            '/v2/store/order',
+            '/v2/store/ordernull',
             'post',
             200
         );

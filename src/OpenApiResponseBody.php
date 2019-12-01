@@ -4,7 +4,7 @@ namespace ByJG\Swagger;
 
 use ByJG\Swagger\Exception\NotMatchedException;
 
-class SwaggerResponseBody extends SwaggerBody
+class OpenApiResponseBody extends SwaggerBody
 {
     /**
      * @param $body
@@ -17,12 +17,12 @@ class SwaggerResponseBody extends SwaggerBody
      */
     public function match($body)
     {
-        if (!isset($this->structure['schema'])) {
+        if (!isset($this->structure['content'])) {
             if (!empty($body)) {
                 throw new NotMatchedException("Expected empty body for " . $this->name);
             }
             return true;
         }
-        return $this->matchSchema($this->name, $this->structure['schema'], $body);
+        return $this->matchSchema($this->name, $this->structure['content'][key($this->structure['content'])]['schema'], $body);
     }
 }

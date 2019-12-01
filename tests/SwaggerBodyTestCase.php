@@ -14,7 +14,7 @@ class SwaggerBodyTestCase extends TestCase
      */
     protected static function swaggerSchema($allowNullValues = false)
     {
-        return new SwaggerSchema(
+        return \ByJG\Swagger\Base\Schema::getInstance(
             self::getSwaggerJsonContent(),
             $allowNullValues
         );
@@ -26,7 +26,7 @@ class SwaggerBodyTestCase extends TestCase
      */
     protected static function swaggerSchema2($allowNullValues = false)
     {
-        return new SwaggerSchema(
+        return \ByJG\Swagger\Base\Schema::getInstance(
             self::getSwaggerJsonContent_No2(),
             $allowNullValues
         );

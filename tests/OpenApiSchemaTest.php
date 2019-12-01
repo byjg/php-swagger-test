@@ -2,19 +2,19 @@
 
 namespace Test;
 
-use ByJG\Swagger\SwaggerSchema;
+use ByJG\Swagger\OpenApiSchema;
 use PHPUnit\Framework\TestCase;
 
 class OpenApiSchemaTest extends TestCase
 {
     /**
-     * @var SwaggerSchema
+     * @var OpenApiSchema
      */
     protected $openapiObject;
 
     public function setUp()
     {
-        $this->openapiObject = new SwaggerSchema(file_get_contents(__DIR__ . '/example/openapi.json'));
+        $this->openapiObject = new OpenApiSchema(file_get_contents(__DIR__ . '/example/openapi.json'));
     }
 
     public function tearDown()
@@ -479,19 +479,6 @@ class OpenApiSchemaTest extends TestCase
         $this->assertEquals($expected, $order);
     }
 
-    public function testItNotAllowsNullValuesByDefault()
-    {
-        $schema = new SwaggerSchema('{}');
-        $this->assertFalse($schema->isAllowNullValues());
-    }
-
-    public function testItAllowsNullValues()
-    {
-        $allowNullValues = true;
-        $schema = new SwaggerSchema('{}', $allowNullValues);
-        $this->assertTrue($schema->isAllowNullValues());
-    }
-
     public function testGetServerUrl()
     {
         $this->assertEquals("http://petstore.swagger.io/v2", $this->openapiObject->getServerUrl());
@@ -499,14 +486,14 @@ class OpenApiSchemaTest extends TestCase
 
     public function testGetServerUrlVariables()
     {
-        $this->openapiObject = new SwaggerSchema(file_get_contents(__DIR__ . '/example/openapi4.json'));
+        $this->openapiObject = new OpenApiSchema(file_get_contents(__DIR__ . '/example/openapi4.json'));
 
         $this->assertEquals("https://www.domain.com/api/v2", $this->openapiObject->getServerUrl());
     }
 
     public function testGetServerUrlVariables2()
     {
-        $this->openapiObject = new SwaggerSchema(file_get_contents(__DIR__ . '/example/openapi4.json'));
+        $this->openapiObject = new OpenApiSchema(file_get_contents(__DIR__ . '/example/openapi4.json'));
         $this->openapiObject->setServerVariable("environment", "staging");
 
         $this->assertEquals("https://staging.domain.com/api/v2", $this->openapiObject->getServerUrl());

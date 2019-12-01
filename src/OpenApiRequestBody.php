@@ -6,7 +6,7 @@ use ByJG\Swagger\Exception\InvalidDefinitionException;
 use ByJG\Swagger\Exception\NotMatchedException;
 use ByJG\Swagger\Exception\RequiredArgumentNotFound;
 
-class SwaggerRequestBody extends SwaggerBody
+class OpenApiRequestBody extends SwaggerBody
 {
     /**
      * @param $body
@@ -20,13 +20,16 @@ class SwaggerRequestBody extends SwaggerBody
      */
     public function match($body)
     {
-        foreach ($this->structure as $parameter) {
-            if ($parameter['in'] == "body") {
-                if (isset($parameter['required']) && $parameter['required'] === true && empty($body)) {
-                    throw new RequiredArgumentNotFound('The body is required but it is empty');
-                }
-                return $this->matchSchema($this->name, $parameter['schema'], $body);
+        if (isset($this->structure['content']) || isset($this->structure['$ref'])) {
+            if (isset($this->structure['required']) && $this->structure['required'] === true && empty($body)) {
+                throw new RequiredArgumentNotFound('The body is required but it is empty');
             }
+
+            if (isset($this->structure['$ref'])) {
+                return $this->matchSchema($this->name, $this->structure, $body);
+            }
+
+            return $this->matchSchema($this->name, $this->structure['content'][key($this->structure['content'])]['schema'], $body);
         }
 
         if (!empty($body)) {

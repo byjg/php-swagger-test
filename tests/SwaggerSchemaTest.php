@@ -14,7 +14,7 @@ class SwaggerSchemaTest extends TestCase
 
     public function setUp()
     {
-        $this->object = new SwaggerSchema(file_get_contents(__DIR__ . '/example/swagger.json'));
+        $this->object = \ByJG\Swagger\Base\Schema::getInstance(file_get_contents(__DIR__ . '/example/swagger.json'));
     }
 
     public function tearDown()
@@ -520,14 +520,14 @@ class SwaggerSchemaTest extends TestCase
 
     public function testItNotAllowsNullValuesByDefault()
     {
-        $schema = new SwaggerSchema('{}');
+        $schema = \ByJG\Swagger\Base\Schema::getInstance('{"swagger": "2.0"}');
         $this->assertFalse($schema->isAllowNullValues());
     }
 
     public function testItAllowsNullValues()
     {
         $allowNullValues = true;
-        $schema = new SwaggerSchema('{}', $allowNullValues);
+        $schema = \ByJG\Swagger\Base\Schema::getInstance('{"swagger": "2.0"}', $allowNullValues);
         $this->assertTrue($schema->isAllowNullValues());
     }
 }
