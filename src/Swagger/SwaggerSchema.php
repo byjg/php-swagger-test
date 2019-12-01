@@ -8,7 +8,6 @@ use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\ApiTools\Exception\PathNotFoundException;
-use ByJG\Util\Uri;
 
 class SwaggerSchema extends Schema
 {

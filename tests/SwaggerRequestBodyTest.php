@@ -2,8 +2,6 @@
 
 namespace Test;
 
-use ByJG\ApiTools\Swagger\SwaggerSchema;
-
 class SwaggerRequestBodyTest extends SwaggerBodyTestCase
 {
     /**

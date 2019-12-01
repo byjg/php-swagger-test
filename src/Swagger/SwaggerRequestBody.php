@@ -2,10 +2,9 @@
 
 namespace ByJG\ApiTools\Swagger;
 
-use ByJG\ApiTools\Exception\InvalidDefinitionException;
-use ByJG\ApiTools\Exception\NotMatchedException;
-use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
 use ByJG\ApiTools\Base\Body;
+use ByJG\ApiTools\Exception\InvalidDefinitionException;
+use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
 
 class SwaggerRequestBody extends Body
 {

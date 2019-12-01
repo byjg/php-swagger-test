@@ -5,7 +5,6 @@ namespace ByJG\ApiTools\Base;
 use ByJG\ApiTools\Exception\GenericSwaggerException;
 use ByJG\ApiTools\Exception\InvalidRequestException;
 use ByJG\ApiTools\Exception\NotMatchedException;
-use ByJG\ApiTools\Base\Schema;
 use InvalidArgumentException;
 
 abstract class Body

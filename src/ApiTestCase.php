@@ -2,10 +2,10 @@
 
 namespace ByJG\ApiTools;
 
+use ByJG\ApiTools\Base\Schema;
 use ByJG\ApiTools\Exception\GenericSwaggerException;
 use GuzzleHttp\Exception\GuzzleException;
 use PHPUnit\Framework\TestCase;
-use ByJG\ApiTools\Base\Schema;
 
 abstract class ApiTestCase extends TestCase
 {

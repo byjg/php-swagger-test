@@ -4,7 +4,6 @@ namespace ByJG\ApiTools\OpenApi;
 
 use ByJG\ApiTools\Base\Body;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
-use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
 
 class OpenApiRequestBody extends Body

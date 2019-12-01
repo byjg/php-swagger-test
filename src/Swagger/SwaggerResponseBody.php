@@ -2,8 +2,8 @@
 
 namespace ByJG\ApiTools\Swagger;
 
-use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\ApiTools\Base\Body;
+use ByJG\ApiTools\Exception\NotMatchedException;
 
 class SwaggerResponseBody extends Body
 {

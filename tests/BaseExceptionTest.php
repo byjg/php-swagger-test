@@ -2,7 +2,6 @@
 
 namespace Test;
 
-use ByJG\ApiTools\Exception\BaseException;
 use ByJG\ApiTools\Exception\GenericSwaggerException;
 use PHPUnit\Framework\TestCase;
 
