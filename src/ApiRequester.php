@@ -2,8 +2,10 @@
 
 namespace ByJG\ApiTools;
 
+use ByJG\ApiTools\Base\Schema;
 use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
+use ByJG\ApiTools\Swagger\SwaggerSchema;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
@@ -18,7 +20,7 @@ class ApiRequester
     protected $query = [];
     protected $requestBody = null;
     /**
-     * @var SwaggerSchema
+     * @var Schema
      */
     protected $swaggerSchema = null;
 
@@ -36,7 +38,7 @@ class ApiRequester
     }
 
     /**
-     * @param SwaggerSchema $schema
+     * @param Schema $schema
      * @return $this
      */
     public function withSwaggerSchema($schema)
@@ -136,15 +138,12 @@ class ApiRequester
     /**
      * @return mixed
      * @throws Exception\DefinitionNotFoundException
-     * @throws Exception\GenericSwaggerException
      * @throws Exception\HttpMethodNotFoundException
      * @throws Exception\InvalidDefinitionException
-     * @throws Exception\InvalidRequestException
      * @throws Exception\PathNotFoundException
-     * @throws Exception\RequiredArgumentNotFound
+     * @throws GuzzleException
      * @throws NotMatchedException
      * @throws StatusCodeNotMatchedException
-     * @throws GuzzleException
      */
     public function send()
     {

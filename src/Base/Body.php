@@ -2,7 +2,9 @@
 
 namespace ByJG\ApiTools\Base;
 
+use ByJG\ApiTools\Exception\DefinitionNotFoundException;
 use ByJG\ApiTools\Exception\GenericSwaggerException;
+use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\InvalidRequestException;
 use ByJG\ApiTools\Exception\NotMatchedException;
 use InvalidArgumentException;
@@ -13,7 +15,7 @@ abstract class Body
     const SWAGGER_REQUIRED="required";
 
     /**
-     * @var SwaggerSchema
+     * @var Schema
      */
     protected $swaggerSchema;
 
@@ -117,9 +119,9 @@ abstract class Body
      * @param $body
      * @param $type
      * @return bool
-     * @throws Exception\DefinitionNotFoundException
-     * @throws Exception\InvalidDefinitionException
+     * @throws DefinitionNotFoundException
      * @throws GenericSwaggerException
+     * @throws InvalidDefinitionException
      * @throws InvalidRequestException
      * @throws NotMatchedException
      */
@@ -189,9 +191,9 @@ abstract class Body
      * @param $schema
      * @param $body
      * @return bool|null
-     * @throws Exception\DefinitionNotFoundException
-     * @throws Exception\InvalidDefinitionException
+     * @throws DefinitionNotFoundException
      * @throws GenericSwaggerException
+     * @throws InvalidDefinitionException
      * @throws InvalidRequestException
      * @throws NotMatchedException
      */
@@ -255,8 +257,8 @@ abstract class Body
      * @param $schema
      * @param array $body
      * @return bool
-     * @throws Exception\DefinitionNotFoundException
-     * @throws Exception\InvalidDefinitionException
+     * @throws DefinitionNotFoundException
+     * @throws InvalidDefinitionException
      * @throws GenericSwaggerException
      * @throws InvalidRequestException
      * @throws NotMatchedException

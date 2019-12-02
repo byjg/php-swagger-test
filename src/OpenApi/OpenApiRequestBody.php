@@ -3,7 +3,11 @@
 namespace ByJG\ApiTools\OpenApi;
 
 use ByJG\ApiTools\Base\Body;
+use ByJG\ApiTools\Exception\DefinitionNotFoundException;
+use ByJG\ApiTools\Exception\GenericSwaggerException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
+use ByJG\ApiTools\Exception\InvalidRequestException;
+use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
 
 class OpenApiRequestBody extends Body
@@ -11,12 +15,12 @@ class OpenApiRequestBody extends Body
     /**
      * @param $body
      * @return bool
-     * @throws Exception\DefinitionNotFoundException
-     * @throws Exception\GenericSwaggerException
-     * @throws Exception\InvalidRequestException
-     * @throws Exception\NotMatchedException
+     * @throws GenericSwaggerException
      * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
      * @throws RequiredArgumentNotFound
+     * @throws DefinitionNotFoundException
      */
     public function match($body)
     {

@@ -107,12 +107,12 @@ abstract class Schema
      * @param $path
      * @param $method
      * @param $status
-     * @return SwaggerResponseBody
+     * @return Body
+     * @throws DefinitionNotFoundException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws NotMatchedException
      * @throws PathNotFoundException
-     * @throws DefinitionNotFoundException
      */
     public function getResponseParameters($path, $method, $status)
     {
@@ -140,11 +140,32 @@ abstract class Schema
         return $this->allowNullValues;
     }
 
+    /**
+     * @param $parameterIn
+     * @param $parameters
+     * @param $arguments
+     * @throws DefinitionNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws NotMatchedException
+     */
     abstract protected function validateArguments($parameterIn, $parameters, $arguments);
 
     abstract public function getBasePath();
 
+    /**
+     * @param $name
+     * @return mixed
+     * @throws DefinitionNotFoundException
+     * @throws InvalidDefinitionException
+     */
     abstract public function getDefintion($name);
 
+    /**
+     * @param $path
+     * @param $method
+     * @return Body
+     * @throws HttpMethodNotFoundException
+     * @throws PathNotFoundException
+     */
     abstract public function getRequestParameters($path, $method);
 }

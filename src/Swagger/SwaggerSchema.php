@@ -40,8 +40,6 @@ class SwaggerSchema extends Schema
      * @param $parameterIn
      * @param $parameters
      * @param $arguments
-     * @throws DefinitionNotFoundException
-     * @throws InvalidDefinitionException
      * @throws NotMatchedException
      */
     protected function validateArguments($parameterIn, $parameters, $arguments)
@@ -105,10 +103,5 @@ class SwaggerSchema extends Schema
     public function setAllowNullValues($value)
     {
         $this->allowNullValues = (bool) $value;
-    }
-
-    public function setServerVariable($var, $value)
-    {
-        $this->serverVariables[$var] = $value;
     }
 }

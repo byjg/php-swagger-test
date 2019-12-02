@@ -3,14 +3,20 @@
 namespace ByJG\ApiTools;
 
 use ByJG\ApiTools\Base\Schema;
+use ByJG\ApiTools\Exception\DefinitionNotFoundException;
+use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
+use ByJG\ApiTools\Exception\InvalidDefinitionException;
+use ByJG\ApiTools\Exception\NotMatchedException;
+use ByJG\ApiTools\Exception\PathNotFoundException;
+use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
 use ByJG\ApiTools\Exception\GenericSwaggerException;
-use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\GuzzleException;
 use PHPUnit\Framework\TestCase;
 
 abstract class ApiTestCase extends TestCase
 {
     /**
-     * @var SwaggerSchema
+     * @var Schema
      */
     protected $swaggerSchema;
 
@@ -36,16 +42,13 @@ abstract class ApiTestCase extends TestCase
      * @param array|null $requestBody
      * @param array $requestHeader
      * @return mixed
-     * @throws Exception\DefinitionNotFoundException
-     * @throws Exception\HttpMethodNotFoundException
-     * @throws Exception\InvalidDefinitionException
-     * @throws Exception\InvalidRequestException
-     * @throws Exception\NotMatchedException
-     * @throws Exception\PathNotFoundException
-     * @throws Exception\RequiredArgumentNotFound
-     * @throws Exception\StatusCodeNotMatchedException
-     * @throws GenericSwaggerException
-     * @throws GuzzleException
+     * @throws DefinitionNotFoundException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws StatusCodeNotMatchedException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      * @deprecated Use assertRequest instead
      */
     protected function makeRequest(
@@ -79,16 +82,13 @@ abstract class ApiTestCase extends TestCase
     /**
      * @param ApiRequester $request
      * @return mixed
-     * @throws Exception\DefinitionNotFoundException
-     * @throws Exception\HttpMethodNotFoundException
-     * @throws Exception\InvalidDefinitionException
-     * @throws Exception\InvalidRequestException
-     * @throws Exception\NotMatchedException
-     * @throws Exception\PathNotFoundException
-     * @throws Exception\RequiredArgumentNotFound
-     * @throws Exception\StatusCodeNotMatchedException
-     * @throws GenericSwaggerException
-     * @throws GuzzleException
+     * @throws DefinitionNotFoundException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws StatusCodeNotMatchedException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function assertRequest(ApiRequester $request)
     {
