@@ -121,7 +121,7 @@ receiving you have to:
 
 ```php
 <?php
-$swaggerSchema = new \ByJG\ApiTools\Swagger\SwaggerSchema($contentsOfSwaggerJson);
+$swaggerSchema = \ByJG\ApiTools\Base\Schema::getInstance($contentsOfSwaggerJson);
 ```
 
 **2. Get the definitions for your path**
@@ -161,7 +161,7 @@ So, before your API Code you can validate the request body using:
 
 ```php
 <?php
-$swaggerSchema = new \ByJG\ApiTools\Swagger\SwaggerSchema($contentsOfSwaggerJson);
+$swaggerSchema = \ByJG\ApiTools\Base\Schema::getInstance($contentsOfSwaggerJson);
 $bodyRequestDef = $swaggerSchema->getRequestParameters($path, $method);
 $bodyRequestDef->match($requestBody);
 ```
@@ -169,7 +169,7 @@ $bodyRequestDef->match($requestBody);
 # Install
 
 ```
-composer require "byjg/swagger-test=2.*"
+composer require "byjg/swagger-test=3.0.*"
 ```
 
 # Questions?
