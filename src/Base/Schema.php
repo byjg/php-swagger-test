@@ -119,7 +119,10 @@ abstract class Schema
         $structure = $this->getPathDefinition($path, $method);
 
         if (!isset($structure['responses'][$status])) {
-            throw new InvalidDefinitionException("Could not found status code '$status' in '$path' and '$method'");
+            if ($status != "200") {
+                throw new InvalidDefinitionException("Could not found status code '$status' in '$path' and '$method'");
+            }
+            $structure['responses'][$status] = ["description" => "Auto Generated OK"];
         }
 
         if ($this instanceof SwaggerSchema) {

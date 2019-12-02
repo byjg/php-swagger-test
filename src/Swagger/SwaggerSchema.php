@@ -37,11 +37,10 @@ class SwaggerSchema extends Schema
 
     public function getServerUrl()
     {
-        $httpSchema = $this->swaggerSchema->getHttpSchema();
-        $host = $this->swaggerSchema->getHost();
-        $basePath = $this->swaggerSchema->getBasePath();
-        $pathName = $this->path;
-        return "$httpSchema://$host$basePath$pathName";
+        $httpSchema = $this->getHttpSchema();
+        $host = $this->getHost();
+        $basePath = $this->getBasePath();
+        return "$httpSchema://$host$basePath";
     }
 
     /**

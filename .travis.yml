@@ -11,6 +11,8 @@ install:
   - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONARSCANNER_VERSION-linux.zip
   - unzip sonar-scanner-cli-$SONARSCANNER_VERSION-linux.zip
   - composer install
+  - SPEC=swagger php -S 127.0.0.1:8080 tests/rest/app.php &
+  - SPEC=openapi php -S 127.0.0.1:8081 tests/rest/app.php &
 
 script:
   - vendor/bin/phpunit --coverage-clover phpunit.coverage.xml --log-junit phpunit.report.xml

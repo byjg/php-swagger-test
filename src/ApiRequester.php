@@ -176,7 +176,7 @@ class ApiRequester
         // Make the request
         $request = new Request(
             $this->method,
-            $serverUrl,
+            $serverUrl . $pathName . $paramInQuery,
             $header,
             json_encode($this->requestBody)
         );
