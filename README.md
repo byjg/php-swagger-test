@@ -13,7 +13,8 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/byjg/php-swagger-test/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/byjg/php-swagger-test/?branch=master)
 
 
-A set of tools for test your REST calls based on the swagger documentation using PHPUnit.
+A set of tools for test your REST calls based on the OpenApi specification using PHPUnit. Currently this library supports 
+the specifications `2.0` and `3.0`.
 
 PHP Swagger Test can help you to test your REST Api. You can use this tool both for Unit Tests or Functional Tests.
 
@@ -21,9 +22,9 @@ This tool reads a previously Swagger JSON file (not YAML) and enable you to test
 You can use the tool "https://github.com/zircote/swagger-php" for create the JSON file when you are developing your
 rest API. 
 
-The SwaggerTest's assertion process is based on throwing exceptions if some validation or test failed.
+The ApiTestCase's assertion process is based on throwing exceptions if some validation or test failed.
 
-You can use the Swagger Test as:
+You can use the Swagger Test library as:
 
 - Functional test cases
 - Unit test cases
@@ -31,7 +32,7 @@ You can use the Swagger Test as:
 
 # OpenAPI 3 Support
 
-Basic OpenAPI 3 Support has been added. This means that a Swagger specification that has been migrated to OpenAPI 3 should work here. The
+OpenAPI 3 Support has been added. This means that a Swagger specification that has been migrated to OpenAPI 3 should work here. The
 new OpenAPI 3 features, like callbacks and links, were not implemented. Previous specification versions are still supported.
 
 # Using it as Functional Test cases
