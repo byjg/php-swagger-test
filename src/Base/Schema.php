@@ -140,6 +140,8 @@ abstract class Schema
         return $this->allowNullValues;
     }
 
+    abstract public function getServerUrl();
+
     /**
      * @param $parameterIn
      * @param $parameters

@@ -35,6 +35,14 @@ class SwaggerSchema extends Schema
         return isset($this->jsonFile['basePath']) ? $this->jsonFile['basePath'] : '';
     }
 
+    public function getServerUrl()
+    {
+        $httpSchema = $this->swaggerSchema->getHttpSchema();
+        $host = $this->swaggerSchema->getHost();
+        $basePath = $this->swaggerSchema->getBasePath();
+        $pathName = $this->path;
+        return "$httpSchema://$host$basePath$pathName";
+    }
 
     /**
      * @param $parameterIn

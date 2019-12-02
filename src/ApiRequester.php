@@ -165,18 +165,9 @@ class ApiRequester
         );
 
         // Defining Variables
-        $serverUrl = null;
-        $basePath = "";
-        $pathName = "";
-        if ($this->swaggerSchema->getSpecificationVersion() === '3') {
-            $serverUrl = $this->swaggerSchema->getServerUrl();
-        } else {
-            $httpSchema = $this->swaggerSchema->getHttpSchema();
-            $host = $this->swaggerSchema->getHost();
-            $basePath = $this->swaggerSchema->getBasePath();
-            $pathName = $this->path;
-            $serverUrl = "$httpSchema://$host$basePath$pathName$paramInQuery";
-        }
+        $serverUrl = $this->swaggerSchema->getServerUrl() . $paramInQuery;
+        $basePath = $this->swaggerSchema->getBasePath();
+        $pathName = $this->path;
 
         // Check if the body is the expected before request
         $bodyRequestDef = $this->swaggerSchema->getRequestParameters("$basePath$pathName", $this->method);
