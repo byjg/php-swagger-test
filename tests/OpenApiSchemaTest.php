@@ -491,4 +491,24 @@ class OpenApiSchemaTest extends TestCase
         $schema = new SwaggerSchema('{}', $allowNullValues);
         $this->assertTrue($schema->isAllowNullValues());
     }
+
+    public function testGetServerUrl()
+    {
+        $this->assertEquals("http://petstore.swagger.io/v2", $this->openapiObject->getServerUrl());
+    }
+
+    public function testGetServerUrlVariables()
+    {
+        $this->openapiObject = new SwaggerSchema(file_get_contents(__DIR__ . '/example/openapi4.json'));
+
+        $this->assertEquals("https://www.domain.com/api/v2", $this->openapiObject->getServerUrl());
+    }
+
+    public function testGetServerUrlVariables2()
+    {
+        $this->openapiObject = new SwaggerSchema(file_get_contents(__DIR__ . '/example/openapi4.json'));
+        $this->openapiObject->setServerVariable("environment", "staging");
+
+        $this->assertEquals("https://staging.domain.com/api/v2", $this->openapiObject->getServerUrl());
+    }
 }

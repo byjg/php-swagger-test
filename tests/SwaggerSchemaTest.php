@@ -284,7 +284,9 @@ class SwaggerSchemaTest extends TestCase
     }
 
     /**
+     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
      * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
      * @throws \ByJG\Swagger\Exception\NotMatchedException
      * @throws \ByJG\Swagger\Exception\PathNotFoundException
      */

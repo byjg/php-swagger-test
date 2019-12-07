@@ -15,9 +15,11 @@ class SwaggerSchema
     protected $allowNullValues;
     protected $specificationVersion;
 
-    const SWAGGER_PATHS="paths";
-    const SWAGGER_PARAMETERS="parameters";
-    const SWAGGER_COMPONENTS="components";
+    protected $serverVariables = [];
+
+    const SWAGGER_PATHS = "paths";
+    const SWAGGER_PARAMETERS = "parameters";
+    const SWAGGER_COMPONENTS = "components";
 
     public function __construct($jsonFile, $allowNullValues = false)
     {
@@ -37,7 +39,24 @@ class SwaggerSchema
 
     public function getServerUrl()
     {
-        return isset($this->jsonFile['servers']) ? $this->jsonFile['servers'][0]['url'] : '';
+        if (!isset($this->jsonFile['servers'])) {
+            return '';
+        }
+        $serverUrl = $this->jsonFile['servers'][0]['url'];
+
+        if (isset($this->jsonFile['servers'][0]['variables'])) {
+            foreach ($this->jsonFile['servers'][0]['variables'] as $var => $value) {
+                if (!isset($this->serverVariables[$var])) {
+                    $this->serverVariables[$var] = $value['default'];
+                }
+            }
+        }
+
+        foreach ($this->serverVariables as $var => $value) {
+            $serverUrl = preg_replace("/\{$var\}/", $value, $serverUrl);
+        }
+
+        return $serverUrl;
     }
 
     public function getHttpSchema()
@@ -53,8 +72,8 @@ class SwaggerSchema
     public function getBasePath()
     {
         if ($this->getSpecificationVersion() === '3') {
-            $basePath =isset($this->jsonFile['servers']) ? explode('/', $this->jsonFile['servers'][0]['url']) : '';
-            return is_array($basePath) ? '/' . end($basePath) : $basePath;
+            $uriServer = new Uri($this->getServerUrl());
+            return $uriServer->getPath();
         }
 
         return isset($this->jsonFile['basePath']) ? $this->jsonFile['basePath'] : '';
@@ -267,5 +286,10 @@ class SwaggerSchema
     public function setAllowNullValues($value)
     {
         $this->allowNullValues = (bool) $value;
+    }
+
+    public function setServerVariable($var, $value)
+    {
+        $this->serverVariables[$var] = $value;
     }
 }
