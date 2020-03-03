@@ -2,7 +2,7 @@
 
 namespace Test;
 
-class OpenApiTestCaseTest extends BaseTestCase
+class OpenApiTestCaseTest extends TestingTestCase
 {
 
     public function setUp()

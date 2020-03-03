@@ -2,7 +2,7 @@
 
 namespace Test;
 
-class SwaggerTestCaseTest extends BaseTestCase
+class SwaggerTestCaseTest extends TestingTestCase
 {
 
     public function setUp()

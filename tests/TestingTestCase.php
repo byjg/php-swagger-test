@@ -5,7 +5,7 @@ namespace Test;
 use ByJG\ApiTools\ApiRequester;
 use ByJG\ApiTools\ApiTestCase;
 
-class BaseTestCase extends ApiTestCase
+class TestingTestCase extends ApiTestCase
 {
 
     protected $filePath;
