@@ -406,7 +406,7 @@ class OpenApiSchemaTest extends TestCase
      */
     public function testGetDefinitionFailed()
     {
-        $this->openapiObject->getDefintion('Order');
+        $this->openapiObject->getDefinition('Order');
     }
 
     /**
@@ -417,7 +417,7 @@ class OpenApiSchemaTest extends TestCase
      */
     public function testGetDefinitionFailed2()
     {
-        $this->openapiObject->getDefintion('1/2/Order');
+        $this->openapiObject->getDefinition('1/2/Order');
     }
 
     /**
@@ -428,7 +428,7 @@ class OpenApiSchemaTest extends TestCase
      */
     public function testGetDefinitionFailed3()
     {
-        $this->openapiObject->getDefintion('#/components/schemas/OrderNOtFound');
+        $this->openapiObject->getDefinition('#/components/schemas/OrderNOtFound');
     }
 
     /**
@@ -475,7 +475,7 @@ class OpenApiSchemaTest extends TestCase
             ],
         ];
 
-        $order = $this->openapiObject->getDefintion('#/components/schemas/Order');
+        $order = $this->openapiObject->getDefinition('#/components/schemas/Order');
         $this->assertEquals($expected, $order);
     }
 

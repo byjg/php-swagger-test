@@ -443,7 +443,7 @@ class SwaggerSchemaTest extends TestCase
      */
     public function testGetDefinitionFailed()
     {
-        $this->object->getDefintion('Order');
+        $this->object->getDefinition('Order');
     }
 
     /**
@@ -454,7 +454,7 @@ class SwaggerSchemaTest extends TestCase
      */
     public function testGetDefinitionFailed2()
     {
-        $this->object->getDefintion('1/2/Order');
+        $this->object->getDefinition('1/2/Order');
     }
 
     /**
@@ -465,7 +465,7 @@ class SwaggerSchemaTest extends TestCase
      */
     public function testGetDefinitionFailed3()
     {
-        $this->object->getDefintion('#/definitions/OrderNOtFound');
+        $this->object->getDefinition('#/definitions/OrderNOtFound');
     }
 
     /**
@@ -474,7 +474,7 @@ class SwaggerSchemaTest extends TestCase
      */
     public function testGetDefinition()
     {
-        $order = $this->object->getDefintion('#/definitions/Order');
+        $order = $this->object->getDefinition('#/definitions/Order');
 
         $this->assertEquals(
             [

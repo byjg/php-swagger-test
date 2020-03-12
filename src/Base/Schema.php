@@ -163,7 +163,7 @@ abstract class Schema
      * @throws DefinitionNotFoundException
      * @throws InvalidDefinitionException
      */
-    abstract public function getDefintion($name);
+    abstract public function getDefinition($name);
 
     /**
      * @param $path

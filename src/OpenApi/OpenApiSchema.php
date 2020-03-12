@@ -91,7 +91,7 @@ class OpenApiSchema extends Schema
      * @throws DefinitionNotFoundException
      * @throws InvalidDefinitionException
      */
-    public function getDefintion($name)
+    public function getDefinition($name)
     {
         $nameParts = explode('/', $name);
 

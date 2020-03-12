@@ -276,7 +276,7 @@ abstract class Body
 
         // Get References and try to match it again
         if (isset($schema['$ref'])) {
-            $defintion = $this->swaggerSchema->getDefintion($schema['$ref']);
+            $defintion = $this->swaggerSchema->getDefinition($schema['$ref']);
             return $this->matchSchema($schema['$ref'], $defintion, $body);
         }
 
