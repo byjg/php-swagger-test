@@ -58,7 +58,7 @@ class ApiRequester
 
     /**
      * @param string $method
-     * @return ApiRequester
+     * @return $this
      */
     public function withMethod($method)
     {
@@ -69,7 +69,7 @@ class ApiRequester
 
     /**
      * @param string $path
-     * @return ApiRequester
+     * @return $this
      */
     public function withPath($path)
     {
@@ -80,7 +80,7 @@ class ApiRequester
 
     /**
      * @param array $requestHeader
-     * @return ApiRequester
+     * @return $this
      */
     public function withRequestHeader($requestHeader)
     {
@@ -96,7 +96,7 @@ class ApiRequester
 
     /**
      * @param array $query
-     * @return ApiRequester
+     * @return $this
      */
     public function withQuery($query)
     {
@@ -112,7 +112,7 @@ class ApiRequester
 
     /**
      * @param null $requestBody
-     * @return ApiRequester
+     * @return $this
      */
     public function withRequestBody($requestBody)
     {
