@@ -56,7 +56,7 @@ class SwaggerRequester
 
     /**
      * @param string $method
-     * @return SwaggerRequester
+     * @return $this
      */
     public function withMethod($method)
     {
@@ -67,7 +67,7 @@ class SwaggerRequester
 
     /**
      * @param string $path
-     * @return SwaggerRequester
+     * @return $this
      */
     public function withPath($path)
     {
@@ -78,7 +78,7 @@ class SwaggerRequester
 
     /**
      * @param array $requestHeader
-     * @return SwaggerRequester
+     * @return $this
      */
     public function withRequestHeader($requestHeader)
     {
@@ -94,7 +94,7 @@ class SwaggerRequester
 
     /**
      * @param array $query
-     * @return SwaggerRequester
+     * @return $this
      */
     public function withQuery($query)
     {
@@ -110,7 +110,7 @@ class SwaggerRequester
 
     /**
      * @param null $requestBody
-     * @return SwaggerRequester
+     * @return $this
      */
     public function withRequestBody($requestBody)
     {
