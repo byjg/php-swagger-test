@@ -12,6 +12,7 @@ use ByJG\ApiTools\OpenApi\OpenApiSchema;
 use ByJG\ApiTools\Swagger\SwaggerResponseBody;
 use ByJG\ApiTools\Swagger\SwaggerSchema;
 use ByJG\Util\Uri;
+use InvalidArgumentException;
 
 abstract class Schema
 {
@@ -32,14 +33,35 @@ abstract class Schema
         return $this->specificationVersion;
     }
 
-    public static function getInstance($jsonFile, $extraArgs = false)
+    /**
+     * Factory function for schemata.
+     *
+     * Initialize with schema data, which can be a PHP array or encoded as JSON.
+     * This determines the type of the schema from the given data.
+     *
+     * @param array|string $data
+     * @param bool $extraArgs
+     * @return Schema
+     */
+    public static function getInstance($data, $extraArgs = false)
     {
-        $jsonFile = json_decode($jsonFile, true);
-        if (isset($jsonFile['swagger'])) {
-            return new SwaggerSchema($jsonFile, $extraArgs);
+        // when given a string, decode from JSON
+        if (is_string($data)) {
+            $data = json_decode($data, true);
+        }
+        // make sure we got an array
+        if (!is_array($data)) {
+            throw new InvalidArgumentException('schema must be given as array or JSON string');
+        }
+        // check which type of file we got and dispatch to derived class constructor
+        if (isset($data['swagger'])) {
+            return new SwaggerSchema($data, $extraArgs);
+        }
+        if (isset($data['openapi'])) {
+            return new OpenApiSchema($data);
         }
 
-        return new OpenApiSchema($jsonFile);
+        throw new InvalidArgumentException('failed to determine schema type from data');
     }
 
     /**
