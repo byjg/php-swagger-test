@@ -9,19 +9,29 @@ use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\ApiTools\Exception\PathNotFoundException;
 use ByJG\Util\Uri;
+use InvalidArgumentException;
 
 class OpenApiSchema extends Schema
 {
 
     protected $serverVariables = [];
 
-
-    public function __construct($jsonFile)
+    /**
+     * Initialize with schema data, which can be a PHP array or encoded as JSON.
+     *
+     * @param array|string $data
+     */
+    public function __construct($data)
     {
-        if (!is_array($jsonFile)) {
-            $jsonFile = json_decode($jsonFile, true);
+        // when given a string, decode from JSON
+        if (is_string($data)) {
+            $data = json_decode($data, true);
         }
-        $this->jsonFile = $jsonFile;
+        // make sure we got an array
+        if (!is_array($data)) {
+            throw new InvalidArgumentException('schema must be given as array or JSON string');
+        }
+        $this->jsonFile = $data;
     }
 
     public function getServerUrl()
