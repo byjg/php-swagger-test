@@ -2,6 +2,7 @@
 
 namespace ByJG\ApiTools\Base;
 
+use ByJG\ApiTools\AbstractRequester;
 use ByJG\ApiTools\ApiRequester;
 use ByJG\ApiTools\Base\Schema;
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
@@ -69,7 +70,7 @@ abstract class BaseTestCase extends TestCase
     }
 
     /**
-     * @param ApiRequester $request
+     * @param AbstractRequester $request
      * @return mixed
      * @throws DefinitionNotFoundException
      * @throws HttpMethodNotFoundException
@@ -79,7 +80,7 @@ abstract class BaseTestCase extends TestCase
      * @throws StatusCodeNotMatchedException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function assertRequest(ApiRequester $request)
+    public function assertRequest(AbstractRequester $request)
     {
         // Add own swagger if nothing is passed.
         if (!$request->hasSwaggerSchema()) {
