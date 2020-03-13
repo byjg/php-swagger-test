@@ -4,6 +4,17 @@ namespace ByJG\Swagger;
 
 use ByJG\Swagger\Exception\GenericSwaggerException;
 use GuzzleHttp\Exception\GuzzleException;
+use ByJG\Swagger\AbstractRequester;
+use ByJG\Swagger\ApiRequester;
+use ByJG\Swagger\Base\Schema;
+use ByJG\Swagger\Exception\DefinitionNotFoundException;
+use ByJG\Swagger\Exception\HttpMethodNotFoundException;
+use ByJG\Swagger\Exception\InvalidDefinitionException;
+use ByJG\Swagger\Exception\NotMatchedException;
+use ByJG\Swagger\Exception\PathNotFoundException;
+use ByJG\Swagger\Exception\StatusCodeNotMatchedException;
+use ByJG\Swagger\Exception\GenericSwaggerException;
+use GuzzleHttp\GuzzleException;
 use PHPUnit\Framework\TestCase;
 
 abstract class SwaggerTestCase extends TestCase
@@ -76,7 +87,7 @@ abstract class SwaggerTestCase extends TestCase
     }
 
     /**
-     * @param SwaggerRequester $request
+     * @param AbstractRequester $request
      * @return mixed
      * @throws Exception\DefinitionNotFoundException
      * @throws Exception\HttpMethodNotFoundException
@@ -89,7 +100,7 @@ abstract class SwaggerTestCase extends TestCase
      * @throws GenericSwaggerException
      * @throws GuzzleException
      */
-    public function assertRequest(SwaggerRequester $request)
+    public function assertRequest(AbstractRequester $request)
     {
         // Add own swagger if nothing is passed.
         if (!$request->hasSwaggerSchema()) {
