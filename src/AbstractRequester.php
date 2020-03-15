@@ -31,7 +31,7 @@ abstract class AbstractRequester
     /**
      * @var Schema
      */
-    protected $swaggerSchema = null;
+    protected $schema = null;
 
     protected $statusExpected = 200;
     protected $assertHeader = [];
@@ -55,9 +55,9 @@ abstract class AbstractRequester
      * @param Schema $schema
      * @return $this
      */
-    public function withSwaggerSchema($schema)
+    public function withSchema($schema)
     {
-        $this->swaggerSchema = $schema;
+        $this->schema = $schema;
 
         return $this;
     }
@@ -65,9 +65,9 @@ abstract class AbstractRequester
     /**
      * @return bool
      */
-    public function hasSwaggerSchema()
+    public function hasSchema()
     {
-        return !empty($this->swaggerSchema);
+        return !empty($this->schema);
     }
 
     /**
@@ -179,12 +179,12 @@ abstract class AbstractRequester
         );
 
         // Defining Variables
-        $serverUrl = $this->swaggerSchema->getServerUrl() . $paramInQuery;
-        $basePath = $this->swaggerSchema->getBasePath();
+        $serverUrl = $this->schema->getServerUrl() . $paramInQuery;
+        $basePath = $this->schema->getBasePath();
         $pathName = $this->path;
 
         // Check if the body is the expected before request
-        $bodyRequestDef = $this->swaggerSchema->getRequestParameters("$basePath$pathName", $this->method);
+        $bodyRequestDef = $this->schema->getRequestParameters("$basePath$pathName", $this->method);
         $bodyRequestDef->match($this->requestBody);
 
         // Make the request
@@ -215,7 +215,7 @@ abstract class AbstractRequester
             );
         }
 
-        $bodyResponseDef = $this->swaggerSchema->getResponseParameters(
+        $bodyResponseDef = $this->schema->getResponseParameters(
             "$basePath$pathName",
             $this->method,
             $this->statusExpected

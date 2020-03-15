@@ -20,7 +20,7 @@ abstract class BaseTestCase extends TestCase
     /**
      * @var Schema
      */
-    protected $swaggerSchema;
+    protected $schema;
 
     protected $filePath;
 
@@ -51,7 +51,7 @@ abstract class BaseTestCase extends TestCase
     ) {
         $requester = new ApiRequester();
         $body = $requester
-            ->withSwaggerSchema($this->swaggerSchema)
+            ->withSchema($this->schema)
             ->withMethod($method)
             ->withPath($path)
             ->withQuery($query)
@@ -82,9 +82,9 @@ abstract class BaseTestCase extends TestCase
      */
     public function assertRequest(AbstractRequester $request)
     {
-        // Add own swagger if nothing is passed.
-        if (!$request->hasSwaggerSchema()) {
-            $request->withSwaggerSchema($this->swaggerSchema);
+        // Add own schema if nothing is passed.
+        if (!$request->hasSchema()) {
+            $request->withSchema($this->schema);
         }
 
         // Request based on the Swagger Request definitios
