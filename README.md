@@ -113,6 +113,34 @@ class MyTestCase extends \ByJG\ApiTools\ApiTestCase
 }
 ```
 
+# Using it for Functional Tests without a Webserver
+
+Sometimes, you want to run functional tests without making the actual HTTP
+requests and without setting up a webserver for that. Instead, you forward the
+requests to the routing of your application kernel which lives in the same
+process as the functional tests. In order to do that, you need a bit of
+gluecode based on the `AbstractRequester` baseclass:
+```php
+class MyAppRequester extends ByJG\ApiTools\AbstractRequester
+{
+    /** @var MyAppKernel */
+    private $app;
+
+    public function __construct(MyAppKernel $app)
+    {
+        parent::construct();
+        $this->app = $app;
+    }
+
+    protected function handleRequest(RequestInterface $request)
+    {
+        return $this->app->handle($request);
+    }
+}
+```
+You now use an instance of this class in place of the `ApiRequester` class from the examples above. Of course, if you need to apply changes to the request or the response in order
+to fit your framework, this is exactly the right place to do it.
+
 # Using it as Unit Test cases
 
 If you want mock the request API and just test the expected parameters you are sending and 
