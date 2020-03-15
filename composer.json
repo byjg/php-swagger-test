@@ -1,6 +1,6 @@
 {
   "name": "byjg/swagger-test",
-  "description": "A set of tools for test your REST calls based on the swagger documentation using PHPUnit",
+  "description": "A set of tools for testing your REST calls based on the Swagger or OpenAPI documentation using PHPUnit",
   "minimum-stability": "dev",
   "prefer-stable": true,
   "license": "MIT",

@@ -146,11 +146,11 @@ to fit your framework, this is exactly the right place to do it.
 If you want mock the request API and just test the expected parameters you are sending and 
 receiving you have to:
 
-**1. Create the Swagger Test Schema**
+**1. Create the Swagger or OpenAPI Test Schema**
 
 ```php
 <?php
-$swaggerSchema = \ByJG\ApiTools\Base\Schema::getInstance($contentsOfSwaggerJson);
+$schema = \ByJG\ApiTools\Base\Schema::getInstance($contentsOfSchemaJson);
 ```
 
 **2. Get the definitions for your path**
@@ -162,10 +162,10 @@ $statusExpected = 200;
 $method = 'POST';
 
 // Returns a SwaggerRequestBody instance
-$bodyRequestDef = $swaggerSchema->getRequestParameters($path, $method);
+$bodyRequestDef = $schema->getRequestParameters($path, $method);
 
 // Returns a SwaggerResponseBody instance
-$bodyResponseDef = $swaggerSchema->getResponseParameters($path, $method, $statusExpected);
+$bodyResponseDef = $schema->getResponseParameters($path, $method, $statusExpected);
 ```
 
 **3. Match the result**
@@ -190,8 +190,8 @@ So, before your API Code you can validate the request body using:
 
 ```php
 <?php
-$swaggerSchema = \ByJG\ApiTools\Base\Schema::getInstance($contentsOfSwaggerJson);
-$bodyRequestDef = $swaggerSchema->getRequestParameters($path, $method);
+$schema = \ByJG\ApiTools\Base\Schema::getInstance($contentsOfSchemaJson);
+$bodyRequestDef = $schema->getRequestParameters($path, $method);
 $bodyRequestDef->match($requestBody);
 ```
 

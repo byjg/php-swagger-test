@@ -19,6 +19,6 @@ abstract class ApiTestCase extends BaseTestCase
             throw new GenericSwaggerException('You have to define the property $filePath');
         }
 
-        $this->swaggerSchema = Schema::getInstance(file_get_contents($this->filePath));
+        $this->schema = Schema::getInstance(file_get_contents($this->filePath));
     }
 }

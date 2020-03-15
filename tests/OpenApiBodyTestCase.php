@@ -2,14 +2,14 @@
 
 namespace Test;
 
-use ByJG\ApiTools\Swagger\SwaggerSchema;
+use ByJG\ApiTools\OpenApi\OpenApiSchema;
 use PHPUnit\Framework\TestCase;
 
 class OpenApiBodyTestCase extends TestCase
 {
     /**
      * @param bool $allowNullValues
-     * @return SwaggerSchema
+     * @return OpenApiSchema
      */
     protected static function openApiSchema($allowNullValues = false)
     {
@@ -21,7 +21,7 @@ class OpenApiBodyTestCase extends TestCase
 
     /**
      * @param bool $allowNullValues
-     * @return SwaggerSchema
+     * @return OpenApiSchema
      */
     protected static function openApiSchema2($allowNullValues = false)
     {
@@ -33,7 +33,7 @@ class OpenApiBodyTestCase extends TestCase
 
     /**
      * @param bool $allowNullValues
-     * @return SwaggerSchema
+     * @return OpenApiSchema
      */
     protected static function openApiSchema3($allowNullValues = false)
     {

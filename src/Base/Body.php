@@ -17,7 +17,7 @@ abstract class Body
     /**
      * @var Schema
      */
-    protected $swaggerSchema;
+    protected $schema;
 
     protected $structure;
 
@@ -32,16 +32,16 @@ abstract class Body
     protected $allowNullValues;
 
     /**
-     * SwaggerRequestBody constructor.
+     * Body constructor.
      *
-     * @param Schema $swaggerSchema
+     * @param Schema $schema
      * @param string $name
      * @param array $structure
      * @param bool $allowNullValues
      */
-    public function __construct(Schema $swaggerSchema, $name, $structure, $allowNullValues = false)
+    public function __construct(Schema $schema, $name, $structure, $allowNullValues = false)
     {
-        $this->swaggerSchema = $swaggerSchema;
+        $this->schema = $schema;
         $this->name = $name;
         if (!is_array($structure)) {
             throw new InvalidArgumentException('I expected the structure to be an array');
@@ -147,7 +147,7 @@ abstract class Body
         }
 
         $type = $schema['type'];
-        $nullable = isset($schema['nullable']) ? (bool)$schema['nullable'] : $this->swaggerSchema->isAllowNullValues();
+        $nullable = isset($schema['nullable']) ? (bool)$schema['nullable'] : $this->schema->isAllowNullValues();
 
         $validators = [
             function () use ($name, $body, $type, $nullable)
@@ -276,7 +276,7 @@ abstract class Body
 
         // Get References and try to match it again
         if (isset($schema['$ref'])) {
-            $defintion = $this->swaggerSchema->getDefinition($schema['$ref']);
+            $defintion = $this->schema->getDefinition($schema['$ref']);
             return $this->matchSchema($schema['$ref'], $defintion, $body);
         }
 
