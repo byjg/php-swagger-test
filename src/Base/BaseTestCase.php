@@ -22,7 +22,17 @@ abstract class BaseTestCase extends TestCase
      */
     protected $schema;
 
-    protected $filePath;
+    /**
+     * configure the schema to use for requests
+     *
+     * When set, all requests without an own schema use this one instead.
+     *
+     * @param Schema|null $schema
+     */
+    public function setSchema($schema)
+    {
+        $this->schema = $schema;
+    }
 
     /**
      * @param string $method The HTTP Method: GET, PUT, DELETE, POST, etc
@@ -49,6 +59,9 @@ abstract class BaseTestCase extends TestCase
         $requestBody = null,
         $requestHeader = []
     ) {
+        if (!$this->schema) {
+            throw new GenericSwaggerException('You have to configure a schema for the testcase');
+        }
         $requester = new ApiRequester();
         $body = $requester
             ->withSchema($this->schema)
@@ -84,6 +97,9 @@ abstract class BaseTestCase extends TestCase
     {
         // Add own schema if nothing is passed.
         if (!$request->hasSchema()) {
+            if (!$this->schema) {
+                throw new GenericSwaggerException('You have to configure a schema for either the request or the testcase');
+            }
             $request->withSchema($this->schema);
         }
 

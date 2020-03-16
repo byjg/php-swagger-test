@@ -8,15 +8,27 @@ use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\ApiTools\Exception\PathNotFoundException;
+use InvalidArgumentException;
 
 class SwaggerSchema extends Schema
 {
-    public function __construct($jsonFile, $allowNullValues = false)
+    /**
+     * Initialize with schema data, which can be a PHP array or encoded as JSON.
+     *
+     * @param array|string $data
+     * @param bool $allowNullValues
+     */
+    public function __construct($data, $allowNullValues = false)
     {
-        if (!is_array($jsonFile)) {
-            $jsonFile = json_decode($jsonFile, true);
+        // when given a string, decode from JSON
+        if (is_string($data)) {
+            $data = json_decode($data, true);
         }
-        $this->jsonFile = $jsonFile;
+        // make sure we got an array
+        if (!is_array($data)) {
+            throw new InvalidArgumentException('schema must be given as array or JSON string');
+        }
+        $this->jsonFile = $data;
         $this->allowNullValues = (bool) $allowNullValues;
     }
 

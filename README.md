@@ -47,6 +47,10 @@ make a request to your API Method and check if the request parameters, status an
  */
 class MyTestCase extends \ByJG\ApiTools\ApiTestCase
 {
+    /**
+     * You can set this member to a JSON schema file, which is then automatically
+     * used for the tests. Alternatively, configure one using setSchema().
+     */
     protected $filePath = '/path/to/json/definition';
     
     /**
