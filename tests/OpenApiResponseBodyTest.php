@@ -410,4 +410,21 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
         $responseParameter = $this->openApiSchema2()->getResponseParameters('/v2/anyvalue', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
     }
+
+    public function testResponseDefault()
+    {
+        $body = [];
+        $responseParameter = $this->openApiSchema()->getResponseParameters('/v2/user', 'post', 503);
+        $this->assertTrue($responseParameter->match($body));
+    }
+
+    /**
+     * @expectedException ByJG\Swagger\Exception\InvalidDefinitionException
+     * @expectedExceptionMessage Could not found status code '503'
+     */
+    public function testResponseWithNoDefault()
+    {
+        $body = [];
+        $responseParameter = $this->openApiSchema()->getResponseParameters('/v2/user/login', 'get', 503);
+    }
 }
