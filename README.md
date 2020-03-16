@@ -47,11 +47,11 @@ make a request to your API Method and check if the request parameters, status an
  */
 class MyTestCase extends \ByJG\ApiTools\ApiTestCase
 {
-    /**
-     * You can set this member to a JSON schema file, which is then automatically
-     * used for the tests. Alternatively, configure one using setSchema().
-     */
-    protected $filePath = '/path/to/json/definition';
+    public function setUp()
+    {
+        $schema = \ByJG\ApiTools\Base\Schema::getInstance(file_get_contents('/path/to/json/definition'));
+        $this->setSchema($schema);
+    }
     
     /**
      * Test if the REST address /path/for/get/ID with the method GET returns what is
