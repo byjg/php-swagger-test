@@ -7,6 +7,10 @@ use ByJG\ApiTools\Exception\GenericSwaggerException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\InvalidRequestException;
 use ByJG\ApiTools\Exception\NotMatchedException;
+use ByJG\ApiTools\OpenApi\OpenApiResponseBody;
+use ByJG\ApiTools\OpenApi\OpenApiSchema;
+use ByJG\ApiTools\Swagger\SwaggerResponseBody;
+use ByJG\ApiTools\Swagger\SwaggerSchema;
 use InvalidArgumentException;
 
 abstract class Body
@@ -48,6 +52,27 @@ abstract class Body
         }
         $this->structure = $structure;
         $this->allowNullValues = $allowNullValues;
+    }
+
+    /**
+     * @param Schema $schema
+     * @param $name
+     * @param $structure
+     * @param bool $allowNullValues
+     * @return OpenApiResponseBody|SwaggerResponseBody
+     * @throws GenericSwaggerException
+     */
+    public static function getInstance(Schema $schema, $name, $structure, $allowNullValues = false)
+    {
+        if ($schema instanceof SwaggerSchema) {
+            return new SwaggerResponseBody($schema, $name, $structure, $allowNullValues);
+        }
+
+        if ($schema instanceof OpenApiSchema) {
+            return new OpenApiResponseBody($schema, $name, $structure, $allowNullValues);
+        }
+
+        throw new GenericSwaggerException("Cannot get instance SwaggerBody or SchemaBody from " . get_class($schema));
     }
 
     abstract public function match($body);

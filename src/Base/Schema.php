@@ -135,10 +135,15 @@ abstract class Schema
      * @throws InvalidDefinitionException
      * @throws NotMatchedException
      * @throws PathNotFoundException
+     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
      */
     public function getResponseParameters($path, $method, $status)
     {
         $structure = $this->getPathDefinition($path, $method);
+
+        if (!isset($structure['responses']["200"])) {
+            $structure['responses']["200"] = ["description" => "Auto Generated OK"];
+        }
 
         $verifyStatus = $status;
         if (!isset($structure['responses'][$verifyStatus])) {
@@ -148,11 +153,7 @@ abstract class Schema
             }
         }
 
-        if ($this instanceof SwaggerSchema) {
-            return new SwaggerResponseBody($this, "$method $status $path", $structure['responses'][$verifyStatus]);
-        }
-
-        return new OpenApiResponseBody($this, "$method $status $path", $structure['responses'][$verifyStatus]);
+        return Body::getInstance($this, "$method $status $path", $structure['responses'][$verifyStatus]);
     }
 
     /**
