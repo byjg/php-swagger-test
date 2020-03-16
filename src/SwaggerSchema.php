@@ -259,11 +259,15 @@ class SwaggerSchema
     {
         $structure = $this->getPathDefinition($path, $method);
 
-        if (!isset($structure['responses'][$status])) {
-            throw new InvalidDefinitionException("Could not found status code '$status' in '$path' and '$method'");
+        if (isset($structure['responses'][$status])) {
+            return new SwaggerResponseBody($this, "$method $status $path", $structure['responses'][$status]);
         }
 
-        return new SwaggerResponseBody($this, "$method $status $path", $structure['responses'][$status]);
+        if (isset($structure['responses']['default'])) {
+            return new SwaggerResponseBody($this, "$method $status $path", $structure['responses']['default']);
+        }
+        
+        throw new InvalidDefinitionException("Could not found status code '$status' in '$path' and '$method'");
     }
 
     /**
