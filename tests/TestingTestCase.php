@@ -8,14 +8,6 @@ use ByJG\ApiTools\ApiTestCase;
 class TestingTestCase extends ApiTestCase
 {
 
-    protected $filePath;
-
-    public function setUp()
-    {
-        // This is important!
-        parent::setUp();
-    }
-
     public function testGet()
     {
         $request = new ApiRequester();
