@@ -140,18 +140,19 @@ abstract class Schema
     {
         $structure = $this->getPathDefinition($path, $method);
 
-        if (!isset($structure['responses'][$status])) {
-            if ($status != "200") {
+        $verifyStatus = $status;
+        if (!isset($structure['responses'][$verifyStatus])) {
+            $verifyStatus = 'default';
+            if (!isset($structure['responses'][$verifyStatus])) {
                 throw new InvalidDefinitionException("Could not found status code '$status' in '$path' and '$method'");
             }
-            $structure['responses'][$status] = ["description" => "Auto Generated OK"];
         }
 
         if ($this instanceof SwaggerSchema) {
-            return new SwaggerResponseBody($this, "$method $status $path", $structure['responses'][$status]);
+            return new SwaggerResponseBody($this, "$method $status $path", $structure['responses'][$verifyStatus]);
         }
 
-        return new OpenApiResponseBody($this, "$method $status $path", $structure['responses'][$status]);
+        return new OpenApiResponseBody($this, "$method $status $path", $structure['responses'][$verifyStatus]);
     }
 
     /**
