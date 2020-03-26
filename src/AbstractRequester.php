@@ -179,7 +179,7 @@ abstract class AbstractRequester
         );
 
         // Defining Variables
-        $serverUrl = $this->schema->getServerUrl() . $paramInQuery;
+        $serverUrl = $this->schema->getServerUrl();
         $basePath = $this->schema->getBasePath();
         $pathName = $this->path;
 
