@@ -1,16 +1,27 @@
 <?php
 
-namespace ByJG\Swagger;
+namespace ByJG\ApiTools;
 
-use ByJG\Swagger\Exception\NotMatchedException;
-use ByJG\Swagger\Exception\StatusCodeNotMatchedException;
-use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
+use ByJG\ApiTools\Base\Schema;
+use ByJG\ApiTools\Exception\NotMatchedException;
+use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
-class SwaggerRequester
+/**
+ * Abstract baseclass for request handlers.
+ *
+ * The baseclass provides processing and verification of request and response.
+ * It only delegates the actual message exchange to the derived class. For the
+ * messages, it uses the PSR-7 implementation from Guzzle.
+ *
+ * This is an implementation of the Template Method Patttern
+ * (https://en.wikipedia.org/wiki/Template_method_pattern).
+ */
+abstract class AbstractRequester
 {
     protected $method = 'get';
     protected $path = '/';
@@ -18,30 +29,35 @@ class SwaggerRequester
     protected $query = [];
     protected $requestBody = null;
     /**
-     * @var SwaggerSchema
+     * @var Schema
      */
-    protected $swaggerSchema = null;
+    protected $schema = null;
 
     protected $statusExpected = 200;
     protected $assertHeader = [];
 
-    /**
-     * @var ClientInterface
-     */
-    protected $guzzleHttpClient;
-
     public function __construct()
     {
-        $this->guzzleHttpClient = new Client(['headers' => ['User-Agent' => 'Swagger Test']]);
     }
 
     /**
-     * @param SwaggerSchema $schema
+     * abstract function to be implemented by derived classes
+     *
+     * This function must be implemented by derived classes. It should process
+     * the given request and return an according response.
+     *
+     * @param RequestInterface $request
+     * @return ResponseInterface
+     */
+    abstract protected function handleRequest(RequestInterface $request);
+
+    /**
+     * @param Schema $schema
      * @return $this
      */
-    public function withSwaggerSchema($schema)
+    public function withSchema($schema)
     {
-        $this->swaggerSchema = $schema;
+        $this->schema = $schema;
 
         return $this;
     }
@@ -49,14 +65,14 @@ class SwaggerRequester
     /**
      * @return bool
      */
-    public function hasSwaggerSchema()
+    public function hasSchema()
     {
-        return !empty($this->swaggerSchema);
+        return !empty($this->schema);
     }
 
     /**
      * @param string $method
-     * @return SwaggerRequester
+     * @return $this
      */
     public function withMethod($method)
     {
@@ -67,7 +83,7 @@ class SwaggerRequester
 
     /**
      * @param string $path
-     * @return SwaggerRequester
+     * @return $this
      */
     public function withPath($path)
     {
@@ -78,7 +94,7 @@ class SwaggerRequester
 
     /**
      * @param array $requestHeader
-     * @return SwaggerRequester
+     * @return $this
      */
     public function withRequestHeader($requestHeader)
     {
@@ -94,7 +110,7 @@ class SwaggerRequester
 
     /**
      * @param array $query
-     * @return SwaggerRequester
+     * @return $this
      */
     public function withQuery($query)
     {
@@ -110,7 +126,7 @@ class SwaggerRequester
 
     /**
      * @param null $requestBody
-     * @return SwaggerRequester
+     * @return $this
      */
     public function withRequestBody($requestBody)
     {
@@ -136,15 +152,12 @@ class SwaggerRequester
     /**
      * @return mixed
      * @throws Exception\DefinitionNotFoundException
-     * @throws Exception\GenericSwaggerException
      * @throws Exception\HttpMethodNotFoundException
      * @throws Exception\InvalidDefinitionException
-     * @throws Exception\InvalidRequestException
      * @throws Exception\PathNotFoundException
-     * @throws Exception\RequiredArgumentNotFound
+     * @throws GuzzleException
      * @throws NotMatchedException
      * @throws StatusCodeNotMatchedException
-     * @throws GuzzleException
      */
     public function send()
     {
@@ -166,34 +179,25 @@ class SwaggerRequester
         );
 
         // Defining Variables
-        $serverUrl = null;
-        $basePath = "";
-        $pathName = "";
-        if ($this->swaggerSchema->getSpecificationVersion() === '3') {
-            $serverUrl = $this->swaggerSchema->getServerUrl();
-        } else {
-            $httpSchema = $this->swaggerSchema->getHttpSchema();
-            $host = $this->swaggerSchema->getHost();
-            $basePath = $this->swaggerSchema->getBasePath();
-            $pathName = $this->path;
-            $serverUrl = "$httpSchema://$host$basePath$pathName$paramInQuery";
-        }
+        $serverUrl = $this->schema->getServerUrl();
+        $basePath = $this->schema->getBasePath();
+        $pathName = $this->path;
 
         // Check if the body is the expected before request
-        $bodyRequestDef = $this->swaggerSchema->getRequestParameters("$basePath$pathName", $this->method);
+        $bodyRequestDef = $this->schema->getRequestParameters("$basePath$pathName", $this->method);
         $bodyRequestDef->match($this->requestBody);
 
         // Make the request
         $request = new Request(
             $this->method,
-            $serverUrl,
+            $serverUrl . $pathName . $paramInQuery,
             $header,
             json_encode($this->requestBody)
         );
 
         $statusReturned = null;
         try {
-            $response = $this->guzzleHttpClient->send($request, ['allow_redirects' => false]);
+            $response = $this->handleRequest($request);
             $responseHeader = $response->getHeaders();
             $responseBody = json_decode((string) $response->getBody(), true);
             $statusReturned = $response->getStatusCode();
@@ -211,7 +215,7 @@ class SwaggerRequester
             );
         }
 
-        $bodyResponseDef = $this->swaggerSchema->getResponseParameters(
+        $bodyResponseDef = $this->schema->getResponseParameters(
             "$basePath$pathName",
             $this->method,
             $this->statusExpected

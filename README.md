@@ -13,7 +13,8 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/byjg/php-swagger-test/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/byjg/php-swagger-test/?branch=master)
 
 
-A set of tools for test your REST calls based on the swagger documentation using PHPUnit.
+A set of tools for test your REST calls based on the OpenApi specification using PHPUnit. Currently this library supports 
+the specifications `2.0` and `3.0`.
 
 PHP Swagger Test can help you to test your REST Api. You can use this tool both for Unit Tests or Functional Tests.
 
@@ -21,9 +22,9 @@ This tool reads a previously Swagger JSON file (not YAML) and enable you to test
 You can use the tool "https://github.com/zircote/swagger-php" for create the JSON file when you are developing your
 rest API. 
 
-The SwaggerTest's assertion process is based on throwing exceptions if some validation or test failed.
+The ApiTestCase's assertion process is based on throwing exceptions if some validation or test failed.
 
-You can use the Swagger Test as:
+You can use the Swagger Test library as:
 
 - Functional test cases
 - Unit test cases
@@ -31,7 +32,7 @@ You can use the Swagger Test as:
 
 # OpenAPI 3 Support
 
-Basic OpenAPI 3 Support has been added. This means that a Swagger specification that has been migrated to OpenAPI 3 should work here. The
+OpenAPI 3 Support has been added. This means that a Swagger specification that has been migrated to OpenAPI 3 should work here. The
 new OpenAPI 3 features, like callbacks and links, were not implemented. Previous specification versions are still supported.
 
 # Using it as Functional Test cases
@@ -44,9 +45,13 @@ make a request to your API Method and check if the request parameters, status an
 /**
  * Create a TestCase inherited from SwaggerTestCase
  */
-class MyTestCase extends \ByJG\Swagger\SwaggerTestCase
+class MyTestCase extends \ByJG\ApiTools\ApiTestCase
 {
-    protected $filePath = '/path/to/json/definition';
+    public function setUp()
+    {
+        $schema = \ByJG\ApiTools\Base\Schema::getInstance(file_get_contents('/path/to/json/definition'));
+        $this->setSchema($schema);
+    }
     
     /**
      * Test if the REST address /path/for/get/ID with the method GET returns what is
@@ -54,7 +59,7 @@ class MyTestCase extends \ByJG\Swagger\SwaggerTestCase
      */
     public function testGet()
     {
-        $request = new \ByJG\Swagger\SwaggerRequester();
+        $request = new \ByJG\ApiTools\ApiRequester();
         $request
             ->withMethod('GET')
             ->withPath("/path/for/get/1");
@@ -67,7 +72,7 @@ class MyTestCase extends \ByJG\Swagger\SwaggerTestCase
      */
     public function testGetNotFound()
     {
-        $request = new \ByJG\Swagger\SwaggerRequester();
+        $request = new \ByJG\ApiTools\ApiRequester();
         $request
             ->withMethod('GET')
             ->withPath("/path/for/get/NOTFOUND")
@@ -83,7 +88,7 @@ class MyTestCase extends \ByJG\Swagger\SwaggerTestCase
      */
     public function testPost()
     {
-        $request = new \ByJG\Swagger\SwaggerRequester();
+        $request = new \ByJG\ApiTools\ApiRequester();
         $request
             ->withMethod('POST')
             ->withPath("/path/for/post/2")
@@ -99,7 +104,7 @@ class MyTestCase extends \ByJG\Swagger\SwaggerTestCase
      */
     public function testPost2()
     {
-        $request = new \ByJG\Swagger\SwaggerRequester();
+        $request = new \ByJG\ApiTools\ApiRequester();
         $request
             ->withMethod('POST')
             ->withPath("/path/for/post/3")
@@ -112,16 +117,44 @@ class MyTestCase extends \ByJG\Swagger\SwaggerTestCase
 }
 ```
 
+# Using it for Functional Tests without a Webserver
+
+Sometimes, you want to run functional tests without making the actual HTTP
+requests and without setting up a webserver for that. Instead, you forward the
+requests to the routing of your application kernel which lives in the same
+process as the functional tests. In order to do that, you need a bit of
+gluecode based on the `AbstractRequester` baseclass:
+```php
+class MyAppRequester extends ByJG\ApiTools\AbstractRequester
+{
+    /** @var MyAppKernel */
+    private $app;
+
+    public function __construct(MyAppKernel $app)
+    {
+        parent::construct();
+        $this->app = $app;
+    }
+
+    protected function handleRequest(RequestInterface $request)
+    {
+        return $this->app->handle($request);
+    }
+}
+```
+You now use an instance of this class in place of the `ApiRequester` class from the examples above. Of course, if you need to apply changes to the request or the response in order
+to fit your framework, this is exactly the right place to do it.
+
 # Using it as Unit Test cases
 
 If you want mock the request API and just test the expected parameters you are sending and 
 receiving you have to:
 
-**1. Create the Swagger Test Schema**
+**1. Create the Swagger or OpenAPI Test Schema**
 
 ```php
 <?php
-$swaggerSchema = new \ByJG\Swagger\SwaggerSchema($contentsOfSwaggerJson);
+$schema = \ByJG\ApiTools\Base\Schema::getInstance($contentsOfSchemaJson);
 ```
 
 **2. Get the definitions for your path**
@@ -133,10 +166,10 @@ $statusExpected = 200;
 $method = 'POST';
 
 // Returns a SwaggerRequestBody instance
-$bodyRequestDef = $swaggerSchema->getRequestParameters($path, $method);
+$bodyRequestDef = $schema->getRequestParameters($path, $method);
 
 // Returns a SwaggerResponseBody instance
-$bodyResponseDef = $swaggerSchema->getResponseParameters($path, $method, $statusExpected);
+$bodyResponseDef = $schema->getResponseParameters($path, $method, $statusExpected);
 ```
 
 **3. Match the result**
@@ -161,18 +194,23 @@ So, before your API Code you can validate the request body using:
 
 ```php
 <?php
-$swaggerSchema = new \ByJG\Swagger\SwaggerSchema($contentsOfSwaggerJson);
-$bodyRequestDef = $swaggerSchema->getRequestParameters($path, $method);
+$schema = \ByJG\ApiTools\Base\Schema::getInstance($contentsOfSchemaJson);
+$bodyRequestDef = $schema->getRequestParameters($path, $method);
 $bodyRequestDef->match($requestBody);
 ```
 
 # Install
 
 ```
-composer require "byjg/swagger-test=2.*"
+composer require "byjg/swagger-test=3.0.*"
 ```
 
 # Questions?
 
 Use the Github issue.
 
+
+---
+
+
+OpenSource ByJG: [https://opensource.byjg.com/](https://opensource.byjg.com/)

@@ -1,21 +1,27 @@
 <?php
 
-namespace ByJG\Swagger;
+namespace ByJG\ApiTools\Base;
 
-use ByJG\Swagger\Exception\GenericSwaggerException;
-use ByJG\Swagger\Exception\InvalidRequestException;
-use ByJG\Swagger\Exception\NotMatchedException;
+use ByJG\ApiTools\Exception\DefinitionNotFoundException;
+use ByJG\ApiTools\Exception\GenericSwaggerException;
+use ByJG\ApiTools\Exception\InvalidDefinitionException;
+use ByJG\ApiTools\Exception\InvalidRequestException;
+use ByJG\ApiTools\Exception\NotMatchedException;
+use ByJG\ApiTools\OpenApi\OpenApiResponseBody;
+use ByJG\ApiTools\OpenApi\OpenApiSchema;
+use ByJG\ApiTools\Swagger\SwaggerResponseBody;
+use ByJG\ApiTools\Swagger\SwaggerSchema;
 use InvalidArgumentException;
 
-abstract class SwaggerBody
+abstract class Body
 {
     const SWAGGER_PROPERTIES="properties";
     const SWAGGER_REQUIRED="required";
 
     /**
-     * @var SwaggerSchema
+     * @var Schema
      */
-    protected $swaggerSchema;
+    protected $schema;
 
     protected $structure;
 
@@ -30,22 +36,43 @@ abstract class SwaggerBody
     protected $allowNullValues;
 
     /**
-     * SwaggerRequestBody constructor.
+     * Body constructor.
      *
-     * @param SwaggerSchema $swaggerSchema
+     * @param Schema $schema
      * @param string $name
      * @param array $structure
      * @param bool $allowNullValues
      */
-    public function __construct(SwaggerSchema $swaggerSchema, $name, $structure, $allowNullValues = false)
+    public function __construct(Schema $schema, $name, $structure, $allowNullValues = false)
     {
-        $this->swaggerSchema = $swaggerSchema;
+        $this->schema = $schema;
         $this->name = $name;
         if (!is_array($structure)) {
             throw new InvalidArgumentException('I expected the structure to be an array');
         }
         $this->structure = $structure;
         $this->allowNullValues = $allowNullValues;
+    }
+
+    /**
+     * @param Schema $schema
+     * @param $name
+     * @param $structure
+     * @param bool $allowNullValues
+     * @return OpenApiResponseBody|SwaggerResponseBody
+     * @throws GenericSwaggerException
+     */
+    public static function getInstance(Schema $schema, $name, $structure, $allowNullValues = false)
+    {
+        if ($schema instanceof SwaggerSchema) {
+            return new SwaggerResponseBody($schema, $name, $structure, $allowNullValues);
+        }
+
+        if ($schema instanceof OpenApiSchema) {
+            return new OpenApiResponseBody($schema, $name, $structure, $allowNullValues);
+        }
+
+        throw new GenericSwaggerException("Cannot get instance SwaggerBody or SchemaBody from " . get_class($schema));
     }
 
     abstract public function match($body);
@@ -117,9 +144,9 @@ abstract class SwaggerBody
      * @param $body
      * @param $type
      * @return bool
-     * @throws Exception\DefinitionNotFoundException
-     * @throws Exception\InvalidDefinitionException
+     * @throws DefinitionNotFoundException
      * @throws GenericSwaggerException
+     * @throws InvalidDefinitionException
      * @throws InvalidRequestException
      * @throws NotMatchedException
      */
@@ -145,11 +172,12 @@ abstract class SwaggerBody
         }
 
         $type = $schema['type'];
+        $nullable = isset($schema['nullable']) ? (bool)$schema['nullable'] : $this->schema->isAllowNullValues();
 
         $validators = [
-            function () use ($name, $body, $type)
+            function () use ($name, $body, $type, $nullable)
             {
-                return $this->matchNull($name, $body, $type);
+                return $this->matchNull($name, $body, $type, $nullable);
             },
 
             function () use ($name, $schema, $body, $type)
@@ -188,9 +216,9 @@ abstract class SwaggerBody
      * @param $schema
      * @param $body
      * @return bool|null
-     * @throws Exception\DefinitionNotFoundException
-     * @throws Exception\InvalidDefinitionException
+     * @throws DefinitionNotFoundException
      * @throws GenericSwaggerException
+     * @throws InvalidDefinitionException
      * @throws InvalidRequestException
      * @throws NotMatchedException
      */
@@ -254,8 +282,8 @@ abstract class SwaggerBody
      * @param $schema
      * @param array $body
      * @return bool
-     * @throws Exception\DefinitionNotFoundException
-     * @throws Exception\InvalidDefinitionException
+     * @throws DefinitionNotFoundException
+     * @throws InvalidDefinitionException
      * @throws GenericSwaggerException
      * @throws InvalidRequestException
      * @throws NotMatchedException
@@ -273,7 +301,7 @@ abstract class SwaggerBody
 
         // Get References and try to match it again
         if (isset($schema['$ref'])) {
-            $defintion = $this->swaggerSchema->getDefintion($schema['$ref']);
+            $defintion = $this->schema->getDefinition($schema['$ref']);
             return $this->matchSchema($schema['$ref'], $defintion, $body);
         }
 
@@ -299,16 +327,17 @@ abstract class SwaggerBody
      * @param $name
      * @param $body
      * @param $type
+     * @param $nullable
      * @return bool
      * @throws NotMatchedException
      */
-    protected function matchNull($name, $body, $type)
+    protected function matchNull($name, $body, $type, $nullable)
     {
         if (!is_null($body)) {
             return null;
         }
 
-        if (false === $this->swaggerSchema->isAllowNullValues()) {
+        if (!$nullable) {
             throw new NotMatchedException(
                 "Value of property '$name' is null, but should be of type '$type'",
                 $this->structure

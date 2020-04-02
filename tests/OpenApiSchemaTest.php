@@ -2,19 +2,19 @@
 
 namespace Test;
 
-use ByJG\Swagger\SwaggerSchema;
+use ByJG\ApiTools\OpenApi\OpenApiSchema;
 use PHPUnit\Framework\TestCase;
 
 class OpenApiSchemaTest extends TestCase
 {
     /**
-     * @var SwaggerSchema
+     * @var OpenApiSchema
      */
     protected $openapiObject;
 
     public function setUp()
     {
-        $this->openapiObject = new SwaggerSchema(file_get_contents(__DIR__ . '/example/openapi.json'));
+        $this->openapiObject = new OpenApiSchema(file_get_contents(__DIR__ . '/example/openapi.json'));
     }
 
     public function tearDown()
@@ -28,9 +28,9 @@ class OpenApiSchemaTest extends TestCase
     }
 
     /**
-     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\ApiTools\Exception\NotMatchedException
+     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      */
     public function testGetPathDirectMatch()
     {
@@ -97,9 +97,9 @@ class OpenApiSchemaTest extends TestCase
     }
 
     /**
-     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\ApiTools\Exception\NotMatchedException
+     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      */
     public function testGetPathPatternMatch()
     {
@@ -259,9 +259,9 @@ class OpenApiSchemaTest extends TestCase
     }
 
     /**
-     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\ApiTools\Exception\NotMatchedException
+     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      */
     public function testGetPathPatternMatch2()
     {
@@ -332,11 +332,11 @@ class OpenApiSchemaTest extends TestCase
     }
 
     /**
-     * @expectedException \ByJG\Swagger\Exception\PathNotFoundException
+     * @expectedException \ByJG\ApiTools\Exception\PathNotFoundException
      *
-     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\ApiTools\Exception\NotMatchedException
+     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      */
     public function testGetPathFail()
     {
@@ -344,11 +344,11 @@ class OpenApiSchemaTest extends TestCase
     }
 
     /**
-     * @expectedException \ByJG\Swagger\Exception\HttpMethodNotFoundException
+     * @expectedException \ByJG\ApiTools\Exception\HttpMethodNotFoundException
      *
-     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\ApiTools\Exception\NotMatchedException
+     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      */
     public function testPathExistsButMethodDont()
     {
@@ -356,9 +356,9 @@ class OpenApiSchemaTest extends TestCase
     }
 
     /**
-     * @throws \ByJG\Swagger\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\Swagger\Exception\NotMatchedException
-     * @throws \ByJG\Swagger\Exception\PathNotFoundException
+     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\ApiTools\Exception\NotMatchedException
+     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      */
     public function testGetPathStructure()
     {
@@ -399,41 +399,41 @@ class OpenApiSchemaTest extends TestCase
     }
 
     /**
-     * @expectedException \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @expectedException \ByJG\ApiTools\Exception\InvalidDefinitionException
      *
-     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
-     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
+     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
      */
     public function testGetDefinitionFailed()
     {
-        $this->openapiObject->getDefintion('Order');
+        $this->openapiObject->getDefinition('Order');
     }
 
     /**
-     * @expectedException \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @expectedException \ByJG\ApiTools\Exception\InvalidDefinitionException
      *
-     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
-     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
+     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
      */
     public function testGetDefinitionFailed2()
     {
-        $this->openapiObject->getDefintion('1/2/Order');
+        $this->openapiObject->getDefinition('1/2/Order');
     }
 
     /**
-     * @expectedException \ByJG\Swagger\Exception\DefinitionNotFoundException
+     * @expectedException \ByJG\ApiTools\Exception\DefinitionNotFoundException
      *
-     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
-     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
+     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
      */
     public function testGetDefinitionFailed3()
     {
-        $this->openapiObject->getDefintion('#/components/schemas/OrderNOtFound');
+        $this->openapiObject->getDefinition('#/components/schemas/OrderNOtFound');
     }
 
     /**
-     * @throws \ByJG\Swagger\Exception\DefinitionNotFoundException
-     * @throws \ByJG\Swagger\Exception\InvalidDefinitionException
+     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
+     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
      */
     public function testGetDefinition()
     {
@@ -475,21 +475,8 @@ class OpenApiSchemaTest extends TestCase
             ],
         ];
 
-        $order = $this->openapiObject->getDefintion('#/components/schemas/Order');
+        $order = $this->openapiObject->getDefinition('#/components/schemas/Order');
         $this->assertEquals($expected, $order);
-    }
-
-    public function testItNotAllowsNullValuesByDefault()
-    {
-        $schema = new SwaggerSchema('{}');
-        $this->assertFalse($schema->isAllowNullValues());
-    }
-
-    public function testItAllowsNullValues()
-    {
-        $allowNullValues = true;
-        $schema = new SwaggerSchema('{}', $allowNullValues);
-        $this->assertTrue($schema->isAllowNullValues());
     }
 
     public function testGetServerUrl()
@@ -499,14 +486,14 @@ class OpenApiSchemaTest extends TestCase
 
     public function testGetServerUrlVariables()
     {
-        $this->openapiObject = new SwaggerSchema(file_get_contents(__DIR__ . '/example/openapi4.json'));
+        $this->openapiObject = new OpenApiSchema(file_get_contents(__DIR__ . '/example/openapi4.json'));
 
         $this->assertEquals("https://www.domain.com/api/v2", $this->openapiObject->getServerUrl());
     }
 
     public function testGetServerUrlVariables2()
     {
-        $this->openapiObject = new SwaggerSchema(file_get_contents(__DIR__ . '/example/openapi4.json'));
+        $this->openapiObject = new OpenApiSchema(file_get_contents(__DIR__ . '/example/openapi4.json'));
         $this->openapiObject->setServerVariable("environment", "staging");
 
         $this->assertEquals("https://staging.domain.com/api/v2", $this->openapiObject->getServerUrl());
