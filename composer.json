@@ -12,7 +12,7 @@
   ],
   "require": {
     "guzzlehttp/guzzle": "6.*",
-    "byjg/uri": "1.0.*",
+    "byjg/uri": "2.0.*",
     "php": ">=5.6",
     "ext-json": "*"
   },
