@@ -210,7 +210,7 @@ abstract class AbstractRequester
         // Assert results
         if ($this->statusExpected != $statusReturned) {
             throw new StatusCodeNotMatchedException(
-                "Status code not matched $statusReturned",
+                "Status code not matched: Expected {$this->statusExpected}, got {$statusReturned}",
                 $responseBody
             );
         }
