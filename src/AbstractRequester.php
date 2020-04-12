@@ -5,11 +5,9 @@ namespace ByJG\ApiTools;
 use ByJG\ApiTools\Base\Schema;
 use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
-use ByJG\Util\Uri;
-use GuzzleHttp\Exception\BadResponseException;
-use GuzzleHttp\Exception\GuzzleException;
-
+use ByJG\Util\Psr7\MessageException;
 use ByJG\Util\Psr7\Request;
+use ByJG\Util\Uri;
 use MintWare\Streams\MemoryStream;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -38,10 +36,6 @@ abstract class AbstractRequester
 
     protected $statusExpected = 200;
     protected $assertHeader = [];
-
-    public function __construct()
-    {
-    }
 
     /**
      * abstract function to be implemented by derived classes
@@ -161,7 +155,7 @@ abstract class AbstractRequester
      * @throws Exception\PathNotFoundException
      * @throws NotMatchedException
      * @throws StatusCodeNotMatchedException
-     * @throws \ByJG\Util\Psr7\MessageException
+     * @throws MessageException
      */
     public function send()
     {

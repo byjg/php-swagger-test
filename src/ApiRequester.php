@@ -2,9 +2,10 @@
 
 namespace ByJG\ApiTools;
 
+use ByJG\Util\CurlException;
 use ByJG\Util\HttpClient;
-use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
+use ByJG\Util\Psr7\MessageException;
+use ByJG\Util\Psr7\Response;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -22,6 +23,12 @@ class ApiRequester extends AbstractRequester
             ->withNoFollowRedirect();
     }
 
+    /**
+     * @param RequestInterface $request
+     * @return Response|ResponseInterface
+     * @throws CurlException
+     * @throws MessageException
+     */
     protected function handleRequest(RequestInterface $request)
     {
         $request->withHeader("User-Agent", "ByJG Swagger Test");

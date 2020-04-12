@@ -2,7 +2,6 @@
 
 namespace ByJG\ApiTools;
 
-use ByJG\ApiTools\Base\BaseTestCase;
 use ByJG\ApiTools\Base\Schema;
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
 use ByJG\ApiTools\Exception\GenericSwaggerException;
@@ -11,7 +10,7 @@ use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\ApiTools\Exception\PathNotFoundException;
 use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
-use GuzzleHttp\GuzzleException;
+use ByJG\Util\Psr7\MessageException;
 use PHPUnit\Framework\TestCase;
 
 abstract class ApiTestCase extends TestCase
@@ -48,7 +47,7 @@ abstract class ApiTestCase extends TestCase
      * @throws NotMatchedException
      * @throws PathNotFoundException
      * @throws StatusCodeNotMatchedException
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws MessageException
      * @deprecated Use assertRequest instead
      */
     protected function makeRequest(
@@ -90,7 +89,7 @@ abstract class ApiTestCase extends TestCase
      * @throws NotMatchedException
      * @throws PathNotFoundException
      * @throws StatusCodeNotMatchedException
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws MessageException
      */
     public function assertRequest(AbstractRequester $request)
     {
