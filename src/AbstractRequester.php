@@ -5,9 +5,12 @@ namespace ByJG\ApiTools;
 use ByJG\ApiTools\Base\Schema;
 use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
+use ByJG\Util\Uri;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Psr7\Request;
+
+use ByJG\Util\Psr7\Request;
+use MintWare\Streams\MemoryStream;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -152,12 +155,13 @@ abstract class AbstractRequester
     /**
      * @return mixed
      * @throws Exception\DefinitionNotFoundException
+     * @throws Exception\GenericSwaggerException
      * @throws Exception\HttpMethodNotFoundException
      * @throws Exception\InvalidDefinitionException
      * @throws Exception\PathNotFoundException
-     * @throws GuzzleException
      * @throws NotMatchedException
      * @throws StatusCodeNotMatchedException
+     * @throws \ByJG\Util\Psr7\MessageException
      */
     public function send()
     {
@@ -188,24 +192,23 @@ abstract class AbstractRequester
         $bodyRequestDef->match($this->requestBody);
 
         // Make the request
-        $request = new Request(
-            $this->method,
-            $serverUrl . $pathName . $paramInQuery,
-            $header,
-            json_encode($this->requestBody)
-        );
+        $request = Request::getInstance(Uri::getInstanceFromString($serverUrl . $pathName . $paramInQuery))
+            ->withMethod($this->method);
+
+        if (!empty($this->requestBody)) {
+            $request->withBody(new MemoryStream(json_encode($this->requestBody)));
+        }
+
+        foreach ($header as $key => $value) {
+            $request->withHeader($key, $value);
+        }
 
         $statusReturned = null;
-        try {
-            $response = $this->handleRequest($request);
-            $responseHeader = $response->getHeaders();
-            $responseBody = json_decode((string) $response->getBody(), true);
-            $statusReturned = $response->getStatusCode();
-        } catch (BadResponseException $ex) {
-            $responseHeader = $ex->getResponse()->getHeaders();
-            $responseBody = json_decode((string) $ex->getResponse()->getBody(), true);
-            $statusReturned = $ex->getResponse()->getStatusCode();
-        }
+
+        $response = $this->handleRequest($request);
+        $responseHeader = $response->getHeaders();
+        $responseBody = json_decode((string) $response->getBody(), true);
+        $statusReturned = $response->getStatusCode();
 
         // Assert results
         if ($this->statusExpected != $statusReturned) {

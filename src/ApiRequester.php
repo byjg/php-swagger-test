@@ -2,26 +2,29 @@
 
 namespace ByJG\ApiTools;
 
+use ByJG\Util\HttpClient;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * Request handler based on a Guzzle client.
+ * Request handler based on ByJG HttpClient (WebRequest) .
  */
 class ApiRequester extends AbstractRequester
 {
-    /** @var ClientInterface */
-    private $guzzleHttpClient;
+    /** @var HttpClient */
+    private $httpClient;
 
     public function __construct()
     {
-        $this->guzzleHttpClient = new Client(['headers' => ['User-Agent' => 'Swagger Test']]);
+        $this->httpClient = HttpClient::getInstance()
+            ->withNoFollowRedirect();
     }
 
     protected function handleRequest(RequestInterface $request)
     {
-        return $this->guzzleHttpClient->send($request, ['allow_redirects' => false]);
+        $request->withHeader("User-Agent", "ByJG Swagger Test");
+        return $this->httpClient->sendRequest($request);
     }
 }
