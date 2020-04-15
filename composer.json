@@ -12,7 +12,6 @@
   ],
   "require": {
     "byjg/webrequest": "dev-psr7",
-    "byjg/uri": "2.0.*",
     "php": ">=5.6",
     "ext-json": "*"
   },
