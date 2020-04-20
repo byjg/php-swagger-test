@@ -310,6 +310,13 @@ abstract class Body
             return true;
         }
 
+        if (isset($schema['allOf'])) {
+            $mergedSchema = array_merge_recursive(...$schema['allOf']);
+            return $this->matchSchema($name, $mergedSchema, $body);
+        }
+
+
+
         /**
          * OpenApi 2.0 does not describe ANY object value
          * But there is hack that makes ANY object possible, described in link below
