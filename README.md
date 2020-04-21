@@ -13,8 +13,9 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/byjg/php-swagger-test/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/byjg/php-swagger-test/?branch=master)
 
 
-A set of tools for test your REST calls based on the OpenApi specification using PHPUnit. Currently this library supports 
-the specifications `2.0` and `3.0`.
+A set of tools for test your REST calls based on the OpenApi specification using PHPUnit. 
+Currently, this library supports the OpenApi specifications `2.0` (former swagger) and `3.0`.
+Some features like callbacks and links weren't implemented. 
 
 PHP Swagger Test can help you to test your REST Api. You can use this tool both for Unit Tests or Functional Tests.
 
@@ -24,18 +25,16 @@ rest API.
 
 The ApiTestCase's assertion process is based on throwing exceptions if some validation or test failed.
 
+# Use cases for PHP Swagger test
+
 You can use the Swagger Test library as:
 
 - Functional test cases
 - Unit test cases
 - Runtime parameters validator
 
-# OpenAPI 3 Support
 
-OpenAPI 3 Support has been added. This means that a Swagger specification that has been migrated to OpenAPI 3 should work here. The
-new OpenAPI 3 features, like callbacks and links, were not implemented. Previous specification versions are still supported.
-
-# Using it as Functional Test cases
+## Using it as Functional Test cases
 
 Swagger Test provide the class `SwaggerTestCase` for you extend and create a PHPUnit test case. The code will try to 
 make a request to your API Method and check if the request parameters, status and object returned are OK.
@@ -117,13 +116,14 @@ class MyTestCase extends \ByJG\ApiTools\ApiTestCase
 }
 ```
 
-# Using it for Functional Tests without a Webserver
+### Using it for Functional Tests without a Webserver
 
 Sometimes, you want to run functional tests without making the actual HTTP
 requests and without setting up a webserver for that. Instead, you forward the
 requests to the routing of your application kernel which lives in the same
 process as the functional tests. In order to do that, you need a bit of
 gluecode based on the `AbstractRequester` baseclass:
+
 ```php
 class MyAppRequester extends ByJG\ApiTools\AbstractRequester
 {
@@ -145,7 +145,10 @@ class MyAppRequester extends ByJG\ApiTools\AbstractRequester
 You now use an instance of this class in place of the `ApiRequester` class from the examples above. Of course, if you need to apply changes to the request or the response in order
 to fit your framework, this is exactly the right place to do it.
 
-# Using it as Unit Test cases
+@todo: Explain the WebRequest MockHttpClient.
+@todo: Explain in the Docs sections the `RestServer` component 
+
+## Using it as Unit Test cases
 
 If you want mock the request API and just test the expected parameters you are sending and 
 receiving you have to:
@@ -202,15 +205,13 @@ $bodyRequestDef->match($requestBody);
 # Install
 
 ```
-composer require "byjg/swagger-test=3.0.*"
+composer require "byjg/swagger-test=3.1.*"
 ```
 
 # Questions?
 
-Use the Github issue.
+Github issue.
 
 
 ---
-
-
 OpenSource ByJG: [https://opensource.byjg.com/](https://opensource.byjg.com/)
