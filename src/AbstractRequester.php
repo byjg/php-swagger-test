@@ -109,7 +109,7 @@ abstract class AbstractRequester
      * @param array $query
      * @return $this
      */
-    public function withQuery($query)
+    public function withQuery($query = null)
     {
         if (is_null($query)) {
             $this->query = [];
@@ -196,8 +196,6 @@ abstract class AbstractRequester
         foreach ($header as $key => $value) {
             $request->withHeader($key, $value);
         }
-
-        $statusReturned = null;
 
         $response = $this->handleRequest($request);
         $responseHeader = $response->getHeaders();
