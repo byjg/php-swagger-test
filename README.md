@@ -146,7 +146,6 @@ class MyAppRequester extends ByJG\ApiTools\AbstractRequester
 You now use an instance of this class in place of the `ApiRequester` class from the examples above. Of course, if you need to apply changes to the request or the response in order
 to fit your framework, this is exactly the right place to do it.
 
-@todo: Explain the WebRequest MockHttpClient.
 @todo: Explain in the Docs sections the `RestServer` component 
 
 ## Using it as Unit Test cases
