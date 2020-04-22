@@ -15,7 +15,7 @@
 
 A set of tools for test your REST calls based on the OpenApi specification using PHPUnit. 
 Currently, this library supports the OpenApi specifications `2.0` (former swagger) and `3.0`.
-Some features like callbacks and links weren't implemented. 
+Some features like callbacks, links and references to external documents/objects weren't implemented. 
 
 PHP Swagger Test can help you to test your REST Api. You can use this tool both for Unit Tests or Functional Tests.
 
