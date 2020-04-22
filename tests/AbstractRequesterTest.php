@@ -9,15 +9,8 @@ use ByJG\Util\Psr7\Response;
 use MintWare\Streams\MemoryStream;
 use PHPUnit\Framework\TestCase;
 
-class AbstractRequesterTest extends ApiTestCase
+abstract class AbstractRequesterTest extends ApiTestCase
 {
-
-    public function setUp()
-    {
-        $schema = Schema::getInstance(file_get_contents(__DIR__ . '/rest/openapi.json'));
-        $this->setSchema($schema);
-    }
-
     public function testExpectOK()
     {
         $expectedResponse = Response::getInstance(200)
@@ -45,7 +38,7 @@ class AbstractRequesterTest extends ApiTestCase
      * @throws \ByJG\ApiTools\Exception\StatusCodeNotMatchedException
      * @throws \ByJG\Util\Psr7\MessageException
      * @expectedException \ByJG\ApiTools\Exception\NotMatchedException
-     * @expectedExceptionMessage Required property 'name' in '#/components/schemas/Pet' not found in object
+     * @expectedExceptionMessage Required property 'name'
      */
     public function testExpectError()
     {
