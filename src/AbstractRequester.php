@@ -5,11 +5,7 @@ namespace ByJG\ApiTools;
 use ByJG\ApiTools\Base\Schema;
 use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
-use GuzzleHttp\Exception\BadResponseException;
-use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Psr7\Request;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
+use ByJG\ApiTools\Response\ResponseInterface;
 
 /**
  * Abstract baseclass for request handlers.
@@ -43,13 +39,16 @@ abstract class AbstractRequester
     /**
      * abstract function to be implemented by derived classes
      *
-     * This function must be implemented by derived classes. It should process
-     * the given request and return an according response.
+     * This function must be implemented by derived classes. It should build a
+     * request to given path and headers and return a ResponseInterface (even for failed
+     * request).
      *
-     * @param RequestInterface $request
+     * @param string $path
+     * @param array $headers
+     *
      * @return ResponseInterface
      */
-    abstract protected function handleRequest(RequestInterface $request);
+    abstract protected function handleRequest($path, $headers);
 
     /**
      * @param Schema $schema
@@ -155,7 +154,7 @@ abstract class AbstractRequester
      * @throws Exception\HttpMethodNotFoundException
      * @throws Exception\InvalidDefinitionException
      * @throws Exception\PathNotFoundException
-     * @throws GuzzleException
+     * @throws Exception\GenericSwaggerException
      * @throws NotMatchedException
      * @throws StatusCodeNotMatchedException
      */
@@ -179,7 +178,6 @@ abstract class AbstractRequester
         );
 
         // Defining Variables
-        $serverUrl = $this->schema->getServerUrl();
         $basePath = $this->schema->getBasePath();
         $pathName = $this->path;
 
@@ -187,25 +185,14 @@ abstract class AbstractRequester
         $bodyRequestDef = $this->schema->getRequestParameters("$basePath$pathName", $this->method);
         $bodyRequestDef->match($this->requestBody);
 
-        // Make the request
-        $request = new Request(
-            $this->method,
-            $serverUrl . $pathName . $paramInQuery,
-            $header,
-            json_encode($this->requestBody)
-        );
-
         $statusReturned = null;
-        try {
-            $response = $this->handleRequest($request);
-            $responseHeader = $response->getHeaders();
-            $responseBody = json_decode((string) $response->getBody(), true);
-            $statusReturned = $response->getStatusCode();
-        } catch (BadResponseException $ex) {
-            $responseHeader = $ex->getResponse()->getHeaders();
-            $responseBody = json_decode((string) $ex->getResponse()->getBody(), true);
-            $statusReturned = $ex->getResponse()->getStatusCode();
-        }
+        // Run the request
+        $response = $this->handleRequest($pathName . $paramInQuery, $header);
+
+        // Get the response
+        $responseHeader = $response->getHeaders();
+        $responseBody = json_decode((string) $response->getBody(), true);
+        $statusReturned = $response->getStatusCode();
 
         // Assert results
         if ($this->statusExpected != $statusReturned) {
