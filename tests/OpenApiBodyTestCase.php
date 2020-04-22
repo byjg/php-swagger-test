@@ -44,6 +44,18 @@ class OpenApiBodyTestCase extends TestCase
     }
 
     /**
+     * @param bool $allowNullValues
+     * @return OpenApiSchema
+     */
+    protected static function openApiSchema5($allowNullValues = false)
+    {
+        return \ByJG\ApiTools\Base\Schema::getInstance(
+            self::getOpenApiJsonContent_No5(),
+            $allowNullValues
+        );
+    }
+
+    /**
      * @return string
      */
     protected static function getOpenApiJsonContent()
@@ -65,5 +77,13 @@ class OpenApiBodyTestCase extends TestCase
     protected static function getOpenApiJsonContent_No3()
     {
         return file_get_contents(__DIR__ . '/example/openapi3.json');
+    }
+
+    /**
+     * @return string
+     */
+    protected static function getOpenApiJsonContent_No5()
+    {
+        return file_get_contents(__DIR__ . '/example/openapi5.json');
     }
 }
