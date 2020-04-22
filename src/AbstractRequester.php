@@ -36,6 +36,7 @@ abstract class AbstractRequester
 
     protected $statusExpected = 200;
     protected $assertHeader = [];
+    protected $assertBody = null;
 
     /**
      * abstract function to be implemented by derived classes
@@ -146,6 +147,13 @@ abstract class AbstractRequester
         return $this;
     }
 
+    public function assertBodyContains($contains)
+    {
+        $this->assertBody = $contains;
+
+        return $this;
+    }
+
     /**
      * @return mixed
      * @throws Exception\DefinitionNotFoundException
@@ -199,7 +207,8 @@ abstract class AbstractRequester
 
         $response = $this->handleRequest($request);
         $responseHeader = $response->getHeaders();
-        $responseBody = json_decode((string) $response->getBody(), true);
+        $responseBodyStr = (string) $response->getBody();
+        $responseBody = json_decode($responseBodyStr, true);
         $statusReturned = $response->getStatusCode();
 
         // Assert results
@@ -217,15 +226,17 @@ abstract class AbstractRequester
         );
         $bodyResponseDef->match($responseBody);
 
-        if (count($this->assertHeader) > 0) {
-            foreach ($this->assertHeader as $key => $value) {
-                if (!isset($responseHeader[$key]) || strpos($responseHeader[$key][0], $value) === false) {
-                    throw new NotMatchedException(
-                        "Does not exists header '$key' with value '$value'",
-                        $responseHeader
-                    );
-                }
+        foreach ($this->assertHeader as $key => $value) {
+            if (!isset($responseHeader[$key]) || strpos($responseHeader[$key][0], $value) === false) {
+                throw new NotMatchedException(
+                    "Does not exists header '$key' with value '$value'",
+                    $responseHeader
+                );
             }
+        }
+
+        if (!empty($this->assertBody) && strpos($responseBodyStr, $this->assertBody) === false) {
+            throw new NotMatchedException("Body does not contain '{$this->assertBody}'");
         }
 
         return $responseBody;

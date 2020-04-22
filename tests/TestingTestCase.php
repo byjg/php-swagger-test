@@ -5,7 +5,13 @@ namespace Test;
 use ByJG\ApiTools\ApiRequester;
 use ByJG\ApiTools\ApiTestCase;
 
-class TestingTestCase extends ApiTestCase
+/**
+ * Class TestingTestCase
+ * @package Test
+ *
+ * IMPORTANT: This class is base for the other tests
+ */
+abstract class TestingTestCase extends ApiTestCase
 {
 
     public function testGet()

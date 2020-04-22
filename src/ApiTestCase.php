@@ -21,6 +21,11 @@ abstract class ApiTestCase extends TestCase
     protected $schema;
 
     /**
+     * @var AbstractRequester
+     */
+    protected $requester = null;
+
+    /**
      * configure the schema to use for requests
      *
      * When set, all requests without an own schema use this one instead.
@@ -30,6 +35,22 @@ abstract class ApiTestCase extends TestCase
     public function setSchema($schema)
     {
         $this->schema = $schema;
+    }
+
+    public function setRequester(AbstractRequester $requester)
+    {
+        $this->requester = $requester;
+    }
+
+    /**
+     * @return AbstractRequester
+     */
+    protected function getRequester()
+    {
+        if (is_null($this->requester)) {
+            $this->requester = new ApiRequester();
+        }
+        return $this->requester;
     }
 
     /**
@@ -59,8 +80,7 @@ abstract class ApiTestCase extends TestCase
         $requestHeader = []
     ) {
         $this->checkSchema();
-        $requester = new ApiRequester();
-        $body = $requester
+        $body = $this->requester
             ->withSchema($this->schema)
             ->withMethod($method)
             ->withPath($path)
