@@ -32,9 +32,10 @@ You can use the Swagger Test library as:
 - Functional test cases
 - Unit test cases
 - Runtime parameters validator
+- Validate your specification
 
 
-## Using it as Functional Test cases
+## Functional Test cases
 
 Swagger Test provide the class `SwaggerTestCase` for you extend and create a PHPUnit test case. The code will try to 
 make a request to your API Method and check if the request parameters, status and object returned are OK.
@@ -116,7 +117,7 @@ class MyTestCase extends \ByJG\ApiTools\ApiTestCase
 }
 ```
 
-### Using it for Functional Tests without a Webserver
+### Functional Tests without a Webserver
 
 Sometimes, you want to run functional tests without making the actual HTTP
 requests and without setting up a webserver for that. Instead, you forward the
@@ -188,7 +189,7 @@ $bodyResponseDef->match($responseBody);
 If the request or response body does not match with the definition an exception NotMatchException will
 be throwed. 
 
-## Using it as Runtime parameters validator
+## Runtime parameters validator
 
 This tool was not developed only for unit and functional tests. You can use to validate if the required body
 parameters is the expected. 
@@ -202,6 +203,38 @@ $bodyRequestDef = $schema->getRequestParameters($path, $method);
 $bodyRequestDef->match($requestBody);
 ```
 
+## Validate your Specification
+
+PHP Swagger has the class `MockRequester` with exact the same functionalities of `ApiRequester` class. The only
+difference is the `MockRequester` don't need to request to a real endpoint.
+
+This is particularly usefull if you want to check if your OpenApi specification is returning the expected values. 
+
+```php
+<?php
+class MyTest extends ApiTestCase
+{
+    public function testExpectOK()
+    {
+        $expectedResponse = \ByJG\Util\Psr7\Response::getInstance(200)
+            ->withBody(new MemoryStream(json_encode([
+                "id" => 1,
+                "name" => "Spike",
+                "photoUrls" => []
+            ])));
+
+        // The MockRequester does not send the request to a real endpoint
+        // Just returning the expected Response object sent in the constructor 
+        $request = new \ByJG\ApiTools\MockRequester($expectedResponse);
+        $request
+            ->withMethod('GET')
+            ->withPath("/pet/1");
+
+        $this->assertRequest($request); // That should be "True"
+    }
+}
+```   
+
 # Install
 
 ```
@@ -212,6 +245,10 @@ composer require "byjg/swagger-test=3.1.*"
 
 Github issue.
 
+# References
+
+This project uses the [byjg/webrequest](https://github.com/byjg/webrequest) component. It implements the PSR-7 specification, 
+and a HttpClient / MockClient to do the requests. Check it out to get more information. 
 
 ---
 OpenSource ByJG: [https://opensource.byjg.com/](https://opensource.byjg.com/)
