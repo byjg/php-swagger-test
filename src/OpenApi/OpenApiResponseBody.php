@@ -33,8 +33,7 @@ class OpenApiResponseBody extends Body
             $defintion = $this->schema->getDefinition($this->structure['$ref']);
             return $this->matchSchema($this->name, $defintion, $body);
         }
-        else {
-            return $this->matchSchema($this->name, $this->structure['content'][key($this->structure['content'])]['schema'], $body);
-        }
+        
+        return $this->matchSchema($this->name, $this->structure['content'][key($this->structure['content'])]['schema'], $body);
     }
 }
