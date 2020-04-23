@@ -1,0 +1,101 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "API test",
+    "version": "0.0.1",
+    "title": "API-test"
+  },
+  "servers": [
+    {
+      "url": "https://127.0.0.1",
+      "description": "Instance of the API-test"
+    }
+  ],
+  "paths": {
+    "/v1/test": {
+      "post": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Test endpoint",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/TestBodyRequest"
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/TestBodyResponse"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "requestBodies": {
+      "TestBodyRequest": {
+        "description": "Test body",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/TestSchema"
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "TestBodyResponse": {
+        "description": "Test body response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Success"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "TestSchema": {
+        "type": "object",
+        "required": [
+          "param1",
+          "param2",
+          "param3"
+        ],
+        "properties": {
+          "param1": {
+            "type": "string",
+            "description": "Param 1 description"
+          },
+          "param2": {
+            "type": "string",
+            "description": "Param 2 description"
+          },
+          "param3": {
+            "type": "string",
+            "description": "Param 3 description"
+          }
+        }
+      },
+      "Success": {
+        "type": "object",
+        "required": [
+          "param_response_1",
+          "param_response_2"
+        ],
+        "properties": {
+          "param_response_1": {
+            "type": "string",
+            "description": "param_response_1 description"
+          },
+          "param_response_2": {
+            "type": "string",
+            "description": "param_response_2 description"
+          }
+        }
+      }
+    }
+  }
+}

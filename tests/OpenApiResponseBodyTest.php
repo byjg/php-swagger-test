@@ -56,6 +56,28 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
     }
 
     /**
+     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
+     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
+     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
+     * @throws \ByJG\ApiTools\Exception\InvalidRequestException
+     * @throws \ByJG\ApiTools\Exception\NotMatchedException
+     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     */
+    public function testMatchResponseBodyWithRefInsteadOfContent()
+    {
+        $openApiSchema = self::openApiSchema5();
+
+        $body = [
+            "param_response_1" => "example1",
+            "param_response_2" => "example2"            
+        ];
+
+        $responseParameter = $openApiSchema->getResponseParameters('/v1/test', 'post', 201);
+        $this->assertTrue($responseParameter->match($body));
+    }
+
+    /**
      * @expectedException \ByJG\ApiTools\Exception\NotMatchedException
      * @expectedExceptionMessage Value 'notfound' in 'status' not matched in ENUM
      *
