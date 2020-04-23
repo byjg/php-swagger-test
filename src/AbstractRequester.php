@@ -5,9 +5,10 @@ namespace ByJG\ApiTools;
 use ByJG\ApiTools\Base\Schema;
 use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
-use GuzzleHttp\Exception\BadResponseException;
-use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Psr7\Request;
+use ByJG\Util\Psr7\MessageException;
+use ByJG\Util\Psr7\Request;
+use ByJG\Util\Uri;
+use MintWare\Streams\MemoryStream;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -35,10 +36,7 @@ abstract class AbstractRequester
 
     protected $statusExpected = 200;
     protected $assertHeader = [];
-
-    public function __construct()
-    {
-    }
+    protected $assertBody = null;
 
     /**
      * abstract function to be implemented by derived classes
@@ -112,7 +110,7 @@ abstract class AbstractRequester
      * @param array $query
      * @return $this
      */
-    public function withQuery($query)
+    public function withQuery($query = null)
     {
         if (is_null($query)) {
             $this->query = [];
@@ -149,15 +147,23 @@ abstract class AbstractRequester
         return $this;
     }
 
+    public function assertBodyContains($contains)
+    {
+        $this->assertBody = $contains;
+
+        return $this;
+    }
+
     /**
      * @return mixed
      * @throws Exception\DefinitionNotFoundException
+     * @throws Exception\GenericSwaggerException
      * @throws Exception\HttpMethodNotFoundException
      * @throws Exception\InvalidDefinitionException
      * @throws Exception\PathNotFoundException
-     * @throws GuzzleException
      * @throws NotMatchedException
      * @throws StatusCodeNotMatchedException
+     * @throws MessageException
      */
     public function send()
     {
@@ -188,24 +194,22 @@ abstract class AbstractRequester
         $bodyRequestDef->match($this->requestBody);
 
         // Make the request
-        $request = new Request(
-            $this->method,
-            $serverUrl . $pathName . $paramInQuery,
-            $header,
-            json_encode($this->requestBody)
-        );
+        $request = Request::getInstance(Uri::getInstanceFromString($serverUrl . $pathName . $paramInQuery))
+            ->withMethod($this->method);
 
-        $statusReturned = null;
-        try {
-            $response = $this->handleRequest($request);
-            $responseHeader = $response->getHeaders();
-            $responseBody = json_decode((string) $response->getBody(), true);
-            $statusReturned = $response->getStatusCode();
-        } catch (BadResponseException $ex) {
-            $responseHeader = $ex->getResponse()->getHeaders();
-            $responseBody = json_decode((string) $ex->getResponse()->getBody(), true);
-            $statusReturned = $ex->getResponse()->getStatusCode();
+        if (!empty($this->requestBody)) {
+            $request->withBody(new MemoryStream(json_encode($this->requestBody)));
         }
+
+        foreach ($header as $key => $value) {
+            $request->withHeader($key, $value);
+        }
+
+        $response = $this->handleRequest($request);
+        $responseHeader = $response->getHeaders();
+        $responseBodyStr = (string) $response->getBody();
+        $responseBody = json_decode($responseBodyStr, true);
+        $statusReturned = $response->getStatusCode();
 
         // Assert results
         if ($this->statusExpected != $statusReturned) {
@@ -222,15 +226,17 @@ abstract class AbstractRequester
         );
         $bodyResponseDef->match($responseBody);
 
-        if (count($this->assertHeader) > 0) {
-            foreach ($this->assertHeader as $key => $value) {
-                if (!isset($responseHeader[$key]) || strpos($responseHeader[$key][0], $value) === false) {
-                    throw new NotMatchedException(
-                        "Does not exists header '$key' with value '$value'",
-                        $responseHeader
-                    );
-                }
+        foreach ($this->assertHeader as $key => $value) {
+            if (!isset($responseHeader[$key]) || strpos($responseHeader[$key][0], $value) === false) {
+                throw new NotMatchedException(
+                    "Does not exists header '$key' with value '$value'",
+                    $responseHeader
+                );
             }
+        }
+
+        if (!empty($this->assertBody) && strpos($responseBodyStr, $this->assertBody) === false) {
+            throw new NotMatchedException("Body does not contain '{$this->assertBody}'");
         }
 
         return $responseBody;

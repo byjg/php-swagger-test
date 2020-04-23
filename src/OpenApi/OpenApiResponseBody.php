@@ -22,7 +22,7 @@ class OpenApiResponseBody extends Body
      */
     public function match($body)
     {
-        if (!isset($this->structure['content']) && !isset($this->structure['$ref'])) {
+        if (empty($this->structure['content']) && !isset($this->structure['$ref'])) {
             if (!empty($body)) {
                 throw new NotMatchedException("Expected empty body for " . $this->name);
             }
