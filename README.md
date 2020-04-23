@@ -207,7 +207,7 @@ $bodyRequestDef->match($requestBody);
 PHP Swagger has the class `MockRequester` with exact the same functionalities of `ApiRequester` class. The only
 difference is the `MockRequester` don't need to request to a real endpoint.
 
-This is particularly usefull if you want to check if your OpenApi specification is returning the expected values. 
+This is used to validate request and response against your OpenAPI spec without running any server code. 
 
 ```php
 <?php
@@ -229,7 +229,7 @@ class MyTest extends ApiTestCase
             ->withMethod('GET')
             ->withPath("/pet/1");
 
-        $this->assertRequest($request); // That should be "True"
+        $this->assertRequest($request); // That should be "True" based on the specification
     }
 }
 ```   
@@ -246,8 +246,9 @@ Github issue.
 
 # References
 
-This project uses the [byjg/webrequest](https://github.com/byjg/webrequest) component. It implements the PSR-7 specification, 
-and a HttpClient / MockClient to do the requests. Check it out to get more information. 
+This project uses the [byjg/webrequest](https://github.com/byjg/webrequest) component. 
+It implements the PSR-7 specification, and a HttpClient / MockClient to do the requests. 
+Check it out to get more information. 
 
 ---
 OpenSource ByJG: [https://opensource.byjg.com/](https://opensource.byjg.com/)
