@@ -15,7 +15,7 @@ class Handler
     public function getPetById($response, $request)
     {
         $pet = new Pet(
-            $request->get("petId"),
+            $request->param("petId"),
             new Category(101, "cat"),
             'Doris',
             [],
