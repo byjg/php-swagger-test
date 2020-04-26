@@ -234,6 +234,28 @@ class MyTest extends ApiTestCase
 }
 ```   
 
+# Integration with PSR7
+
+You can populate the `ApiRequester`/`MockRequester` with the information provided by the `RequestInterface` PSR7 interface.
+
+e.g.  
+
+```php
+<?php
+
+$psr7Request = \ByJG\Util\Psr7\Request::getInstance(new Uri("/method_to_be_tested?param1=value1"))
+    ->withMethod("GET")
+    ->withBody('{"foo":"bar"}');
+
+$request = new \ByJG\ApiTools\ApiRequester();
+$request->withPsr7Request($psr7Request);
+
+// Return a ResponseInterface PSR7 component 
+$response = $request->send();
+```
+
+
+
 # Install
 
 ```

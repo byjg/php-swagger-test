@@ -3,11 +3,11 @@
 namespace Test;
 
 use ByJG\ApiTools\ApiTestCase;
-use ByJG\ApiTools\Base\Schema;
 use ByJG\ApiTools\MockRequester;
+use ByJG\Util\Psr7\Request;
 use ByJG\Util\Psr7\Response;
+use ByJG\Util\Uri;
 use MintWare\Streams\MemoryStream;
-use PHPUnit\Framework\TestCase;
 
 abstract class AbstractRequesterTest extends ApiTestCase
 {
@@ -20,10 +20,20 @@ abstract class AbstractRequesterTest extends ApiTestCase
                 "photoUrls" => []
             ])));
 
+        // Basic Request
         $request = new MockRequester($expectedResponse);
         $request
             ->withMethod('GET')
             ->withPath("/pet/1");
+
+        $this->assertRequest($request);
+
+        // PSR7 Request
+        $psr7Request = Request::getInstance(new Uri("/pet/1"))
+            ->withMethod("get");
+
+        $request = new MockRequester($expectedResponse);
+        $request->withPsr7Request($psr7Request);
 
         $this->assertRequest($request);
     }

@@ -3,10 +3,12 @@
 namespace ByJG\ApiTools;
 
 use ByJG\ApiTools\Base\Schema;
+use ByJG\ApiTools\Exception\InvalidRequestException;
 use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
 use ByJG\Util\Psr7\MessageException;
 use ByJG\Util\Psr7\Request;
+use ByJG\Util\Psr7\Response;
 use ByJG\Util\Uri;
 use MintWare\Streams\MemoryStream;
 use Psr\Http\Message\RequestInterface;
@@ -24,11 +26,6 @@ use Psr\Http\Message\ResponseInterface;
  */
 abstract class AbstractRequester
 {
-    protected $method = 'get';
-    protected $path = '/';
-    protected $requestHeader = [];
-    protected $query = [];
-    protected $requestBody = null;
     /**
      * @var Schema
      */
@@ -37,6 +34,20 @@ abstract class AbstractRequester
     protected $statusExpected = 200;
     protected $assertHeader = [];
     protected $assertBody = null;
+
+    /**
+     * @var RequestInterface
+     */
+    protected $psr7Request;
+
+    /**
+     * AbstractRequester constructor.
+     * @throws MessageException
+     */
+    public function __construct()
+    {
+        $this->withPsr7Request(Request::getInstance(new Uri("/"))->withMethod("get"));
+    }
 
     /**
      * abstract function to be implemented by derived classes
@@ -71,10 +82,11 @@ abstract class AbstractRequester
     /**
      * @param string $method
      * @return $this
+     * @throws MessageException
      */
     public function withMethod($method)
     {
-        $this->method = $method;
+        $this->psr7Request->withMethod($method);
 
         return $this;
     }
@@ -85,7 +97,7 @@ abstract class AbstractRequester
      */
     public function withPath($path)
     {
-        $this->path = $path;
+        $this->psr7Request->getUri()->withPath($path);
 
         return $this;
     }
@@ -96,12 +108,9 @@ abstract class AbstractRequester
      */
     public function withRequestHeader($requestHeader)
     {
-        if (is_null($requestHeader)) {
-            $this->requestHeader = [];
-            return $this;
+        foreach ((array)$requestHeader as $name => $value) {
+            $this->psr7Request->withHeader($name, $value);
         }
-
-        $this->requestHeader = array_merge($this->requestHeader, $requestHeader);
 
         return $this;
     }
@@ -117,7 +126,10 @@ abstract class AbstractRequester
             return $this;
         }
 
-        $this->query = array_merge($this->query, $query);
+        $currentQuery = [];
+        parse_str($this->psr7Request->getUri()->getQuery(), $currentQuery);
+
+        $this->psr7Request->getUri()->withQuery(http_build_query(array_merge($currentQuery, $query)));
 
         return $this;
     }
@@ -128,9 +140,19 @@ abstract class AbstractRequester
      */
     public function withRequestBody($requestBody)
     {
-        $this->requestBody = $requestBody;
+        $contentType = $this->psr7Request->getHeader("Content-Type");
+        if (is_array($requestBody) && (empty($contentType) || $contentType == "application/json")) {
+            $requestBody = json_encode($requestBody);
+        }
+        $this->psr7Request->withBody(new MemoryStream($requestBody));
 
         return $this;
+    }
+
+    public function withPsr7Request(RequestInterface $requesInterface)
+    {
+        $this->psr7Request = clone $requesInterface;
+        $this->psr7Request->withHeader("Accept", "application/json");
     }
 
     public function assertResponseCode($code)
@@ -155,7 +177,7 @@ abstract class AbstractRequester
     }
 
     /**
-     * @return mixed
+     * @return Response|ResponseInterface
      * @throws Exception\DefinitionNotFoundException
      * @throws Exception\GenericSwaggerException
      * @throws Exception\HttpMethodNotFoundException
@@ -164,48 +186,42 @@ abstract class AbstractRequester
      * @throws NotMatchedException
      * @throws StatusCodeNotMatchedException
      * @throws MessageException
+     * @throws InvalidRequestException
      */
     public function send()
     {
-        // Preparing Parameters
-        $paramInQuery = null;
-        if (!empty($this->query)) {
-            $paramInQuery = '?' . http_build_query($this->query);
+        // Process URI based on the OpenAPI schema
+        $uriSchema = new Uri($this->schema->getServerUrl());
+
+        $this->psr7Request->getUri()
+            ->withScheme($uriSchema->getScheme())
+            ->withHost($uriSchema->getHost())
+            ->withPort($uriSchema->getPort())
+            ->withPath($uriSchema->getPath() . $this->psr7Request->getUri()->getPath());
+
+        if (!preg_match("~^{$this->schema->getBasePath()}~",  $this->psr7Request->getUri()->getPath())) {
+            $this->psr7Request->getUri()->withPath($this->schema->getBasePath() . $this->psr7Request->getUri()->getPath());
         }
 
-        // Preparing Header
-        if (empty($this->requestHeader)) {
-            $this->requestHeader = [];
-        }
-        $header = array_merge(
-            [
-                'Accept' => 'application/json'
-            ],
-            $this->requestHeader
-        );
+        // Prepare Body to Match Against Specification
+        $requestBody = $this->psr7Request->getBody();
+        if (!empty($requestBody)) {
+            $requestBody = $requestBody->getContents();
 
-        // Defining Variables
-        $serverUrl = $this->schema->getServerUrl();
-        $basePath = $this->schema->getBasePath();
-        $pathName = $this->path;
+            $contentType = $this->psr7Request->getHeader("content-type");
+            if (empty($contentType) || $contentType == "application/json") {
+                $requestBody = json_decode($requestBody, true);
+            } else {
+                throw new InvalidRequestException("Cannot handle Content Type '$contentType'");
+            }
+        }
 
         // Check if the body is the expected before request
-        $bodyRequestDef = $this->schema->getRequestParameters("$basePath$pathName", $this->method);
-        $bodyRequestDef->match($this->requestBody);
+        $bodyRequestDef = $this->schema->getRequestParameters($this->psr7Request->getUri()->getPath(), $this->psr7Request->getMethod());
+        $bodyRequestDef->match($requestBody);
 
-        // Make the request
-        $request = Request::getInstance(Uri::getInstanceFromString($serverUrl . $pathName . $paramInQuery))
-            ->withMethod($this->method);
-
-        if (!empty($this->requestBody)) {
-            $request->withBody(new MemoryStream(json_encode($this->requestBody)));
-        }
-
-        foreach ($header as $key => $value) {
-            $request->withHeader($key, $value);
-        }
-
-        $response = $this->handleRequest($request);
+        // Handle Request
+        $response = $this->handleRequest($this->psr7Request);
         $responseHeader = $response->getHeaders();
         $responseBodyStr = (string) $response->getBody();
         $responseBody = json_decode($responseBodyStr, true);
@@ -220,8 +236,8 @@ abstract class AbstractRequester
         }
 
         $bodyResponseDef = $this->schema->getResponseParameters(
-            "$basePath$pathName",
-            $this->method,
+            $this->psr7Request->getUri()->getPath(),
+            $this->psr7Request->getMethod(),
             $this->statusExpected
         );
         $bodyResponseDef->match($responseBody);
@@ -239,6 +255,6 @@ abstract class AbstractRequester
             throw new NotMatchedException("Body does not contain '{$this->assertBody}'");
         }
 
-        return $responseBody;
+        return $response;
     }
 }

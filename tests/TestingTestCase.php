@@ -4,6 +4,11 @@ namespace Test;
 
 use ByJG\ApiTools\ApiRequester;
 use ByJG\ApiTools\ApiTestCase;
+use ByJG\ApiTools\MockRequester;
+use ByJG\Util\Psr7\Request;
+use ByJG\Util\Psr7\Response;
+use ByJG\Util\Uri;
+use MintWare\Streams\MemoryStream;
 
 /**
  * Class TestingTestCase
@@ -26,18 +31,33 @@ abstract class TestingTestCase extends ApiTestCase
 
     public function testPost()
     {
+        $body = [
+            'id' => 1,
+            'name' => 'Spike',
+            'category' => [ 'id' => 201, 'name' => 'dog'],
+            'tags' => [[ 'id' => 2, 'name' => 'blackwhite']],
+            'photoUrls' => [],
+            'status' => 'available'
+        ];
+
+        // Basic Request
         $request = new ApiRequester();
         $request
             ->withMethod('POST')
             ->withPath("/pet")
-            ->withRequestBody([
-                'id' => 1,
-                'name' => 'Spike',
-                'category' => [ 'id' => 201, 'name' => 'dog'],
-                'tags' => [[ 'id' => 2, 'name' => 'blackwhite']],
-                'photoUrls' => [],
-                'status' => 'available'
-            ]);
+            ->withRequestBody($body);
+
+        $this->assertRequest($request);
+
+
+        // PSR7 Request
+        $psr7Request = Request::getInstance(new Uri("/pet"))
+            ->withMethod("post")
+            ->withBody(new MemoryStream(json_encode($body)));
+
+        $expectedResponse = new Response();
+        $request = new MockRequester($expectedResponse);
+        $request->withPsr7Request($psr7Request);
 
         $this->assertRequest($request);
     }
@@ -49,7 +69,6 @@ abstract class TestingTestCase extends ApiTestCase
      * @throws \ByJG\ApiTools\Exception\NotMatchedException
      * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      * @throws \ByJG\ApiTools\Exception\StatusCodeNotMatchedException
-     * @throws \GuzzleHttp\Exception\GuzzleException
 
      * @expectedException \ByJG\ApiTools\Exception\NotMatchedException
      * @expectedExceptionMessage Required property 'name'
@@ -78,7 +97,6 @@ abstract class TestingTestCase extends ApiTestCase
      * @throws \ByJG\ApiTools\Exception\NotMatchedException
      * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      * @throws \ByJG\ApiTools\Exception\StatusCodeNotMatchedException
-     * @throws \GuzzleHttp\Exception\GuzzleException
 
      * @expectedException \ByJG\ApiTools\Exception\NotMatchedException
      * @expectedExceptionMessage Expected empty body

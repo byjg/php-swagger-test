@@ -17,10 +17,16 @@ class ApiRequester extends AbstractRequester
     /** @var HttpClient */
     private $httpClient;
 
+    /**
+     * ApiRequester constructor.
+     * @throws MessageException
+     */
     public function __construct()
     {
         $this->httpClient = HttpClient::getInstance()
             ->withNoFollowRedirect();
+
+        parent::__construct();
     }
 
     /**
