@@ -5,6 +5,8 @@ namespace Test;
 use ByJG\ApiTools\ApiRequester;
 use ByJG\ApiTools\ApiTestCase;
 use ByJG\ApiTools\MockRequester;
+use ByJG\Util\Helper\RequestMultiPart;
+use ByJG\Util\MultiPartItem;
 use ByJG\Util\Psr7\Request;
 use ByJG\Util\Psr7\Response;
 use ByJG\Util\Uri;
@@ -118,4 +120,23 @@ abstract class TestingTestCase extends ApiTestCase
 
         $this->assertRequest($request);
     }
+
+    public function testMultipart()
+    {
+        $multipart = [
+            new MultiPartItem("note", "somenote"),
+            new MultiPartItem("upfile", file_get_contents(__DIR__ . "/smile.png"), "smile", "image/png")
+        ];
+        $psr7Requester = RequestMultiPart::build(new Uri("/inventory"), "post", $multipart);
+
+        $request = new ApiRequester();
+        $request
+            ->withPsr7Request($psr7Requester)
+            ->assertResponseCode(200)
+            ->assertBodyContains("smile")
+            ->assertBodyContains("somenote");
+
+        $this->assertRequest($request);
+    }
+
 }

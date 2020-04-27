@@ -42,4 +42,21 @@ class Handler
 
         // Expected empty response.
     }
+
+    /**
+     * @param HttpResponse $response
+     * @param HttpRequest $request
+     */
+    public function processUpload($response, $request)
+    {
+        $pet = new Pet(
+            200,
+            new Category(101, "cat"),
+            'Doris',
+            [$request->uploadedFiles()->getFileName("upfile")],
+            [new Tag(1, $request->post("note"))],
+            'sold'
+        );
+        $response->write($pet);
+    }
 }

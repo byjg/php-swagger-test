@@ -100,6 +100,23 @@ abstract class Body
 
     /**
      * @param $name
+     * @param $schema
+     * @param $body
+     * @param $type
+     * @return bool
+     * @throws NotMatchedException
+     */
+    protected function matchFile($name, $schema, $body, $type)
+    {
+        if ($type !== 'file') {
+            return null;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $name
      * @param $body
      * @param $type
      * @return bool
@@ -198,7 +215,12 @@ abstract class Body
             function () use ($name, $schema, $body, $type)
             {
                 return $this->matchArray($name, $schema, $body, $type);
-            }
+            },
+
+            function () use ($name, $schema, $body, $type)
+            {
+                return $this->matchFile($name, $schema, $body, $type);
+            },
         ];
 
         foreach ($validators as $validator) {

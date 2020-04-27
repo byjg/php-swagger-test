@@ -33,7 +33,7 @@ abstract class AbstractRequester
 
     protected $statusExpected = 200;
     protected $assertHeader = [];
-    protected $assertBody = null;
+    protected $assertBody = [];
 
     /**
      * @var RequestInterface
@@ -140,8 +140,8 @@ abstract class AbstractRequester
      */
     public function withRequestBody($requestBody)
     {
-        $contentType = $this->psr7Request->getHeader("Content-Type");
-        if (is_array($requestBody) && (empty($contentType) || $contentType == "application/json")) {
+        $contentType = $this->psr7Request->getHeaderLine("Content-Type");
+        if (is_array($requestBody) && (empty($contentType) || strpos($contentType, "application/json") !== false)) {
             $requestBody = json_encode($requestBody);
         }
         $this->psr7Request->withBody(new MemoryStream($requestBody));
@@ -153,6 +153,8 @@ abstract class AbstractRequester
     {
         $this->psr7Request = clone $requesInterface;
         $this->psr7Request->withHeader("Accept", "application/json");
+
+        return $this;
     }
 
     public function assertResponseCode($code)
@@ -171,7 +173,7 @@ abstract class AbstractRequester
 
     public function assertBodyContains($contains)
     {
-        $this->assertBody = $contains;
+        $this->assertBody[] = $contains;
 
         return $this;
     }
@@ -208,11 +210,13 @@ abstract class AbstractRequester
         if (!empty($requestBody)) {
             $requestBody = $requestBody->getContents();
 
-            $contentType = $this->psr7Request->getHeader("content-type");
-            if (empty($contentType) || $contentType == "application/json") {
+            $contentType = $this->psr7Request->getHeaderLine("content-type");
+            if (empty($contentType) || strpos($contentType, "application/json") !== false) {
                 $requestBody = json_decode($requestBody, true);
+            } elseif (strpos($contentType, "multipart/") !== false) {
+                $requestBody = $this->parseMultiPartForm($contentType, $requestBody);
             } else {
-                throw new InvalidRequestException("Cannot handle Content Type '$contentType'");
+                throw new InvalidRequestException("Cannot handle Content Type '{$contentType}'");
             }
         }
 
@@ -251,10 +255,47 @@ abstract class AbstractRequester
             }
         }
 
-        if (!empty($this->assertBody) && strpos($responseBodyStr, $this->assertBody) === false) {
-            throw new NotMatchedException("Body does not contain '{$this->assertBody}'");
+        if (!empty($responseBodyStr)) {
+            foreach ($this->assertBody as $item) {
+                if (strpos($responseBodyStr, $item) === false) {
+                    throw new NotMatchedException("Body does not contain '{$item}'");
+                }
+            }
         }
 
         return $response;
+    }
+
+    protected function parseMultiPartForm($contentType, $body)
+    {
+        $matchRequest = [];
+
+        if (empty($contentType) || strpos($contentType, "multipart/") === false) {
+            return null;
+        }
+
+        $matches = [];
+
+        preg_match('/boundary=(.*)$/', $contentType, $matches);
+        $boundary = $matches[1];
+
+        // split content by boundary and get rid of last -- element
+        $blocks = preg_split("/-+$boundary/", $body);
+        array_pop($blocks);
+
+        // loop data blocks
+        foreach ($blocks as $id => $block) {
+            if (empty($block))
+                continue;
+
+            if (strpos($block, 'application/octet-stream') !== false) {
+                preg_match("/name=\"([^\"]*)\".*stream[\n|\r]+([^\n\r].*)?$/s", $block, $matches);
+            } else {
+                preg_match('/\bname=\"([^\"]*)\"\s*;.*?[\n|\r]+([^\n\r].*)?[\r|\n]$/s', $block, $matches);
+            }
+            $matchRequest[$matches[1]] = $matches[2];
+        }
+
+        return $matchRequest;
     }
 }
