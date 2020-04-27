@@ -11,6 +11,7 @@ use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\ApiTools\Exception\PathNotFoundException;
 use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
 use ByJG\Util\Psr7\MessageException;
+use ByJG\Util\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 
 abstract class ApiTestCase extends TestCase
@@ -101,7 +102,7 @@ abstract class ApiTestCase extends TestCase
 
     /**
      * @param AbstractRequester $request
-     * @return mixed
+     * @return Response
      * @throws DefinitionNotFoundException
      * @throws GenericSwaggerException
      * @throws HttpMethodNotFoundException
