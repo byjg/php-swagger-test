@@ -34,7 +34,7 @@ class MockRequester extends AbstractRequester
      */
     protected function handleRequest(RequestInterface $request)
     {
-        $request->withHeader("User-Agent", "ByJG Swagger Test");
+        $request = $request->withHeader("User-Agent", "ByJG Swagger Test");
         return $this->httpClient->sendRequest($request);
     }
 }

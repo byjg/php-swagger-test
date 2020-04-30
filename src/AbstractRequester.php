@@ -86,7 +86,7 @@ abstract class AbstractRequester
      */
     public function withMethod($method)
     {
-        $this->psr7Request->withMethod($method);
+        $this->psr7Request = $this->psr7Request->withMethod($method);
 
         return $this;
     }
@@ -97,7 +97,8 @@ abstract class AbstractRequester
      */
     public function withPath($path)
     {
-        $this->psr7Request->getUri()->withPath($path);
+        $uri = $this->psr7Request->getUri()->withPath($path);
+        $this->psr7Request = $this->psr7Request->withUri($uri);
 
         return $this;
     }
@@ -109,7 +110,7 @@ abstract class AbstractRequester
     public function withRequestHeader($requestHeader)
     {
         foreach ((array)$requestHeader as $name => $value) {
-            $this->psr7Request->withHeader($name, $value);
+            $this->psr7Request = $this->psr7Request->withHeader($name, $value);
         }
 
         return $this;
@@ -127,9 +128,11 @@ abstract class AbstractRequester
         }
 
         $currentQuery = [];
-        parse_str($this->psr7Request->getUri()->getQuery(), $currentQuery);
+        $uri = $this->psr7Request->getUri();
+        parse_str($uri->getQuery(), $currentQuery);
 
-        $this->psr7Request->getUri()->withQuery(http_build_query(array_merge($currentQuery, $query)));
+        $uri = $uri->withQuery(http_build_query(array_merge($currentQuery, $query)));
+        $this->psr7Request = $this->psr7Request->withUri($uri);
 
         return $this;
     }
@@ -144,7 +147,7 @@ abstract class AbstractRequester
         if (is_array($requestBody) && (empty($contentType) || strpos($contentType, "application/json") !== false)) {
             $requestBody = json_encode($requestBody);
         }
-        $this->psr7Request->withBody(new MemoryStream($requestBody));
+        $this->psr7Request = $this->psr7Request->withBody(new MemoryStream($requestBody));
 
         return $this;
     }
@@ -152,7 +155,7 @@ abstract class AbstractRequester
     public function withPsr7Request(RequestInterface $requesInterface)
     {
         $this->psr7Request = clone $requesInterface;
-        $this->psr7Request->withHeader("Accept", "application/json");
+        $this->psr7Request = $this->psr7Request->withHeader("Accept", "application/json");
 
         return $this;
     }
@@ -195,15 +198,17 @@ abstract class AbstractRequester
         // Process URI based on the OpenAPI schema
         $uriSchema = new Uri($this->schema->getServerUrl());
 
-        $this->psr7Request->getUri()
+        $uri = $this->psr7Request->getUri()
             ->withScheme($uriSchema->getScheme())
             ->withHost($uriSchema->getHost())
             ->withPort($uriSchema->getPort())
             ->withPath($uriSchema->getPath() . $this->psr7Request->getUri()->getPath());
 
-        if (!preg_match("~^{$this->schema->getBasePath()}~",  $this->psr7Request->getUri()->getPath())) {
-            $this->psr7Request->getUri()->withPath($this->schema->getBasePath() . $this->psr7Request->getUri()->getPath());
+        if (!preg_match("~^{$this->schema->getBasePath()}~",  $uri->getPath())) {
+            $uri = $uri->withPath($this->schema->getBasePath() . $uri->getPath());
         }
+
+        $this->psr7Request = $this->psr7Request->withUri($uri);
 
         // Prepare Body to Match Against Specification
         $requestBody = $this->psr7Request->getBody();
