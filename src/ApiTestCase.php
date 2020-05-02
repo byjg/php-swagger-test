@@ -117,7 +117,7 @@ abstract class ApiTestCase extends TestCase
         // Add own schema if nothing is passed.
         if (!$request->hasSchema()) {
             $this->checkSchema();
-            $request->withSchema($this->schema);
+            $request = $request->withSchema($this->schema);
         }
 
         // Request based on the Swagger Request definitios
