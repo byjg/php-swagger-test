@@ -295,7 +295,7 @@ abstract class Body
             return true;
         }
 
-        if(!isset($schema['$ref']) && isset($schema['content'])) {
+        if (!isset($schema['$ref']) && isset($schema['content'])) {
             $schema['$ref'] = $schema['content'][key($schema['content'])]['schema']['$ref'];
         }
 
@@ -315,7 +315,22 @@ abstract class Body
             return $this->matchSchema($name, $mergedSchema, $body);
         }
 
+        if (isset($schema['oneOf'])) {
+            $matched = false;
+            $catchedException = null;
+            foreach ($schema['oneOf'] as $scheme) {
+                try {
+                    $matched = $matched || $this->matchSchema($name, $scheme, $body);
+                } catch (NotMatchedException $exception) {
+                    $catchedException = $exception;
+                }
+            }
+            if ($catchedException !== null && $matched === false) {
+                throw $catchedException;
+            }
 
+            return $matched;
+        }
 
         /**
          * OpenApi 2.0 does not describe ANY object value
