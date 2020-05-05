@@ -122,13 +122,15 @@ abstract class AbstractRequester
      */
     public function withQuery($query = null)
     {
+        $uri = $this->psr7Request->getUri();
+
         if (is_null($query)) {
-            $this->query = [];
+            $uri = $uri->withQuery(null);
+            $this->psr7Request = $this->psr7Request->withUri($uri);
             return $this;
         }
 
         $currentQuery = [];
-        $uri = $this->psr7Request->getUri();
         parse_str($uri->getQuery(), $currentQuery);
 
         $uri = $uri->withQuery(http_build_query(array_merge($currentQuery, $query)));
