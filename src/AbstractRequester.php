@@ -201,8 +201,8 @@ abstract class AbstractRequester
         $uriSchema = new Uri($this->schema->getServerUrl());
 
         $uri = $this->psr7Request->getUri()
-            ->withScheme($uriSchema->getScheme())
-            ->withHost($uriSchema->getHost())
+            ->withScheme(empty($uriSchema->getScheme()) ? $this->psr7Request->getUri()->getScheme() : $uriSchema->getScheme())
+            ->withHost(empty($uriSchema->getHost()) ? $this->psr7Request->getUri()->getHost() : $uriSchema->getHost())
             ->withPort($uriSchema->getPort())
             ->withPath($uriSchema->getPath() . $this->psr7Request->getUri()->getPath());
 
