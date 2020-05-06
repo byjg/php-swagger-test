@@ -200,9 +200,17 @@ abstract class AbstractRequester
         // Process URI based on the OpenAPI schema
         $uriSchema = new Uri($this->schema->getServerUrl());
 
+        if (empty($uriSchema->getScheme())) {
+            $uriSchema = $uriSchema->withScheme($this->psr7Request->getUri()->getScheme());
+        }
+
+        if (empty($uriSchema->getHost())) {
+            $uriSchema = $uriSchema->withHost($this->psr7Request->getUri()->getHost());
+        }
+
         $uri = $this->psr7Request->getUri()
-            ->withScheme(empty($uriSchema->getScheme()) ? $this->psr7Request->getUri()->getScheme() : $uriSchema->getScheme())
-            ->withHost(empty($uriSchema->getHost()) ? $this->psr7Request->getUri()->getHost() : $uriSchema->getHost())
+            ->withScheme($uriSchema->getScheme())
+            ->withHost($uriSchema->getHost())
             ->withPort($uriSchema->getPort())
             ->withPath($uriSchema->getPath() . $this->psr7Request->getUri()->getPath());
 
