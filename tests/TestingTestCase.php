@@ -17,6 +17,9 @@ use MintWare\Streams\MemoryStream;
  * @package Test
  *
  * IMPORTANT: This class is base for the other tests
+ *
+ * @see OpenApiTestCaseTest
+ * @see SwaggerTestCaseTest
  */
 abstract class TestingTestCase extends ApiTestCase
 {

@@ -154,10 +154,9 @@ abstract class AbstractRequester
         return $this;
     }
 
-    public function withPsr7Request(RequestInterface $requesInterface)
+    public function withPsr7Request(RequestInterface $requestInterface)
     {
-        $this->psr7Request = clone $requesInterface;
-        $this->psr7Request = $this->psr7Request->withHeader("Accept", "application/json");
+        $this->psr7Request = $requestInterface->withHeader("Accept", "application/json");
 
         return $this;
     }

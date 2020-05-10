@@ -5,6 +5,12 @@ namespace Test;
 use ByJG\ApiTools\OpenApi\OpenApiSchema;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * baseclass for further tests
+ *
+ * @see OpenApiRequestBodyTest
+ * @see OpenApiResponseBodyTest
+ */
 class OpenApiBodyTestCase extends TestCase
 {
     /**
