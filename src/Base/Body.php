@@ -165,6 +165,30 @@ abstract class Body
         return true;
     }
 
+    /**
+     * Checks if the value is valid date.
+     *
+     * @param $name
+     * @param $schema
+     * @param $body
+     * @param $type
+     *
+     * @return bool|null
+     * @throws NotMatchedException
+     */
+    protected function matchDate($name, $schema, $body, $type)
+    {
+        if ($type !== 'date') {
+            return null;
+        }
+
+        if (!(bool)strtotime($body)) {
+            throw new NotMatchedException("Expected '$name' to be date, but found '$body'. ", $this->structure);
+        }
+
+        return true;
+    }
+
     protected function matchTypes($name, $schema, $body)
     {
         if (!isset($schema['type'])) {
@@ -198,6 +222,11 @@ abstract class Body
             function () use ($name, $schema, $body, $type)
             {
                 return $this->matchArray($name, $schema, $body, $type);
+            },
+
+            function () use ($name, $schema, $body, $type)
+            {
+                return $this->matchDate($name, $schema, $body, $type);
             }
         ];
 
