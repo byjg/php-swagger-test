@@ -2,6 +2,8 @@
 
 namespace Test;
 
+use ByJG\ApiTools\Exception\NotMatchedException;
+
 class OpenApiRequestBodyTest extends OpenApiBodyTestCase
 {
     /**
@@ -326,5 +328,30 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
         $requestParameter = $this->openApiSchema()->getRequestParameters('/test-additional-props-type-string', 'post');
         $this->expectExceptionMessage('Type check of additional properties not implemented');
         $this->assertTrue($requestParameter->match($body));
+    }
+
+    public function testMatchRequestBodyMatchesDate()
+    {
+        // Missing Request
+        $body = [
+            "date" => "2013-02-12",
+        ];
+
+
+        $requestParameter = $this->openApiSchema()->getRequestParameters('/store-dates', 'post');
+        $this->assertTrue($requestParameter->match($body));
+    }
+
+    public function testMatchRequestBodyMatchesDateAndThrowsInvalid()
+    {
+        // Missing Request
+        $body = [
+            "date" => "test",
+        ];
+
+        $this->expectException(NotMatchedException::class);
+        $this->expectExceptionMessage("Expected 'date' to be date, but found 'test'. ");
+        $requestParameter = $this->openApiSchema()->getRequestParameters('/store-dates', 'post');
+        $this->assertFalse($requestParameter->match($body));
     }
 }
