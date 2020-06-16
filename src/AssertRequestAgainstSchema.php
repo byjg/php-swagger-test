@@ -10,6 +10,7 @@ use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\ApiTools\Exception\PathNotFoundException;
 use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
+use PHPUnit\Framework\TestCase;
 
 trait AssertRequestAgainstSchema
 {
@@ -56,6 +57,8 @@ trait AssertRequestAgainstSchema
         $requestBody = null,
         $requestHeader = []
     ) {
+        assert($this instanceof TestCase);
+
         $this->checkSchema();
         $requester = new ApiRequester();
         $body = $requester
@@ -91,6 +94,8 @@ trait AssertRequestAgainstSchema
      */
     public function assertRequest(AbstractRequester $request)
     {
+        assert($this instanceof TestCase);
+
         // Add own schema if nothing is passed.
         if (!$request->hasSchema()) {
             $this->checkSchema();
