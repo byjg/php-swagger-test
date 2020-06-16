@@ -891,6 +891,53 @@
           }
         }
       }
+    },
+    "/store-dates": {
+      "post": {
+        "summary": "Get date",
+        "description": "",
+        "operationId": "storeDates",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "description": "First date",
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "date_time": {
+                    "description": "First date time",
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "any_format": {
+                    "description": "Any format",
+                    "type": "string",
+                    "format": "unknown"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Updated dates",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "externalDocs": {

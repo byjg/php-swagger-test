@@ -2,6 +2,8 @@
 
 namespace Test;
 
+use ByJG\ApiTools\Exception\NotMatchedException;
+
 class OpenApiRequestBodyTest extends OpenApiBodyTestCase
 {
     /**
@@ -20,7 +22,7 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
             "id" => "10",
             "petId" => 50,
             "quantity" => 1,
-            "shipDate" => '2010-10-20',
+            "shipDate" => '2010-10-20T17:32:28Z',
             "status" => 'placed',
             "complete" => true
         ];
@@ -67,7 +69,7 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
             "id" => "10",
             "petId" => 50,
             "quantity" => 1,
-            "shipDate" => '2010-10-20',
+            "shipDate" => '2010-10-20T17:32:28Z',
             "status" => 'placed',
             "complete" => true
         ];
@@ -272,5 +274,81 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
 
         $requestParameter = $this->openApiSchema2()->getRequestParameters('/accounts/create', 'post');
         $requestParameter->match($body);
+    }
+
+    public function testMatchRequestBodyMatchesStringWithDateFormat()
+    {
+        // Missing Request
+        $body = [
+            "date" => "2013-02-12",
+        ];
+
+        $requestParameter = $this->openApiSchema()->getRequestParameters('/store-dates', 'post');
+        $this->assertTrue($requestParameter->match($body));
+    }
+
+    public function testMatchRequestBodyMatchesStringWithAnyFormat()
+    {
+        // Missing Request
+        $body = [
+            "any_format" => "rock",
+        ];
+
+        $requestParameter = $this->openApiSchema()->getRequestParameters('/store-dates', 'post');
+        $this->assertTrue($requestParameter->match($body));
+    }
+
+    public function testMatchRequestBodyMatchesStringWithDateTimeFormat()
+    {
+        // Missing Request
+        $datesTimes = [
+            '2000-01-01T01:00:00+1200',
+            '2010-10-20T17:32:28Z',
+        ];
+
+        foreach ($datesTimes as $time) {
+            $body = [
+                "date_time" => $time,
+            ];
+
+            $requestParameter = $this->openApiSchema()->getRequestParameters('/store-dates', 'post');
+            $this->assertTrue($requestParameter->match($body));
+        }
+    }
+
+    public function testMatchRequestBodyMatchesStringWithDateTimeFormatAndThrowsInvalid()
+    {
+        // Missing Request
+        $datesTimes = [
+            '01-01T01:00:00+1200',
+            '0000-01-01T01:00:00+1200',
+            '2000-30-01T01:00:00+1200',
+            '2000-01-01T01:00:00+01',
+        ];
+
+        foreach ($datesTimes as $time) {
+            $body = [
+                "date_time" => $time,
+            ];
+
+            $this->expectException(NotMatchedException::class);
+            $this->expectExceptionMessage("Value '{$time}' in 'date_time' has invalid format (date-time). ");
+
+            $requestParameter = $this->openApiSchema()->getRequestParameters('/store-dates', 'post');
+            $this->assertFalse($requestParameter->match($body));
+        }
+    }
+
+    public function testMatchRequestBodyMatchesStringWithDateFormatAndThrowsInvalid()
+    {
+        // Missing Request
+        $body = [
+            "date" => "test",
+        ];
+
+        $this->expectException(NotMatchedException::class);
+        $this->expectExceptionMessage("Value 'test' in 'date' has invalid format (date). ");
+        $requestParameter = $this->openApiSchema()->getRequestParameters('/store-dates', 'post');
+        $this->assertFalse($requestParameter->match($body));
     }
 }

@@ -21,7 +21,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
             "id" => 10,
             "petId" => 50,
             "quantity" => 1,
-            "shipDate" => '2010-10-20',
+            "shipDate" => '2010-10-20T17:32:28Z',
             "status" => 'placed',
             "complete" => true
         ];
@@ -34,7 +34,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
             "id" => 10,
             "petId" => 50,
             "quantity" => 1,
-            "shipDate" => '2010-10-20',
+            "shipDate" => '2010-10-20T17:32:28Z',
             "status" => 'placed'
         ];
 
@@ -46,7 +46,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
             "id" => "10",
             "petId" => "50",
             "quantity" => "1",
-            "shipDate" => '2010-10-20',
+            "shipDate" => '2010-10-20T17:32:28Z',
             "status" => 'placed',
             "complete" => true
         ];
@@ -73,7 +73,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
             "id" => 10,
             "petId" => 50,
             "quantity" => 1,
-            "shipDate" => '2010-10-20',
+            "shipDate" => '2010-10-20T17:32:28Z',
             "status" => 'notfound',
             "complete" => true
         ];
@@ -100,7 +100,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
             "id" => "ABC",
             "petId" => 50,
             "quantity" => 1,
-            "shipDate" => '2010-10-20',
+            "shipDate" => '2010-10-20T17:32:28Z',
             "status" => 'placed',
             "complete" => true
         ];
@@ -127,7 +127,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
             "id" => "50",
             "petId" => 50,
             "quantity" => 1,
-            "shipDate" => '2010-10-20',
+            "shipDate" => '2010-10-20T17:32:28Z',
             "status" => 'placed',
             "complete" => true,
             "more" => "value"
