@@ -21,7 +21,7 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
             "id" => 10,
             "petId" => 50,
             "quantity" => 1,
-            "shipDate" => '2010-10-20',
+            "shipDate" => '2010-10-20T17:32:28Z',
             "status" => 'placed',
             "complete" => true
         ];
@@ -33,7 +33,7 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
             "id" => 10,
             "petId" => 50,
             "quantity" => 1,
-            "shipDate" => '2010-10-20',
+            "shipDate" => '2010-10-20T17:32:28Z',
             "status" => 'placed'
         ];
         $responseParameter = $schema->getResponseParameters('/v2/store/order', 'post', 200);
@@ -44,7 +44,7 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
             "id" => "10",
             "petId" => "50",
             "quantity" => "1",
-            "shipDate" => '2010-10-20',
+            "shipDate" => '2010-10-20T17:32:28Z',
             "status" => 'placed',
             "complete" => true
         ];
@@ -70,7 +70,7 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
             "id" => 10,
             "petId" => 50,
             "quantity" => 1,
-            "shipDate" => '2010-10-20',
+            "shipDate" => '2010-10-20T17:32:28Z',
             "status" => 'notfound',
             "complete" => true
         ];
@@ -96,7 +96,7 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
             "id" => "ABC",
             "petId" => 50,
             "quantity" => 1,
-            "shipDate" => '2010-10-20',
+            "shipDate" => '2010-10-20T17:32:28Z',
             "status" => 'placed',
             "complete" => true
         ];
@@ -122,7 +122,7 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
             "id" => "50",
             "petId" => 50,
             "quantity" => 1,
-            "shipDate" => '2010-10-20',
+            "shipDate" => '2010-10-20T17:32:28Z',
             "status" => 'placed',
             "complete" => true,
             "more" => "value"

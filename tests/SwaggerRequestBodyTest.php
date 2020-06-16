@@ -20,7 +20,7 @@ class SwaggerRequestBodyTest extends SwaggerBodyTestCase
             "id" => "10",
             "petId" => 50,
             "quantity" => 1,
-            "shipDate" => '2010-10-20',
+            "shipDate" => '2010-10-20T17:32:28Z',
             "status" => 'placed',
             "complete" => true
         ];
@@ -67,7 +67,7 @@ class SwaggerRequestBodyTest extends SwaggerBodyTestCase
             "id" => "10",
             "petId" => 50,
             "quantity" => 1,
-            "shipDate" => '2010-10-20',
+            "shipDate" => '2010-10-20T17:32:28Z',
             "status" => 'placed',
             "complete" => true
         ];

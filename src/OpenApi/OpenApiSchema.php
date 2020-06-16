@@ -2,8 +2,11 @@
 
 namespace ByJG\ApiTools\OpenApi;
 
+use ByJG\ApiTools\Base\Body;
 use ByJG\ApiTools\Base\Schema;
+use ByJG\ApiTools\Base\StringFormatValidator;
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
+use ByJG\ApiTools\Exception\GenericSwaggerException;
 use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\NotMatchedException;
@@ -117,23 +120,23 @@ class OpenApiSchema extends Schema
     }
 
     /**
-     * @param $path
-     * @param $method
-     * @return OpenApiRequestBody
+     * @param string $path
+     * @param string $method
+     * @return Body
      * @throws DefinitionNotFoundException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws NotMatchedException
      * @throws PathNotFoundException
+     * @throws GenericSwaggerException
      */
     public function getRequestParameters($path, $method)
     {
         $structure = $this->getPathDefinition($path, $method);
+        $hasRequestBody = isset($structure['requestBody']);
+        $parameters = $hasRequestBody ? $structure['requestBody'] : [];
 
-        if (!isset($structure['requestBody'])) {
-            return new OpenApiRequestBody($this, "$method $path", []);
-        }
-        return new OpenApiRequestBody($this, "$method $path", $structure['requestBody']);
+        return new OpenApiRequestBody($this, "$method $path", $parameters, false, new StringFormatValidator());
     }
 
     public function setServerVariable($var, $value)
