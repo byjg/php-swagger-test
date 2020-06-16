@@ -2,8 +2,11 @@
 
 namespace ByJG\ApiTools\Swagger;
 
+use ByJG\ApiTools\Base\Body;
 use ByJG\ApiTools\Base\Schema;
+use ByJG\ApiTools\Base\StringFormatValidator;
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
+use ByJG\ApiTools\Exception\GenericSwaggerException;
 use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\NotMatchedException;
@@ -96,21 +99,22 @@ class SwaggerSchema extends Schema
     /**
      * @param $path
      * @param $method
-     * @return SwaggerRequestBody
+     *
+     * @return Body
      * @throws DefinitionNotFoundException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws NotMatchedException
      * @throws PathNotFoundException
+     * @throws GenericSwaggerException
      */
     public function getRequestParameters($path, $method)
     {
         $structure = $this->getPathDefinition($path, $method);
+        $hasSwaggerParameters = isset($structure[self::SWAGGER_PARAMETERS]);
+        $parameters = $hasSwaggerParameters ? $structure[self::SWAGGER_PARAMETERS] : [];
 
-        if (!isset($structure[self::SWAGGER_PARAMETERS])) {
-            return new SwaggerRequestBody($this, "$method $path", []);
-        }
-        return new SwaggerRequestBody($this, "$method $path", $structure[self::SWAGGER_PARAMETERS]);
+        return new SwaggerRequestBody($this, "$method $path", $parameters, false, new StringFormatValidator());
     }
 
     /**

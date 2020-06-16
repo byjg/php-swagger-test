@@ -902,13 +902,21 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "date"
-                ],
                 "properties": {
                   "date": {
                     "description": "First date",
-                    "type": "date"
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "date_time": {
+                    "description": "First date time",
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "any_format": {
+                    "description": "Any format",
+                    "type": "string",
+                    "format": "unknown"
                   }
                 }
               }

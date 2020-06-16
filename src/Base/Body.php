@@ -35,6 +35,10 @@ abstract class Body
      * @var bool
      */
     protected $allowNullValues;
+    /**
+     * @var StringFormatValidator
+     */
+    private $stringFormatValidator;
 
     /**
      * Body constructor.
@@ -44,7 +48,7 @@ abstract class Body
      * @param array $structure
      * @param bool $allowNullValues
      */
-    public function __construct(Schema $schema, $name, $structure, $allowNullValues = false)
+    public function __construct(Schema $schema, $name, $structure, $allowNullValues, StringFormatValidator $stringFormatValidator)
     {
         $this->schema = $schema;
         $this->name = $name;
@@ -53,6 +57,7 @@ abstract class Body
         }
         $this->structure = $structure;
         $this->allowNullValues = $allowNullValues;
+        $this->stringFormatValidator = $stringFormatValidator;
     }
 
     /**
@@ -65,12 +70,14 @@ abstract class Body
      */
     public static function getInstance(Schema $schema, $name, $structure, $allowNullValues = false)
     {
+        $validator = new StringFormatValidator();
+
         if ($schema instanceof SwaggerSchema) {
-            return new SwaggerResponseBody($schema, $name, $structure, $allowNullValues);
+            return new SwaggerResponseBody($schema, $name, $structure, $allowNullValues, $validator);
         }
 
         if ($schema instanceof OpenApiSchema) {
-            return new OpenApiResponseBody($schema, $name, $structure, $allowNullValues);
+            return new OpenApiResponseBody($schema, $name, $structure, $allowNullValues, $validator);
         }
 
         throw new GenericSwaggerException("Cannot get instance SwaggerBody or SchemaBody from " . get_class($schema));
@@ -98,6 +105,18 @@ abstract class Body
 
         if (isset($schema['enum']) && !in_array($body, $schema['enum'])) {
             throw new NotMatchedException("Value '$body' in '$name' not matched in ENUM. ", $this->structure);
+        }
+
+        if (isset($schema['format'])) {
+            if (is_string($schema['format']) === false) {
+                throw new NotMatchedException("Format in '$name' is not string. ", $this->structure);
+            }
+
+            $isValid = $this->stringFormatValidator->validate($schema['format'], $body);
+
+            if ($isValid === false) {
+                throw new NotMatchedException("Value '$body' in '$name' has invalid format ({$schema['format']}). ", $this->structure);
+            }
         }
 
         return true;
@@ -170,30 +189,6 @@ abstract class Body
         return true;
     }
 
-    /**
-     * Checks if the value is valid date.
-     *
-     * @param $name
-     * @param $schema
-     * @param $body
-     * @param $type
-     *
-     * @return bool|null
-     * @throws NotMatchedException
-     */
-    protected function matchDate($name, $schema, $body, $type)
-    {
-        if ($type !== 'date') {
-            return null;
-        }
-
-        if (!(bool)strtotime($body)) {
-            throw new NotMatchedException("Expected '$name' to be date, but found '$body'. ", $this->structure);
-        }
-
-        return true;
-    }
-
     protected function matchTypes($name, $schema, $body)
     {
         if (!isset($schema['type'])) {
@@ -228,11 +223,6 @@ abstract class Body
             {
                 return $this->matchArray($name, $schema, $body, $type);
             },
-
-            function () use ($name, $schema, $body, $type)
-            {
-                return $this->matchDate($name, $schema, $body, $type);
-            }
         ];
 
         foreach ($validators as $validator) {
