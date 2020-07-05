@@ -2,7 +2,6 @@
 
 namespace ByJG\ApiTools;
 
-use ByJG\ApiTools\Base\BaseTestCase;
 use ByJG\ApiTools\Base\Schema;
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
 use ByJG\ApiTools\Exception\GenericSwaggerException;
@@ -11,7 +10,8 @@ use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\ApiTools\Exception\PathNotFoundException;
 use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
-use GuzzleHttp\GuzzleException;
+use ByJG\Util\Psr7\MessageException;
+use ByJG\Util\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 
 abstract class ApiTestCase extends TestCase
@@ -20,6 +20,11 @@ abstract class ApiTestCase extends TestCase
      * @var Schema
      */
     protected $schema;
+
+    /**
+     * @var AbstractRequester
+     */
+    protected $requester = null;
 
     /**
      * configure the schema to use for requests
@@ -31,6 +36,22 @@ abstract class ApiTestCase extends TestCase
     public function setSchema($schema)
     {
         $this->schema = $schema;
+    }
+
+    public function setRequester(AbstractRequester $requester)
+    {
+        $this->requester = $requester;
+    }
+
+    /**
+     * @return AbstractRequester
+     */
+    protected function getRequester()
+    {
+        if (is_null($this->requester)) {
+            $this->requester = new ApiRequester();
+        }
+        return $this->requester;
     }
 
     /**
@@ -48,7 +69,7 @@ abstract class ApiTestCase extends TestCase
      * @throws NotMatchedException
      * @throws PathNotFoundException
      * @throws StatusCodeNotMatchedException
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws MessageException
      * @deprecated Use assertRequest instead
      */
     protected function makeRequest(
@@ -60,8 +81,7 @@ abstract class ApiTestCase extends TestCase
         $requestHeader = []
     ) {
         $this->checkSchema();
-        $requester = new ApiRequester();
-        $body = $requester
+        $body = $this->requester
             ->withSchema($this->schema)
             ->withMethod($method)
             ->withPath($path)
@@ -82,7 +102,7 @@ abstract class ApiTestCase extends TestCase
 
     /**
      * @param AbstractRequester $request
-     * @return mixed
+     * @return Response
      * @throws DefinitionNotFoundException
      * @throws GenericSwaggerException
      * @throws HttpMethodNotFoundException
@@ -90,14 +110,14 @@ abstract class ApiTestCase extends TestCase
      * @throws NotMatchedException
      * @throws PathNotFoundException
      * @throws StatusCodeNotMatchedException
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws MessageException
      */
     public function assertRequest(AbstractRequester $request)
     {
         // Add own schema if nothing is passed.
         if (!$request->hasSchema()) {
             $this->checkSchema();
-            $request->withSchema($this->schema);
+            $request = $request->withSchema($this->schema);
         }
 
         // Request based on the Swagger Request definitios

@@ -11,14 +11,13 @@
     }
   ],
   "require": {
-    "guzzlehttp/guzzle": "6.*",
-    "byjg/uri": "2.0.*",
+    "byjg/webrequest": "dev-psr7",
     "php": ">=5.6",
     "ext-json": "*"
   },
   "require-dev": {
-    "phpunit/phpunit": "5.7.*|7.4.*",
-    "byjg/restserver": "3.1.*"
+    "phpunit/phpunit": "^5.7|^7.4",
+    "byjg/restserver": "4.0.x-dev"
   },
   "autoload": {
     "psr-4": {

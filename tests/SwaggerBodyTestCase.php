@@ -5,6 +5,12 @@ namespace Test;
 use ByJG\ApiTools\Swagger\SwaggerSchema;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * baseclass for further tests
+ *
+ * @see SwaggerRequestBodyTest
+ * @see SwaggerResponseBodyTest
+ */
 class SwaggerBodyTestCase extends TestCase
 {
 

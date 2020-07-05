@@ -100,6 +100,62 @@
           }
         }
       }
+    },
+    "/inventory" : {
+      "post": {
+        "tags": [
+          "admins"
+        ],
+        "summary": "adds an inventory item",
+        "operationId": "RestTest\\Handler::processUpload",
+        "description": "Adds an item to the system",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pet"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pet"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "invalid input, object invalid"
+          },
+          "409": {
+            "description": "an existing item already exists"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "upfile": {
+                    "description": "The file to upload.",
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "note": {
+                    "description": "Description of file contents.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "upfile"
+                ]
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {

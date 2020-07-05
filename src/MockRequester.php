@@ -1,31 +1,28 @@
 <?php
 
+
 namespace ByJG\ApiTools;
 
 use ByJG\Util\CurlException;
-use ByJG\Util\HttpClient;
+use ByJG\Util\MockClient;
 use ByJG\Util\Psr7\MessageException;
 use ByJG\Util\Psr7\Response;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-/**
- * Request handler based on ByJG HttpClient (WebRequest) .
- */
-class ApiRequester extends AbstractRequester
+class MockRequester extends AbstractRequester
 {
-    /** @var HttpClient */
+    /** @var MockClient */
     private $httpClient;
 
     /**
-     * ApiRequester constructor.
+     * MockAbstractRequest constructor.
+     * @param Response $expectedResponse
      * @throws MessageException
      */
-    public function __construct()
+    public function __construct(Response $expectedResponse)
     {
-        $this->httpClient = HttpClient::getInstance()
-            ->withNoFollowRedirect();
-
+        $this->httpClient = new MockClient($expectedResponse);
         parent::__construct();
     }
 

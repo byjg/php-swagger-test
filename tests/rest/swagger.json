@@ -91,6 +91,43 @@
           }
         }
       }
+    },
+    "/inventory" : {
+      "post" : {
+        "tags" : [ "admins" ],
+        "summary" : "adds an inventory item",
+        "operationId": "RestTest\\Handler::processUpload",
+        "description" : "Adds an item to the system",
+        "consumes" : [ "multipart/form-data" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "formData",
+          "name" : "upfile",
+          "type" : "file",
+          "required" : true,
+          "description" : "The file to upload."
+        }, {
+          "in" : "formData",
+          "name" : "note",
+          "type" : "string",
+          "required" : false,
+          "description" : "Description of file contents."
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "item created",
+            "schema": {
+              "$ref": "#/definitions/Pet"
+            }
+          },
+          "400" : {
+            "description" : "invalid input, object invalid"
+          },
+          "409" : {
+            "description" : "an existing item already exists"
+          }
+        }
+      }
     }
   },
   "definitions": {

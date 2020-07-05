@@ -22,12 +22,18 @@ class OpenApiResponseBody extends Body
      */
     public function match($body)
     {
-        if (!isset($this->structure['content'])) {
+        if (empty($this->structure['content']) && !isset($this->structure['$ref'])) {
             if (!empty($body)) {
                 throw new NotMatchedException("Expected empty body for " . $this->name);
             }
             return true;
         }
+        
+        if(!isset($this->structure['content']) && isset($this->structure['$ref'])){
+            $defintion = $this->schema->getDefinition($this->structure['$ref']);
+            return $this->matchSchema($this->name, $defintion, $body);
+        }
+        
         return $this->matchSchema($this->name, $this->structure['content'][key($this->structure['content'])]['schema'], $body);
     }
 }

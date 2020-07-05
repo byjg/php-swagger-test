@@ -10,3 +10,7 @@ composer.lock
 
 .idea/*
 !.idea/runConfigurations
+/.scannerwork/
+/sonar-scanner-3.2.0.1227-linux/
+/phpunit.coverage.xml
+/phpunit.report.xml
