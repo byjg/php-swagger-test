@@ -13,7 +13,7 @@ use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
 class SwaggerRequestBody extends Body
 {
     /**
-     * @param $body
+     * @param string $body
      * @return bool
      * @throws GenericSwaggerException
      * @throws InvalidDefinitionException

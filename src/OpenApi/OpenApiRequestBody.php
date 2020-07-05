@@ -13,7 +13,7 @@ use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
 class OpenApiRequestBody extends Body
 {
     /**
-     * @param $body
+     * @param string $body
      * @return bool
      * @throws GenericSwaggerException
      * @throws InvalidDefinitionException

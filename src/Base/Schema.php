@@ -64,8 +64,8 @@ abstract class Schema
     }
 
     /**
-     * @param $path
-     * @param $method
+     * @param string $path
+     * @param string $method
      * @return mixed
      * @throws DefinitionNotFoundException
      * @throws HttpMethodNotFoundException
@@ -125,9 +125,9 @@ abstract class Schema
     }
 
     /**
-     * @param $path
-     * @param $method
-     * @param $status
+     * @param string $path
+     * @param string $method
+     * @param string $status
      * @return Body
      * @throws DefinitionNotFoundException
      * @throws HttpMethodNotFoundException

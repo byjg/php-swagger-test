@@ -12,7 +12,7 @@ use ByJG\ApiTools\Exception\NotMatchedException;
 class SwaggerResponseBody extends Body
 {
     /**
-     * @param $body
+     * @param string $body
      * @return bool
      * @throws GenericSwaggerException
      * @throws InvalidRequestException
