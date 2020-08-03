@@ -125,7 +125,7 @@ abstract class AbstractRequester
     }
 
     /**
-     * @param null $requestBody
+     * @param array|null $requestBody
      * @return $this
      */
     public function withRequestBody($requestBody)
