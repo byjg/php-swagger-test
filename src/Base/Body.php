@@ -343,6 +343,28 @@ abstract class Body
             return true;
         }
 
+        if (isset($schemaArray['allOf'])) {
+            $mergedSchema = array_merge_recursive(...$schemaArray['allOf']);
+            return $this->matchSchema($name, $mergedSchema, $body);
+        }
+
+        if (isset($schemaArray['oneOf'])) {
+            $matched = false;
+            $catchedException = null;
+            foreach ($schemaArray['oneOf'] as $scheme) {
+                try {
+                    $matched = $matched || $this->matchSchema($name, $scheme, $body);
+                } catch (NotMatchedException $exception) {
+                    $catchedException = $exception;
+                }
+            }
+            if ($catchedException !== null && $matched === false) {
+                throw $catchedException;
+            }
+
+            return $matched;
+        }
+
         /**
          * OpenApi 2.0 does not describe ANY object value
          * But there is hack that makes ANY object possible, described in link below
