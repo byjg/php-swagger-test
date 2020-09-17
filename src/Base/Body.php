@@ -17,6 +17,7 @@ abstract class Body
 {
     const SWAGGER_PROPERTIES="properties";
     const SWAGGER_REQUIRED="required";
+    const SWAGGER_ADDITIONAL_PROPERTIES = "additionalProperties";
 
     /**
      * @var Schema
@@ -224,7 +225,27 @@ abstract class Body
      */
     public function matchObjectProperties($name, $schema, $body)
     {
-        if (!isset($schema[self::SWAGGER_PROPERTIES])) {
+        $hasNoProps = !isset($schema[self::SWAGGER_PROPERTIES]);
+
+        if (isset($schema[self::SWAGGER_ADDITIONAL_PROPERTIES])) {
+            if (!is_array($body)) {
+                throw new InvalidRequestException(
+                    "I expected an array here, but I got an string. Maybe you did wrong request?",
+                    $body
+                );
+            }
+            $additionalPropsSettings = $schema[self::SWAGGER_ADDITIONAL_PROPERTIES];
+
+            // Empty object or true means no validation
+            if ($additionalPropsSettings === true || empty($additionalPropsSettings)) {
+                // TODO: handle additionalProps with properties
+                return true;
+            } else {
+                throw new GenericSwaggerException('Type check of additional properties not implemented');
+            }
+        }
+
+        if ($hasNoProps) {
             return null;
         }
 

@@ -273,4 +273,58 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
         $requestParameter = $this->openApiSchema2()->getRequestParameters('/accounts/create', 'post');
         $requestParameter->match($body);
     }
+
+    public function testAdditionalPropertiesWithTrue()
+    {
+        // Missing Request
+        $body = [
+            "anything" => "2013-02-12",
+        ];
+
+        $requestParameter = $this->openApiSchema()->getRequestParameters('/test-additional-props', 'post');
+        $this->assertTrue($requestParameter->match($body));
+    }
+
+    /**
+     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
+     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
+     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
+     * @throws \ByJG\ApiTools\Exception\InvalidRequestException
+     * @throws \ByJG\ApiTools\Exception\NotMatchedException
+     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws \ByJG\ApiTools\Exception\RequiredArgumentNotFound
+     */
+    public function testAdditionalPropertiesWithEmptyObject()
+    {
+        // Missing Request
+        $body = [
+            "anything" => "2013-02-12",
+        ];
+
+        $requestParameter = $this->openApiSchema()->getRequestParameters('/test-additional-props-empty-object', 'post');
+        $this->assertTrue($requestParameter->match($body));
+    }
+
+    /**
+     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
+     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
+     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
+     * @throws \ByJG\ApiTools\Exception\InvalidRequestException
+     * @throws \ByJG\ApiTools\Exception\NotMatchedException
+     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws \ByJG\ApiTools\Exception\RequiredArgumentNotFound
+     */
+    public function testAdditionalPropertiesWithTypeString()
+    {
+        // Missing Request
+        $body = [
+            "anything" => "2013-02-12",
+        ];
+
+        $requestParameter = $this->openApiSchema()->getRequestParameters('/test-additional-props-type-string', 'post');
+        $this->expectExceptionMessage('Type check of additional properties not implemented');
+        $this->assertTrue($requestParameter->match($body));
+    }
 }
