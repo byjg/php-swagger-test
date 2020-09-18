@@ -2,9 +2,15 @@
 
 namespace Test;
 
-use ByJG\Swagger\SwaggerSchema;
+use ByJG\ApiTools\Swagger\SwaggerSchema;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * baseclass for further tests
+ *
+ * @see SwaggerRequestBodyTest
+ * @see SwaggerResponseBodyTest
+ */
 class SwaggerBodyTestCase extends TestCase
 {
 
@@ -14,7 +20,7 @@ class SwaggerBodyTestCase extends TestCase
      */
     protected static function swaggerSchema($allowNullValues = false)
     {
-        return new SwaggerSchema(
+        return \ByJG\ApiTools\Base\Schema::getInstance(
             self::getSwaggerJsonContent(),
             $allowNullValues
         );
@@ -26,7 +32,7 @@ class SwaggerBodyTestCase extends TestCase
      */
     protected static function swaggerSchema2($allowNullValues = false)
     {
-        return new SwaggerSchema(
+        return \ByJG\ApiTools\Base\Schema::getInstance(
             self::getSwaggerJsonContent_No2(),
             $allowNullValues
         );

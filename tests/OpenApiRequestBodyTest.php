@@ -2,7 +2,7 @@
 
 namespace Test;
 
-class SwaggerRequestBodyTest extends SwaggerBodyTestCase
+class OpenApiRequestBodyTest extends OpenApiBodyTestCase
 {
     /**
      * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
@@ -24,7 +24,8 @@ class SwaggerRequestBodyTest extends SwaggerBodyTestCase
             "status" => 'placed',
             "complete" => true
         ];
-        $requestParameter = self::swaggerSchema()->getRequestParameters('/v2/store/order', 'post');
+
+        $requestParameter = self::openApiSchema()->getRequestParameters('/v2/store/order', 'post');
         $this->assertTrue($requestParameter->match($body));
     }
 
@@ -43,7 +44,7 @@ class SwaggerRequestBodyTest extends SwaggerBodyTestCase
      */
     public function testMatchRequiredRequestBodyEmpty()
     {
-        $requestParameter = self::swaggerSchema()->getRequestParameters('/v2/store/order', 'post');
+        $requestParameter = self::openApiSchema()->getRequestParameters('/v2/store/order', 'post');
         $this->assertTrue($requestParameter->match(null));
     }
 
@@ -62,7 +63,6 @@ class SwaggerRequestBodyTest extends SwaggerBodyTestCase
      */
     public function testMatchInexistantBodyDefinition()
     {
-        $requestParameter = self::swaggerSchema()->getRequestParameters('/v2/pet/1', 'get');
         $body = [
             "id" => "10",
             "petId" => 50,
@@ -71,6 +71,8 @@ class SwaggerRequestBodyTest extends SwaggerBodyTestCase
             "status" => 'placed',
             "complete" => true
         ];
+
+        $requestParameter = self::openApiSchema()->getRequestParameters('/v2/pet/1', 'get');
         $this->assertTrue($requestParameter->match($body));
     }
 
@@ -78,15 +80,47 @@ class SwaggerRequestBodyTest extends SwaggerBodyTestCase
      * @expectedException \ByJG\ApiTools\Exception\NotMatchedException
      * @expectedExceptionMessage Path expected an integer value
      *
+     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
      * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
      * @throws \ByJG\ApiTools\Exception\NotMatchedException
      * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      */
     public function testMatchDataType()
     {
-        self::swaggerSchema()->getRequestParameters('/v2/pet/STRING', 'get');
+        self::openApiSchema()->getRequestParameters('/v2/pet/STRING', 'get');
         $this->assertTrue(true);
     }
+
+    // @todo Validate parameters in query
+    public function testMatchParameterInQuery()
+    {
+        self::openApiSchema()->getRequestParameters('/v2/pet/findByStatus?status=pending', 'get');
+        $this->assertTrue(true);
+    }
+
+    public function testMatchParameterInQuery2()
+    {
+        self::openApiSchema3()->getRequestParameters('/tests/12345?count=20&offset=2', 'get');
+        $this->assertTrue(true);
+    }
+
+    /**
+     * @expectedException \ByJG\ApiTools\Exception\NotMatchedException
+     * @expectedExceptionMessage Path expected an integer value
+     *
+     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
+     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
+     * @throws \ByJG\ApiTools\Exception\NotMatchedException
+     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     */
+    public function testMatchParameterInQuery3()
+    {
+        self::openApiSchema3()->getRequestParameters('/tests/STRING?count=20&offset=2', 'get');
+        $this->assertTrue(true);
+    }
+
 
     /**
      * @expectedException \ByJG\ApiTools\Exception\NotMatchedException
@@ -107,7 +141,8 @@ class SwaggerRequestBodyTest extends SwaggerBodyTestCase
             "id" => "10",
             "status" => "pending",
         ];
-        $requestParameter = self::swaggerSchema()->getRequestParameters('/v2/pet', 'post');
+
+        $requestParameter = self::openApiSchema()->getRequestParameters('/v2/pet', 'post');
         $this->assertTrue($requestParameter->match($body));
     }
 
@@ -135,7 +170,8 @@ class SwaggerRequestBodyTest extends SwaggerBodyTestCase
             "name" => null,
             "photoUrls" => ["http://example.com/1", "http://example.com/2"]
         ];
-        $requestParameter = self::swaggerSchema()->getRequestParameters('/v2/pet', 'post');
+
+        $requestParameter = self::openApiSchema()->getRequestParameters('/v2/pet', 'post');
         $this->assertTrue($requestParameter->match($body));
     }
 
@@ -158,7 +194,8 @@ class SwaggerRequestBodyTest extends SwaggerBodyTestCase
             "name" => null,
             "photoUrls" => ["http://example.com/1", "http://example.com/2"]
         ];
-        $requestParameter = self::swaggerSchema($allowNullValues)->getRequestParameters('/v2/pet', 'post');
+
+        $requestParameter = self::openApiSchema($allowNullValues)->getRequestParameters('/v2/petnull', 'post');
         $this->assertTrue($requestParameter->match($body));
     }
 
@@ -183,7 +220,8 @@ class SwaggerRequestBodyTest extends SwaggerBodyTestCase
             "name" => "",
             "photoUrls" => ["http://example.com/1", "http://example.com/2"]
         ];
-        $requestParameter = self::swaggerSchema()->getRequestParameters('/v2/pet', 'post');
+
+        $requestParameter = self::openApiSchema()->getRequestParameters('/v2/pet', 'post');
         $this->assertTrue($requestParameter->match($body));
     }
 
@@ -206,7 +244,8 @@ class SwaggerRequestBodyTest extends SwaggerBodyTestCase
             "wallet_uuid" => "502a1aa3-5239-4d4b-af09-4dc24ac5f034",
             "user_uuid" => "e7f6c18b-8094-4c2c-9987-1be5b7c46678"
         ];
-        $requestParameter = $this->swaggerSchema2()->getRequestParameters('/accounts/create', 'post');
+
+        $requestParameter = $this->openApiSchema2()->getRequestParameters('/accounts/create', 'post');
         $this->assertTrue($requestParameter->match($body));
     }
 
@@ -230,7 +269,8 @@ class SwaggerRequestBodyTest extends SwaggerBodyTestCase
         $body = [
             "wallet_uuid" => "502a1aa3-5239-4d4b-af09-4dc24ac5f034",
         ];
-        $requestParameter = $this->swaggerSchema2()->getRequestParameters('/accounts/create', 'post');
+
+        $requestParameter = $this->openApiSchema2()->getRequestParameters('/accounts/create', 'post');
         $requestParameter->match($body);
     }
 }

@@ -8,4 +8,9 @@ composer.phar
 # You may choose to ignore a library lock file http://getcomposer.org/doc/02-libraries.md#lock-file
 composer.lock
 
-.idea
+.idea/*
+!.idea/runConfigurations
+/.scannerwork/
+/sonar-scanner-3.2.0.1227-linux/
+/phpunit.coverage.xml
+/phpunit.report.xml

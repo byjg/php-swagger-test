@@ -1,0 +1,38 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "This is a sample server Petstore server.  You can find out more about\nSwagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net,\n`special-key` to test the authorization filters.",
+    "version": "1.0.0",
+    "title": "Swagger Petstore",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "email": "apiteam@swagger.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  },
+  "servers": [
+    {
+      "url": "https://{environment}.domain.com{basePath}",
+      "description": "My API server",
+      "variables": {
+        "environment": {
+          "enum": [
+            "www",
+            "stage"
+          ],
+          "default": "www"
+        },
+        "basePath": {
+          "default": "/api/v2"
+        }
+      }
+    }
+  ]
+}
