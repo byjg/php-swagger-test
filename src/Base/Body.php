@@ -16,6 +16,7 @@ use InvalidArgumentException;
 abstract class Body
 {
     const SWAGGER_PROPERTIES="properties";
+    const SWAGGER_ADDITIONAL_PROPERTIES="additionalProperties";
     const SWAGGER_REQUIRED="required";
 
     /**
@@ -257,6 +258,10 @@ abstract class Body
      */
     public function matchObjectProperties($name, $schemaArray, $body)
     {
+        if (isset($schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES]) && !isset($schemaArray[self::SWAGGER_PROPERTIES])) {
+            $schemaArray[self::SWAGGER_PROPERTIES] = [];
+        }
+
         if (!isset($schemaArray[self::SWAGGER_PROPERTIES])) {
             return null;
         }
@@ -299,13 +304,18 @@ abstract class Body
             );
         }
 
-        if (count($body) > 0) {
+        if (count($body) > 0 && !isset($schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES])) {
             throw new NotMatchedException(
                 "The property(ies) '"
                 . implode(', ', array_keys($body))
                 . "' has not defined in '$name'",
                 $body
             );
+        }
+
+        foreach ($body as $name => $prop) {
+            $def = $schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES];
+            $this->matchSchema($name, $def, $prop);
         }
         return true;
     }
