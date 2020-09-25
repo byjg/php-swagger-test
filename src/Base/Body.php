@@ -320,6 +320,12 @@ abstract class Body
             return true;
         }
 
+        // All of
+        // @link https://swagger.io/docs/specification/data-models/oneof-anyof-allof-not/
+        if (isset($schema['allOf'])) {
+            return $this->matchAllOfSchema($name, $schema['allOf'], $body);
+        }
+
         if(!isset($schema['$ref']) && isset($schema['content'])) {
             $schema['$ref'] = $schema['content'][key($schema['content'])]['schema']['$ref'];
         }
@@ -346,6 +352,38 @@ abstract class Body
         }
 
         throw new GenericSwaggerException("Not all cases are defined. Please open an issue about this. Schema: $name");
+    }
+
+    /**
+     * @param string $name
+     * @param array|mixed $allOf
+     * @param array $body
+     *
+     * @return bool
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     */
+    protected function matchAllOfSchema($name, $allOf, $body)
+    {
+        if (!is_array($allOf) || empty($allOf)) {
+            return false;
+        }
+
+        // Merge the schemas
+        $mergedSchemas = [];
+        foreach ($allOf as $itemSchema) {
+            if (isset($itemSchema['type']) && $itemSchema['type'] !== 'object') {
+                throw new GenericSwaggerException('An entry of allOf must be object in '.$name);
+            }
+
+            $mergedSchemas = array_merge_recursive($mergedSchemas, $itemSchema);
+        }
+
+        $mergedSchemas['type'] = 'object';
+        return $this->matchSchema($name, $mergedSchemas, $body);
     }
 
     /**

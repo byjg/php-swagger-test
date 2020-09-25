@@ -1,0 +1,88 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "Validate OpenApi Schema #27",
+    "version": "1.0.0",
+    "title": "Validate OpenApi Schema #27",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "email": "apiteam@swagger.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "paths": {
+    "/allOf": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Empty response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "required": ["this"],
+                      "properties": {
+                        "this": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "required": ["the"],
+                      "properties": {
+                        "the": {
+                          "type": "string"
+                        },
+                        "jedi": {
+                          "type": "string",
+                          "nullable": false
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/allOfInvalid": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Empty response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "required": ["this"],
+                      "properties": {
+                        "this": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    {
+                      "type": "array"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
