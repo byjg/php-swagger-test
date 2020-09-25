@@ -92,6 +92,10 @@ abstract class Body
             return null;
         }
 
+        if (!is_string($body)) {
+            throw new NotMatchedException("Value in '$name' is not string.", $this->structure);
+        }
+
         if (isset($schema['enum']) && !in_array($body, $schema['enum'])) {
             throw new NotMatchedException("Value '$body' in '$name' not matched in ENUM. ", $this->structure);
         }
