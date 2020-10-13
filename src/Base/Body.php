@@ -101,8 +101,22 @@ abstract class Body
             throw new NotMatchedException("Value '$body' in '$name' not matched in ENUM. ", $this->structure);
         }
 
+        if (isset($schemaArray['pattern'])) {
+            $this->checkPattern($name, $body, $schemaArray['pattern']);
+        }
+
         return true;
     }
+
+    private function checkPattern($name, $body, $pattern)
+    {
+        $isSuccess = (bool) preg_match($pattern, $body, $matches);
+
+        if (!$isSuccess) {
+            throw new NotMatchedException("Value '$body' in '$name' not matched in pattern. ", $this->structure);
+        }
+    }
+
 
     /**
      * @param string $name
@@ -135,6 +149,10 @@ abstract class Body
 
         if (!is_numeric($body)) {
             throw new NotMatchedException("Expected '$name' to be numeric, but found '$body'. ", $this->structure);
+        }
+
+        if (isset($schemaArray['pattern'])) {
+            $this->checkPattern($name, $body, $schemaArray['pattern']);
         }
 
         return true;
