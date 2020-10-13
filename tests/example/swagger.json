@@ -234,6 +234,33 @@
         "deprecated": true
       }
     },
+    "/pet/dateShelter": {
+      "get": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Get date of shelter pet",
+        "description": "Returns a date of shelter pet",
+        "operationId": "getDateShelterPet",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/DateShelter"
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
     "/pet/{petId}": {
       "get": {
         "tags": [
@@ -1006,6 +1033,29 @@
             "pending",
             "sold"
           ]
+        }
+      },
+      "xml": {
+        "name": "Pet"
+      }
+    },
+    "DateShelter": {
+      "type": "object",
+      "required": [
+        "date"
+      ],
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date",
+          "example": "2020-01-28",
+          "pattern": "/^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2]\\d|3[0-1])$/"
+        },
+        "age": {
+          "type": "string",
+          "format": "integer",
+          "example": "10",
+          "pattern": "/^\\d{1,3}$/"
         }
       },
       "xml": {
