@@ -8,14 +8,16 @@ php:
   - "5.6"
 
 install:
-  - export SONARSCANNER_VERSION=3.2.0.1227
-  - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONARSCANNER_VERSION-linux.zip
-  - unzip sonar-scanner-cli-$SONARSCANNER_VERSION-linux.zip
   - composer install
   - SPEC=swagger php -S 127.0.0.1:8080 tests/rest/app.php &
   - SPEC=openapi php -S 127.0.0.1:8081 tests/rest/app.php &
 
 script:
-  - vendor/bin/phpunit --coverage-clover phpunit.coverage.xml --log-junit phpunit.report.xml
-  - if [ "$TRAVIS_BRANCH" != "master" ]; then export SONARSCANNER_PARAM="-Dsonar.branch.name=$TRAVIS_BRANCH -Dsonar.branch.target=master"; fi
-  - sonar-scanner-$SONARSCANNER_VERSION-linux/bin/sonar-scanner -Dsonar.login=$SONAR_LOGIN $SONARSCANNER_PARAM -Dsonar.php.coverage.reportPaths=phpunit.coverage.xml -Dsonar.php.tests.reportPath=phpunit.report.xml || true
+  - vendor/bin/phpunit
+
+jobs:
+  include:
+    - stage: documentation
+      if: branch = master
+      install: skip
+      script: "curl https://opensource.byjg.com/add-doc.sh | bash /dev/stdin php php-swagger-test"
