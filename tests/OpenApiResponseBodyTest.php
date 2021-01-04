@@ -70,7 +70,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
 
         $body = [
             "param_response_1" => "example1",
-            "param_response_2" => "example2"            
+            "param_response_2" => "example2"
         ];
 
         $responseParameter = $openApiSchema->getResponseParameters('/v1/test', 'post', 201);
@@ -338,6 +338,22 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
         ];
 
         $responseParameter = self::openApiSchema($allowNullValues)->getResponseParameters('/v2/pet/10', 'get', 200);
+        $this->assertTrue($responseParameter->match($body));
+    }
+
+    public function testAdditionalPropertiesInObjectInResponseBody()
+    {
+        $body = ['value1' => 1, 'value2' => 2];
+        $responseParameter = self::openApiSchema5()->getResponseParameters('/tests/additional_properties', 'get', 200);
+        $this->assertTrue($responseParameter->match($body));
+    }
+
+    public function testAdditionalPropertiesInObjectInResponseBodyDoNotMatch()
+    {
+        $this->expectExceptionMessage("Expected 'value2' to be numeric, but found 'string'");
+        $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
+        $body = ['value1' => 1, 'value2' => 'string'];
+        $responseParameter = self::openApiSchema5()->getResponseParameters('/tests/additional_properties', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 

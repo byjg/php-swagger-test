@@ -29,6 +29,25 @@
           }
         }
       }
+    },
+    "/tests/additional_properties": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "object with only additional properties in response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
