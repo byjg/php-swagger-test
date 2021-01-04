@@ -140,7 +140,7 @@ abstract class AbstractRequester
     }
 
     /**
-     * @param null $requestBody
+     * @param mixed $requestBody
      * @return $this
      */
     public function withRequestBody($requestBody)

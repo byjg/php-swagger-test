@@ -16,6 +16,7 @@ use InvalidArgumentException;
 abstract class Body
 {
     const SWAGGER_PROPERTIES="properties";
+    const SWAGGER_ADDITIONAL_PROPERTIES="additionalProperties";
     const SWAGGER_REQUIRED="required";
 
     /**
@@ -101,8 +102,22 @@ abstract class Body
             throw new NotMatchedException("Value '$body' in '$name' not matched in ENUM. ", $this->structure);
         }
 
+        if (isset($schemaArray['pattern'])) {
+            $this->checkPattern($name, $body, $schemaArray['pattern']);
+        }
+
         return true;
     }
+
+    private function checkPattern($name, $body, $pattern)
+    {
+        $isSuccess = (bool) preg_match($pattern, $body, $matches);
+
+        if (!$isSuccess) {
+            throw new NotMatchedException("Value '$body' in '$name' not matched in pattern. ", $this->structure);
+        }
+    }
+
 
     /**
      * @param string $name
@@ -135,6 +150,10 @@ abstract class Body
 
         if (!is_numeric($body)) {
             throw new NotMatchedException("Expected '$name' to be numeric, but found '$body'. ", $this->structure);
+        }
+
+        if (isset($schemaArray['pattern'])) {
+            $this->checkPattern($name, $body, $schemaArray['pattern']);
         }
 
         return true;
@@ -257,6 +276,10 @@ abstract class Body
      */
     public function matchObjectProperties($name, $schemaArray, $body)
     {
+        if (isset($schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES]) && !isset($schemaArray[self::SWAGGER_PROPERTIES])) {
+            $schemaArray[self::SWAGGER_PROPERTIES] = [];
+        }
+
         if (!isset($schemaArray[self::SWAGGER_PROPERTIES])) {
             return null;
         }
@@ -299,13 +322,18 @@ abstract class Body
             );
         }
 
-        if (count($body) > 0) {
+        if (count($body) > 0 && !isset($schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES])) {
             throw new NotMatchedException(
                 "The property(ies) '"
                 . implode(', ', array_keys($body))
                 . "' has not defined in '$name'",
                 $body
             );
+        }
+
+        foreach ($body as $name => $prop) {
+            $def = $schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES];
+            $this->matchSchema($name, $def, $prop);
         }
         return true;
     }
@@ -341,6 +369,28 @@ abstract class Body
         // Match object properties
         if ($this->matchObjectProperties($name, $schemaArray, $body)) {
             return true;
+        }
+
+        if (isset($schemaArray['allOf'])) {
+            $mergedSchema = array_merge_recursive(...$schemaArray['allOf']);
+            return $this->matchSchema($name, $mergedSchema, $body);
+        }
+
+        if (isset($schemaArray['oneOf'])) {
+            $matched = false;
+            $catchedException = null;
+            foreach ($schemaArray['oneOf'] as $scheme) {
+                try {
+                    $matched = $matched || $this->matchSchema($name, $scheme, $body);
+                } catch (NotMatchedException $exception) {
+                    $catchedException = $exception;
+                }
+            }
+            if ($catchedException !== null && $matched === false) {
+                throw $catchedException;
+            }
+
+            return $matched;
         }
 
         /**
