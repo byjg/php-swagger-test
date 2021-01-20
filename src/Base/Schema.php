@@ -102,7 +102,7 @@ abstract class Schema
             if (preg_match($pathItemPattern, $uri->getPath(), $matches)) {
                 $pathDef = $this->jsonFile[self::SWAGGER_PATHS][$pathItem];
                 if (!isset($pathDef[$method])) {
-                    throw new HttpMethodNotFoundException("The http method '$method' not found in '$path'");
+                    continue;
                 }
 
                 $parametersPathMethod = [];
