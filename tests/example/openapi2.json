@@ -116,6 +116,70 @@
           }
         }
       }
+    },
+    "/allof": {
+      "get": {
+        "tags": [
+          "general"
+        ],
+        "summary": "Get a response that should match two schemas",
+        "responses": {
+          "200": {
+            "description": "Returns any value",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "allOf": [
+                    {
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    {
+                      "properties": {
+                        "email": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/allofref": {
+      "get": {
+        "tags": [
+          "general"
+        ],
+        "summary": "Get a response that should match two schemas",
+        "responses": {
+          "200": {
+            "description": "Returns any value",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/NameObject"
+                    },
+                    {
+                      "$ref": "#/components/schemas/EmailObject"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "externalDocs": {
@@ -156,7 +220,21 @@
         "description": "Language ISO 639-1 (2 characters)",
         "example": "fr"
       },
-      "AnyValue": {}
+      "AnyValue": {},
+      "NameObject": {
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "EmailObject": {
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        }
+      }
     }
   }
 }

@@ -449,6 +449,16 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
         $this->assertTrue($responseParameter->match($body));
     }
 
+    public function testMatchAllOf()
+    {
+        $body = ["name" => "Bob", "email" => "bob@example.com"];
+        $responseParameter = $this->openApiSchema2()->getResponseParameters('/v2/allof', 'get', 200);
+        $this->assertTrue($responseParameter->match($body));
+
+        $responseParameter = $this->openApiSchema2()->getResponseParameters('/v2/allofref', 'get', 200);
+        $this->assertTrue($responseParameter->match($body));
+    }
+
     public function testResponseDefault()
     {
         $body = [];
