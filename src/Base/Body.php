@@ -378,6 +378,7 @@ abstract class Body
                     $schema = $this->schema->getDefinition($schema['$ref']);
                 }
             }
+            unset($schema);
             $mergedSchema = array_merge_recursive(...$allOfSchemas);
             return $this->matchSchema($name, $mergedSchema, $body);
         }
