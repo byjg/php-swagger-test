@@ -361,7 +361,7 @@ abstract class Body
         }
 
         // Get References and try to match it again
-        if (isset($schemaArray['$ref'])) {
+        if (isset($schemaArray['$ref']) && !is_array($schemaArray['$ref'])) {
             $defintion = $this->schema->getDefinition($schemaArray['$ref']);
             return $this->matchSchema($schemaArray['$ref'], $defintion, $body);
         }
@@ -372,16 +372,22 @@ abstract class Body
         }
 
         if (isset($schemaArray['allOf'])) {
-            $mergedSchema = array_merge_recursive(...$schemaArray['allOf']);
+            $allOfSchemas = $schemaArray['allOf'];
+            foreach ($allOfSchemas as &$schema) {
+                if (isset($schema['$ref'])) {
+                    $schema = $this->schema->getDefinition($schema['$ref']);
+                }
+            }
+            $mergedSchema = array_merge_recursive(...$allOfSchemas);
             return $this->matchSchema($name, $mergedSchema, $body);
         }
 
         if (isset($schemaArray['oneOf'])) {
             $matched = false;
             $catchedException = null;
-            foreach ($schemaArray['oneOf'] as $scheme) {
+            foreach ($schemaArray['oneOf'] as $schema) {
                 try {
-                    $matched = $matched || $this->matchSchema($name, $scheme, $body);
+                    $matched = $matched || $this->matchSchema($name, $schema, $body);
                 } catch (NotMatchedException $exception) {
                     $catchedException = $exception;
                 }
