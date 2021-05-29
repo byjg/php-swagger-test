@@ -78,8 +78,6 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
     }
 
     /**
-     * @expectedException \ByJG\ApiTools\Exception\NotMatchedException
-     * @expectedExceptionMessage Value 'notfound' in 'status' not matched in ENUM
      *
      * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
      * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
@@ -91,6 +89,9 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      */
     public function testMatchResponseBodyEnumError()
     {
+        $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
+        $this->expectExceptionMessage('Value \'notfound\' in \'status\' not matched in ENUM');
+
         $body = [
             "id" => 10,
             "petId" => 50,
@@ -105,8 +106,6 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
     }
 
     /**
-     * @expectedException \ByJG\ApiTools\Exception\NotMatchedException
-     * @expectedExceptionMessage Expected 'id' to be numeric, but found 'ABC'
      *
      * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
      * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
@@ -118,6 +117,9 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      */
     public function testMatchResponseBodyWrongNumber()
     {
+        $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
+        $this->expectExceptionMessage('Expected \'id\' to be numeric, but found \'ABC\'');
+
         $body = [
             "id" => "ABC",
             "petId" => 50,
@@ -132,8 +134,6 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
     }
 
     /**
-     * @expectedException \ByJG\ApiTools\Exception\NotMatchedException
-     * @expectedExceptionMessage The property(ies) 'more' has not defined in '#/components/schemas/Order'
      *
      * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
      * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
@@ -145,6 +145,9 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      */
     public function testMatchResponseBodyMoreThanExpected()
     {
+        $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
+        $this->expectExceptionMessage('The property(ies) \'more\' has not defined in \'#/components/schemas/Order\'');
+
         $body = [
             "id" => "50",
             "petId" => 50,
@@ -207,8 +210,6 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
     }
 
     /**
-     * @expectedException \ByJG\ApiTools\Exception\NotMatchedException
-     * @expectedExceptionMessage Value of property 'complete' is null, but should be of type 'boolean'
      *
      * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
      * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
@@ -220,6 +221,9 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      */
     public function testMatchResponseBodyNotAllowNullValues()
     {
+        $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
+        $this->expectExceptionMessage('Value of property \'complete\' is null, but should be of type \'boolean\'');
+
         $body = [
             "id"       => 10,
             "status"   => 'placed',
@@ -248,8 +252,6 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
     }
 
     /**
-     * @expectedException \ByJG\ApiTools\Exception\NotMatchedException
-     * @expectedExceptionMessage Expected empty body for
      *
      * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
      * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
@@ -261,6 +263,9 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      */
     public function testMatchResponseBodyNotEmpty()
     {
+        $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
+        $this->expectExceptionMessage('Expected empty body for');
+
         $body = ['suppose'=>'not here'];
 
         $responseParameter = self::openApiSchema()->getResponseParameters('/v2/pet/10', 'get', 400);
@@ -392,8 +397,6 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
 
     /**
      * Issue #9
-     * @expectedException \ByJG\ApiTools\Exception\InvalidRequestException
-     * @expectedExceptionMessageRegExp "I expected an array here.*"
      *
      * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
      * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
@@ -405,6 +408,9 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      */
     public function testIssue9Error()
     {
+        $this->expectExceptionRegExp(\ByJG\ApiTools\Exception\InvalidRequestException::class);
+        $this->expectExceptionMessage('"I expected an array here.*"');
+
         $body =
             [
                 [
@@ -467,11 +473,12 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
     }
 
     /**
-     * @expectedException \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @expectedExceptionMessage Could not found status code '503'
      */
     public function testResponseWithNoDefault()
     {
+        $this->expectException(\ByJG\ApiTools\Exception\InvalidDefinitionException::class);
+        $this->expectExceptionMessage('Could not found status code \'503\'');
+
         $body = [];
         $responseParameter = $this->openApiSchema()->getResponseParameters('/v2/user/login', 'get', 503);
     }

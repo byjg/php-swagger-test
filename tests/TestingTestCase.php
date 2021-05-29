@@ -75,11 +75,12 @@ abstract class TestingTestCase extends ApiTestCase
      * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      * @throws \ByJG\ApiTools\Exception\StatusCodeNotMatchedException
 
-     * @expectedException \ByJG\ApiTools\Exception\NotMatchedException
-     * @expectedExceptionMessage Required property 'name'
      */
     public function testAddError()
     {
+        $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
+        $this->expectExceptionMessage('Required property \'name\'');
+
         $request = new ApiRequester();
         $request
             ->withMethod('POST')
@@ -103,11 +104,12 @@ abstract class TestingTestCase extends ApiTestCase
      * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      * @throws \ByJG\ApiTools\Exception\StatusCodeNotMatchedException
 
-     * @expectedException \ByJG\ApiTools\Exception\NotMatchedException
-     * @expectedExceptionMessage Expected empty body
      */
     public function testPostError()
     {
+        $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
+        $this->expectExceptionMessage('Expected empty body');
+
         $request = new ApiRequester();
         $request
             ->withMethod('POST')

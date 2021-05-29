@@ -332,7 +332,6 @@ class OpenApiSchemaTest extends TestCase
     }
 
     /**
-     * @expectedException \ByJG\ApiTools\Exception\PathNotFoundException
      *
      * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
      * @throws \ByJG\ApiTools\Exception\NotMatchedException
@@ -340,11 +339,12 @@ class OpenApiSchemaTest extends TestCase
      */
     public function testGetPathFail()
     {
+        $this->setExpectedException(\ByJG\ApiTools\Exception\PathNotFoundException::class);
+
         $this->openapiObject->getPathDefinition('/v2/pets', 'get');
     }
 
     /**
-     * @expectedException \ByJG\ApiTools\Exception\HttpMethodNotFoundException
      *
      * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
      * @throws \ByJG\ApiTools\Exception\NotMatchedException
@@ -352,6 +352,8 @@ class OpenApiSchemaTest extends TestCase
      */
     public function testPathExistsButMethodDont()
     {
+        $this->setExpectedException(\ByJG\ApiTools\Exception\HttpMethodNotFoundException::class);
+
         $this->openapiObject->getPathDefinition('/v2/pet', 'GET');
     }
 
@@ -399,35 +401,38 @@ class OpenApiSchemaTest extends TestCase
     }
 
     /**
-     * @expectedException \ByJG\ApiTools\Exception\InvalidDefinitionException
      *
      * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
      * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
      */
     public function testGetDefinitionFailed()
     {
+        $this->setExpectedException(\ByJG\ApiTools\Exception\InvalidDefinitionException::class);
+
         $this->openapiObject->getDefinition('Order');
     }
 
     /**
-     * @expectedException \ByJG\ApiTools\Exception\InvalidDefinitionException
      *
      * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
      * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
      */
     public function testGetDefinitionFailed2()
     {
+        $this->setExpectedException(\ByJG\ApiTools\Exception\InvalidDefinitionException::class);
+
         $this->openapiObject->getDefinition('1/2/Order');
     }
 
     /**
-     * @expectedException \ByJG\ApiTools\Exception\DefinitionNotFoundException
      *
      * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
      * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
      */
     public function testGetDefinitionFailed3()
     {
+        $this->setExpectedException(\ByJG\ApiTools\Exception\DefinitionNotFoundException::class);
+
         $this->openapiObject->getDefinition('#/components/schemas/OrderNOtFound');
     }
 
