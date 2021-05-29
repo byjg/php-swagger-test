@@ -12,12 +12,12 @@ class SwaggerSchemaTest extends TestCase
      */
     protected $object;
 
-    public function setUp()
+    public function setUp(): void 
     {
         $this->object = \ByJG\ApiTools\Base\Schema::getInstance(file_get_contents(__DIR__ . '/example/swagger.json'));
     }
 
-    public function tearDown()
+    public function tearDown(): void 
     {
         $this->object = null;
     }
