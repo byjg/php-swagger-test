@@ -10,7 +10,6 @@ use ByJG\Util\MultiPartItem;
 use ByJG\Util\Psr7\Request;
 use ByJG\Util\Psr7\Response;
 use ByJG\Util\Uri;
-use MintWare\Streams\MemoryStream;
 
 /**
  * Class TestingTestCase
@@ -58,7 +57,7 @@ abstract class TestingTestCase extends ApiTestCase
         // PSR7 Request
         $psr7Request = Request::getInstance(new Uri("/pet"))
             ->withMethod("post")
-            ->withBody(new MemoryStream(json_encode($body)));
+            ->withBody(\GuzzleHttp\Psr7\Utils::streamFor(json_encode($body)));
 
         $expectedResponse = new Response();
         $request = new MockRequester($expectedResponse);

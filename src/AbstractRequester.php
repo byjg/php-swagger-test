@@ -10,7 +10,6 @@ use ByJG\Util\Psr7\MessageException;
 use ByJG\Util\Psr7\Request;
 use ByJG\Util\Psr7\Response;
 use ByJG\Util\Uri;
-use MintWare\Streams\MemoryStream;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -149,7 +148,7 @@ abstract class AbstractRequester
         if (is_array($requestBody) && (empty($contentType) || strpos($contentType, "application/json") !== false)) {
             $requestBody = json_encode($requestBody);
         }
-        $this->psr7Request = $this->psr7Request->withBody(new MemoryStream($requestBody));
+        $this->psr7Request = $this->psr7Request->withBody(\GuzzleHttp\Psr7\Utils::streamFor($requestBody));
 
         return $this;
     }

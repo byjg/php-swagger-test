@@ -13,7 +13,8 @@
   "require": {
     "byjg/webrequest": "2.0.*",
     "php": ">=5.6",
-    "ext-json": "*"
+    "ext-json": "*",
+    "guzzlehttp/psr7": "^1.8"
   },
   "require-dev": {
     "byjg/restserver": "4.0.*",
