@@ -339,7 +339,7 @@ class OpenApiSchemaTest extends TestCase
      */
     public function testGetPathFail()
     {
-        $this->setExpectedException(\ByJG\ApiTools\Exception\PathNotFoundException::class);
+        $this->expectException(\ByJG\ApiTools\Exception\PathNotFoundException::class);
 
         $this->openapiObject->getPathDefinition('/v2/pets', 'get');
     }
@@ -352,7 +352,7 @@ class OpenApiSchemaTest extends TestCase
      */
     public function testPathExistsButMethodDont()
     {
-        $this->setExpectedException(\ByJG\ApiTools\Exception\HttpMethodNotFoundException::class);
+        $this->expectException(\ByJG\ApiTools\Exception\HttpMethodNotFoundException::class);
 
         $this->openapiObject->getPathDefinition('/v2/pet', 'GET');
     }
@@ -407,7 +407,7 @@ class OpenApiSchemaTest extends TestCase
      */
     public function testGetDefinitionFailed()
     {
-        $this->setExpectedException(\ByJG\ApiTools\Exception\InvalidDefinitionException::class);
+        $this->expectException(\ByJG\ApiTools\Exception\InvalidDefinitionException::class);
 
         $this->openapiObject->getDefinition('Order');
     }
@@ -419,7 +419,7 @@ class OpenApiSchemaTest extends TestCase
      */
     public function testGetDefinitionFailed2()
     {
-        $this->setExpectedException(\ByJG\ApiTools\Exception\InvalidDefinitionException::class);
+        $this->expectException(\ByJG\ApiTools\Exception\InvalidDefinitionException::class);
 
         $this->openapiObject->getDefinition('1/2/Order');
     }
@@ -431,7 +431,7 @@ class OpenApiSchemaTest extends TestCase
      */
     public function testGetDefinitionFailed3()
     {
-        $this->setExpectedException(\ByJG\ApiTools\Exception\DefinitionNotFoundException::class);
+        $this->expectException(\ByJG\ApiTools\Exception\DefinitionNotFoundException::class);
 
         $this->openapiObject->getDefinition('#/components/schemas/OrderNOtFound');
     }
