@@ -10,7 +10,6 @@ use ByJG\Util\MultiPartItem;
 use ByJG\Util\Psr7\Request;
 use ByJG\Util\Psr7\Response;
 use ByJG\Util\Uri;
-use MintWare\Streams\MemoryStream;
 
 /**
  * Class TestingTestCase
@@ -58,7 +57,7 @@ abstract class TestingTestCase extends ApiTestCase
         // PSR7 Request
         $psr7Request = Request::getInstance(new Uri("/pet"))
             ->withMethod("post")
-            ->withBody(new MemoryStream(json_encode($body)));
+            ->withBody(\GuzzleHttp\Psr7\Utils::streamFor(json_encode($body)));
 
         $expectedResponse = new Response();
         $request = new MockRequester($expectedResponse);
@@ -75,11 +74,12 @@ abstract class TestingTestCase extends ApiTestCase
      * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      * @throws \ByJG\ApiTools\Exception\StatusCodeNotMatchedException
 
-     * @expectedException \ByJG\ApiTools\Exception\NotMatchedException
-     * @expectedExceptionMessage Required property 'name'
      */
     public function testAddError()
     {
+        $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
+        $this->expectExceptionMessage('Required property \'name\'');
+
         $request = new ApiRequester();
         $request
             ->withMethod('POST')
@@ -103,11 +103,12 @@ abstract class TestingTestCase extends ApiTestCase
      * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      * @throws \ByJG\ApiTools\Exception\StatusCodeNotMatchedException
 
-     * @expectedException \ByJG\ApiTools\Exception\NotMatchedException
-     * @expectedExceptionMessage Expected empty body
      */
     public function testPostError()
     {
+        $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
+        $this->expectExceptionMessage('Expected empty body');
+
         $request = new ApiRequester();
         $request
             ->withMethod('POST')
