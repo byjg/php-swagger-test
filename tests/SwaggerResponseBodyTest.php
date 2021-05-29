@@ -437,8 +437,8 @@ EOL
      */
     public function testIssue9Error()
     {
-        $this->expectExceptionRegExp(\ByJG\ApiTools\Exception\InvalidRequestException::class);
-        $this->expectExceptionMessage('"I expected an array here.*"');
+        $this->expectException(\ByJG\ApiTools\Exception\InvalidRequestException::class);
+        $this->expectExceptionMessageMatches('"I expected an array here.*"');
 
         $body =
             [
