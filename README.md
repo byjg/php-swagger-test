@@ -211,7 +211,7 @@ class MyTest extends ApiTestCase
     public function testExpectOK()
     {
         $expectedResponse = \ByJG\Util\Psr7\Response::getInstance(200)
-            ->withBody(new MemoryStream(json_encode([
+            ->withBody(\GuzzleHttp\Psr7\Utils::streamFor(json_encode([
                 "id" => 1,
                 "name" => "Spike",
                 "photoUrls" => []
