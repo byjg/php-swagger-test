@@ -276,12 +276,14 @@ abstract class Body
      */
     public function matchObjectProperties($name, $schemaArray, $body)
     {
-        if (isset($schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES])) {
-            $additionalProperties = $schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES];
-            if ($additionalProperties === true) {
-                $schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES] = []; // Equivalent of 'any type'
-            }
-            if ($additionalProperties === false) {
+        if (!isset($schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES])) {
+            $schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES] = true;
+        }
+
+        if (is_bool($schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES])) {
+            if ($schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES]) {
+                $schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES] = [];
+            } else {
                 unset($schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES]);
             }
         }
@@ -361,6 +363,10 @@ abstract class Body
      */
     protected function matchSchema($name, $schemaArray, $body)
     {
+        if ($schemaArray === []) {
+            return true;
+        }
+
         // Match Single Types
         if ($this->matchTypes($name, $schemaArray, $body)) {
             return true;

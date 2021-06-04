@@ -125,12 +125,11 @@
         "summary": "Get a response that should match two schemas",
         "responses": {
           "200": {
-            "description": "Returns any value",
+            "description": "Returns name and email",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "additionalProperties": true,
                   "allOf": [
                     {
                       "properties": {
@@ -162,7 +161,7 @@
         "summary": "Get a response that should match two schemas",
         "responses": {
           "200": {
-            "description": "Returns any value",
+            "description": "Returns name and email",
             "content": {
               "application/json": {
                 "schema": {
@@ -190,7 +189,7 @@
         "summary": "Get a response that should match two schemas",
         "responses": {
           "200": {
-            "description": "Returns any value",
+            "description": "Returns name, email and password",
             "content": {
               "application/json": {
                 "schema": {
@@ -201,7 +200,6 @@
                     },
                     {
                       "type": "object",
-                      "additionalProperties": true,
                       "properties": {
                         "password": {
                           "type": "string"
@@ -257,7 +255,6 @@
       },
       "AnyValue": {},
       "NameObject": {
-        "additionalProperties": true,
         "required": ["name"],
         "properties": {
           "name": {
@@ -266,7 +263,6 @@
         }
       },
       "EmailObject": {
-        "additionalProperties": true,
         "required": ["email"],
         "properties": {
           "email": {
@@ -275,7 +271,6 @@
         }
       },
       "NameEmailObject": {
-        "additionalProperties": true,
         "type": "object",
         "allOf": [
           {

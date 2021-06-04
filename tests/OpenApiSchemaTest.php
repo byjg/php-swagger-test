@@ -439,6 +439,7 @@ class OpenApiSchemaTest extends TestCase
     {
         $expected = [
             "type"       => "object",
+            "additionalProperties" => false,
             "properties" => [
                 "id"       => [
                     "type"   => "integer",

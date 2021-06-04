@@ -973,6 +973,7 @@
     "schemas": {
       "Order": {
         "type": "object",
+        "additionalProperties": false,
         "properties": {
           "id": {
             "type": "integer",
