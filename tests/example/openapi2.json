@@ -180,6 +180,39 @@
           }
         }
       }
+    },
+    "/nestedallofref": {
+      "get": {
+        "tags": [
+          "general"
+        ],
+        "summary": "Get a response that should match two schemas",
+        "responses": {
+          "200": {
+            "description": "Returns any value",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/NameEmailObject"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "password": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "externalDocs": {
@@ -222,6 +255,7 @@
       },
       "AnyValue": {},
       "NameObject": {
+        "required": ["name"],
         "properties": {
           "name": {
             "type": "string"
@@ -229,11 +263,23 @@
         }
       },
       "EmailObject": {
+        "required": ["email"],
         "properties": {
           "email": {
             "type": "string"
           }
         }
+      },
+      "NameEmailObject": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NameObject"
+          },
+          {
+            "$ref": "#/components/schemas/EmailObject"
+          }
+        ]
       }
     }
   }
