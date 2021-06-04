@@ -361,9 +361,9 @@ abstract class Body
         }
 
         // Get References and try to match it again
-        if (isset($schemaArray['$ref']) && !is_array($schemaArray['$ref'])) {
-            $defintion = $this->schema->getDefinition($schemaArray['$ref']);
-            return $this->matchSchema($schemaArray['$ref'], $defintion, $body);
+        if (isset($schemagArray['$ref']) && !is_array($schemaArray['$ref'])) {
+            $definition = $this->schema->getDefinition($schemaArray['$ref']);
+            return $this->matchSchema($schemaArray['$ref'], $definition, $body);
         }
 
         // Match object properties
