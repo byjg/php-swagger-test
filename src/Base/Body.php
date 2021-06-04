@@ -276,6 +276,16 @@ abstract class Body
      */
     public function matchObjectProperties($name, $schemaArray, $body)
     {
+        if (isset($schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES])) {
+            $additionalProperties = $schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES];
+            if ($additionalProperties === true) {
+                $schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES] = []; // Equivalent of 'any type'
+            }
+            if ($additionalProperties === false) {
+                unset($schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES]);
+            }
+        }
+
         if (isset($schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES]) && !isset($schemaArray[self::SWAGGER_PROPERTIES])) {
             $schemaArray[self::SWAGGER_PROPERTIES] = [];
         }
@@ -341,7 +351,7 @@ abstract class Body
     /**
      * @param string $name
      * @param array $schemaArray
-     * @param array $body
+     * @param array|string $body
      * @return bool
      * @throws DefinitionNotFoundException
      * @throws InvalidDefinitionException
@@ -361,7 +371,7 @@ abstract class Body
         }
 
         // Get References and try to match it again
-        if (isset($schemagArray['$ref']) && !is_array($schemaArray['$ref'])) {
+        if (isset($schemaArray['$ref']) && !is_array($schemaArray['$ref'])) {
             $definition = $this->schema->getDefinition($schemaArray['$ref']);
             return $this->matchSchema($schemaArray['$ref'], $definition, $body);
         }
@@ -373,14 +383,13 @@ abstract class Body
 
         if (isset($schemaArray['allOf'])) {
             $allOfSchemas = $schemaArray['allOf'];
-            foreach ($allOfSchemas as &$schema) {
-                if (isset($schema['$ref'])) {
-                    $schema = $this->schema->getDefinition($schema['$ref']);
+            foreach ($allOfSchemas as $schema) {
+                if (!$this->matchSchema($name, $schema, $body)) {
+                    return false;
                 }
             }
-            unset($schema);
-            $mergedSchema = array_merge_recursive(...$allOfSchemas);
-            return $this->matchSchema($name, $mergedSchema, $body);
+
+            return true;
         }
 
         if (isset($schemaArray['oneOf'])) {

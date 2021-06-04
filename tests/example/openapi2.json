@@ -130,6 +130,7 @@
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "additionalProperties": true,
                   "allOf": [
                     {
                       "properties": {
@@ -200,6 +201,7 @@
                     },
                     {
                       "type": "object",
+                      "additionalProperties": true,
                       "properties": {
                         "password": {
                           "type": "string"
@@ -255,6 +257,7 @@
       },
       "AnyValue": {},
       "NameObject": {
+        "additionalProperties": true,
         "required": ["name"],
         "properties": {
           "name": {
@@ -263,6 +266,7 @@
         }
       },
       "EmailObject": {
+        "additionalProperties": true,
         "required": ["email"],
         "properties": {
           "email": {
@@ -271,6 +275,7 @@
         }
       },
       "NameEmailObject": {
+        "additionalProperties": true,
         "type": "object",
         "allOf": [
           {
