@@ -314,12 +314,42 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
      * @throws \ByJG\ApiTools\Exception\NotMatchedException
      * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      */
+    public function testNotMatchResponseBodyWhenValueWithPatterns()
+    {
+        $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
+        $this->expectExceptionMessage(<<<'EOL'
+Value '18' in 'age' not matched in pattern.  ->
+{
+    "description": "successful operation",
+    "schema": {
+        "$ref": "#\/definitions\/DateShelter"
+    }
+}
+EOL
+);
+        $allowNullValues = false;
+        $body = [
+            "date" => "2010-05-11",
+            "age" => 18
+        ];
+        $responseParameter = self::swaggerSchema($allowNullValues)->getResponseParameters('/v2/pet/dateShelter', 'get', 200);
+        $this->assertTrue($responseParameter->match($body));
+    }
+
+    /**
+     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
+     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
+     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
+     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
+     * @throws \ByJG\ApiTools\Exception\NotMatchedException
+     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     */
     public function testMatchResponseBodyWhenValueWithPatterns()
     {
         $allowNullValues = false;
         $body = [
             "date" => "2010-05-11",
-            "age" => 18
+            "age" => '18'
         ];
         $responseParameter = self::swaggerSchema($allowNullValues)->getResponseParameters('/v2/pet/dateShelter', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
