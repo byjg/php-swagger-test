@@ -7,7 +7,7 @@ use ByJG\ApiTools\MockRequester;
 use ByJG\Util\Psr7\Request;
 use ByJG\Util\Psr7\Response;
 use ByJG\Util\Uri;
-use MintWare\Streams\MemoryStream;
+use ByJG\Util\Psr7\MemoryStream;
 
 abstract class AbstractRequesterTest extends ApiTestCase
 {
