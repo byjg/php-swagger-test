@@ -382,11 +382,6 @@ abstract class Body
             return $this->matchSchema($schemaArray['$ref'], $definition, $body);
         }
 
-        // Match object properties
-        if ($this->matchObjectProperties($name, $schemaArray, $body)) {
-            return true;
-        }
-
         if (isset($schemaArray['allOf'])) {
             $allOfSchemas = $schemaArray['allOf'];
             foreach ($allOfSchemas as $schema) {
@@ -413,6 +408,11 @@ abstract class Body
             }
 
             return $matched;
+        }
+
+        // Match object properties
+        if ($this->matchObjectProperties($name, $schemaArray, $body)) {
+            return true;
         }
 
         /**
