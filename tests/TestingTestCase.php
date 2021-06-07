@@ -10,7 +10,7 @@ use ByJG\Util\MultiPartItem;
 use ByJG\Util\Psr7\Request;
 use ByJG\Util\Psr7\Response;
 use ByJG\Util\Uri;
-use MintWare\Streams\MemoryStream;
+use ByJG\Util\Psr7\MemoryStream;
 
 /**
  * Class TestingTestCase
