@@ -457,6 +457,10 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
 
         $responseParameter = $this->openApiSchema2()->getResponseParameters('/v2/allofref', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
+
+        // password is not required
+        $responseParameter = $this->openApiSchema2()->getResponseParameters('/v2/nestedallofref', 'get', 200);
+        $this->assertTrue($responseParameter->match($body));
     }
 
     public function testResponseDefault()
