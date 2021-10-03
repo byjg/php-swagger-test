@@ -111,11 +111,20 @@ abstract class Body
 
     private function checkPattern($name, $body, $pattern)
     {
+        $pattern = $this->preparePattern($pattern);
         $isSuccess = (bool) preg_match($pattern, $body, $matches);
 
         if (!$isSuccess) {
             throw new NotMatchedException("Value '$body' in '$name' not matched in pattern. ", $this->structure);
         }
+    }
+
+    private function preparePattern($pattern)
+    {
+        if ($pattern[0] !== '/' && substr($pattern, -1) !== '/') {
+            $pattern = '/' . $pattern . '/';
+        }
+        return $pattern;
     }
 
 
