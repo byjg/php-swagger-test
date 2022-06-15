@@ -4,12 +4,6 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "license": "MIT",
-  "authors": [
-    {
-      "name": "João Gilberto Magalhães",
-      "email": "joao@byjg.com.br"
-    }
-  ],
   "require": {
     "byjg/webrequest": "^2.0.2",
     "php": ">=5.6",
