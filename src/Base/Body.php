@@ -107,7 +107,7 @@ abstract class Body
         }
 
         if (!is_string($body)) {
-            throw new NotMatchedException("Value '" . var_export($body, true) . "' in '$name' not matched in pattern. ", $this->structure);
+            throw new NotMatchedException("Value '" . var_export($body, true) . "' in '$name' is not string. ", $this->structure);
         }
 
         return true;
@@ -115,13 +115,13 @@ abstract class Body
 
     private function checkPattern($name, $body, $pattern)
     {
+        $pattern = '/' . rtrim(ltrim($pattern, '/'), '/') . '/';
         $isSuccess = (bool) preg_match($pattern, $body, $matches);
 
         if (!$isSuccess) {
             throw new NotMatchedException("Value '$body' in '$name' not matched in pattern. ", $this->structure);
         }
     }
-
 
     /**
      * @param string $name

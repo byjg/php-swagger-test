@@ -1,21 +1,20 @@
 # PHP Swagger Test
 
+[![Build Status](https://github.com/byjg/php-swagger-test/actions/workflows/phpunit.yml/badge.svg?branch=master)](https://github.com/byjg/php-swagger-test/actions/workflows/phpunit.yml)
 [![Opensource ByJG](https://img.shields.io/badge/opensource-byjg-success.svg)](http://opensource.byjg.com)
 [![GitHub source](https://img.shields.io/badge/Github-source-informational?logo=github)](https://github.com/byjg/php-swagger-test/)
 [![GitHub license](https://img.shields.io/github/license/byjg/php-swagger-test.svg)](https://opensource.byjg.com/opensource/licensing.html)
 [![GitHub release](https://img.shields.io/github/release/byjg/php-swagger-test.svg)](https://github.com/byjg/php-swagger-test/releases/)
-[![Build Status](https://travis-ci.com/byjg/php-swagger-test.svg?branch=master)](https://travis-ci.com/byjg/php-swagger-test)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/byjg/php-swagger-test/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/byjg/php-swagger-test/?branch=master)
 
-
-A set of tools for test your REST calls based on the OpenApi specification using PHPUnit. 
-Currently, this library supports the OpenApi specifications `2.0` (former swagger) and `3.0`.
+A set of tools for testing your REST calls based on the OpenApi specification using PHPUnit. 
+Currently, this library supports the OpenApi specifications `2.0` (formerly swagger) and `3.0`.
 Some features like callbacks, links and references to external documents/objects weren't implemented. 
 
 PHP Swagger Test can help you to test your REST Api. You can use this tool both for Unit Tests or Functional Tests.
 
-This tool reads a previously Swagger JSON file (not YAML) and enable you to test the request and response. 
-You can use the tool "https://github.com/zircote/swagger-php" for create the JSON file when you are developing your
+This tool reads a previously Swagger JSON file (not YAML) and enables you to test the request and response. 
+You can use the tool "https://github.com/zircote/swagger-php" for creating the JSON file when you are developing your
 rest API. 
 
 The ApiTestCase's assertion process is based on throwing exceptions if some validation or test failed.
@@ -29,10 +28,9 @@ You can use the Swagger Test library as:
 - Runtime parameters validator
 - Validate your specification
 
-
 ### Functional Test cases
 
-Swagger Test provide the class `SwaggerTestCase` for you extend and create a PHPUnit test case. The code will try to 
+Swagger Test provides the class `SwaggerTestCase` for you extend and create a PHPUnit test case. The code will try to 
 make a request to your API Method and check if the request parameters, status and object returned are OK.
 
 ```php
@@ -42,7 +40,7 @@ make a request to your API Method and check if the request parameters, status an
  */
 class MyTestCase extends \ByJG\ApiTools\ApiTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $schema = \ByJG\ApiTools\Base\Schema::getInstance(file_get_contents('/path/to/json/definition'));
         $this->setSchema($schema);
@@ -118,7 +116,7 @@ Sometimes, you want to run functional tests without making the actual HTTP
 requests and without setting up a webserver for that. Instead, you forward the
 requests to the routing of your application kernel which lives in the same
 process as the functional tests. In order to do that, you need a bit of
-gluecode based on the `AbstractRequester` baseclass:
+glue code based on the `AbstractRequester` baseclass:
 
 ```php
 class MyAppRequester extends ByJG\ApiTools\AbstractRequester
@@ -138,14 +136,15 @@ class MyAppRequester extends ByJG\ApiTools\AbstractRequester
     }
 }
 ```
-You now use an instance of this class in place of the `ApiRequester` class from the examples above. Of course, if you need to apply changes to the request or the response in order
+
+You now use an instance of this class in place of the `ApiRequester` class from the examples above. Of course, if you need to apply changes to the request, or the response in order
 to fit your framework, this is exactly the right place to do it.
 
 @todo: Explain in the Docs sections the `RestServer` component 
 
 ### Using it as Unit Test cases
 
-If you want mock the request API and just test the expected parameters you are sending and 
+If you want mock the request API and just test the expected parameters, you are sending and 
 receiving you have to:
 
 **1. Create the Swagger or OpenAPI Test Schema**
@@ -181,7 +180,7 @@ $bodyResponseDef->match($responseBody);
 ```
 
 If the request or response body does not match with the definition an exception NotMatchException will
-be throwed. 
+be thrown. 
 
 ### Runtime parameters validator
 
@@ -211,7 +210,7 @@ class MyTest extends ApiTestCase
     public function testExpectOK()
     {
         $expectedResponse = \ByJG\Util\Psr7\Response::getInstance(200)
-            ->withBody(new MemoryStream(json_encode([
+            ->withBody(new \ByJG\Util\Psr7\MemoryStream(json_encode([
                 "id" => 1,
                 "name" => "Spike",
                 "photoUrls" => []
@@ -248,8 +247,6 @@ $request->withPsr7Request($psr7Request);
 // Return a ResponseInterface PSR7 component 
 $response = $request->send();
 ```
-
-
 
 ## Install
 

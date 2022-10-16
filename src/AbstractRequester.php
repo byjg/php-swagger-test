@@ -10,7 +10,7 @@ use ByJG\Util\Psr7\MessageException;
 use ByJG\Util\Psr7\Request;
 use ByJG\Util\Psr7\Response;
 use ByJG\Util\Uri;
-use MintWare\Streams\MemoryStream;
+use ByJG\Util\Psr7\MemoryStream;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -19,7 +19,7 @@ use Psr\Http\Message\ResponseInterface;
  *
  * The baseclass provides processing and verification of request and response.
  * It only delegates the actual message exchange to the derived class. For the
- * messages, it uses the PSR-7 implementation from Guzzle.
+ * messages, it uses the PHP PSR-7 implementation.
  *
  * This is an implementation of the Template Method Patttern
  * (https://en.wikipedia.org/wiki/Template_method_pattern).
