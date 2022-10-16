@@ -7,13 +7,14 @@ use ByJG\ApiTools\MockRequester;
 use ByJG\Util\Psr7\Request;
 use ByJG\Util\Psr7\Response;
 use ByJG\Util\Uri;
+use ByJG\Util\Psr7\MemoryStream;
 
 abstract class AbstractRequesterTest extends ApiTestCase
 {
     public function testExpectOK()
     {
         $expectedResponse = Response::getInstance(200)
-            ->withBody(\GuzzleHttp\Psr7\Utils::streamFor(json_encode([
+            ->withBody(new MemoryStream(json_encode([
                 "id" => 1,
                 "name" => "Spike",
                 "photoUrls" => []
@@ -50,10 +51,10 @@ abstract class AbstractRequesterTest extends ApiTestCase
     public function testExpectError()
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
-        $this->expectExceptionMessage('Required property \'name\'');
-
+        $this->expectExceptionMessage("Required property 'name'");
+        
         $expectedResponse = Response::getInstance(200)
-            ->withBody(\GuzzleHttp\Psr7\Utils::streamFor(json_encode([
+            ->withBody(new MemoryStream(json_encode([
                 "id" => 1,
                 "photoUrls" => []
             ])));
@@ -79,7 +80,7 @@ abstract class AbstractRequesterTest extends ApiTestCase
     public function testValidateAssertResponse()
     {
         $expectedResponse = Response::getInstance(200)
-            ->withBody(\GuzzleHttp\Psr7\Utils::streamFor(json_encode([
+            ->withBody(new MemoryStream(json_encode([
                 "id" => 1,
                 "name" => "Spike",
                 "photoUrls" => []
@@ -130,10 +131,10 @@ abstract class AbstractRequesterTest extends ApiTestCase
     public function testValidateAssertResponse404WithContent()
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
-        $this->expectExceptionMessage('Expected empty body for GET 404 /v2/pet/1');
-
+        $this->expectExceptionMessage("Expected empty body for GET 404 /v2/pet/1");
+        
         $expectedResponse = Response::getInstance(404)
-            ->withBody(\GuzzleHttp\Psr7\Utils::streamFor('{"error":"not found"}'));
+            ->withBody(new MemoryStream('{"error":"not found"}'));
 
         $request = new MockRequester($expectedResponse);
         $request
@@ -157,8 +158,8 @@ abstract class AbstractRequesterTest extends ApiTestCase
     public function testValidateAssertResponseNotExpected()
     {
         $this->expectException(\ByJG\ApiTools\Exception\StatusCodeNotMatchedException::class);
-        $this->expectExceptionMessage('Status code not matched: Expected 404, got 522');
-
+        $this->expectExceptionMessage("Status code not matched: Expected 404, got 522");
+        
         $expectedResponse = Response::getInstance(522);
 
         $request = new MockRequester($expectedResponse);
@@ -183,7 +184,7 @@ abstract class AbstractRequesterTest extends ApiTestCase
     public function testValidateAssertHeaderContains()
     {
         $expectedResponse = Response::getInstance(200)
-            ->withBody(\GuzzleHttp\Psr7\Utils::streamFor(json_encode([
+            ->withBody(new MemoryStream(json_encode([
                 "id" => 1,
                 "name" => "Spike",
                 "photoUrls" => []
@@ -213,10 +214,10 @@ abstract class AbstractRequesterTest extends ApiTestCase
     public function testValidateAssertHeaderContainsWrongValue()
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
-        $this->expectExceptionMessage('Does not exists header \'X-Test\' with value \'Different\'');
-
+        $this->expectExceptionMessage("Does not exists header 'X-Test' with value 'Different'");
+        
         $expectedResponse = Response::getInstance(200)
-            ->withBody(\GuzzleHttp\Psr7\Utils::streamFor(json_encode([
+            ->withBody(new MemoryStream(json_encode([
                 "id" => 1,
                 "name" => "Spike",
                 "photoUrls" => []
@@ -246,10 +247,10 @@ abstract class AbstractRequesterTest extends ApiTestCase
     public function testValidateAssertHeaderContainsNonExistent()
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
-        $this->expectExceptionMessage('Does not exists header \'X-Test\' with value \'Different\'');
-
+        $this->expectExceptionMessage("Does not exists header 'X-Test' with value 'Different'");
+        
         $expectedResponse = Response::getInstance(200)
-            ->withBody(\GuzzleHttp\Psr7\Utils::streamFor(json_encode([
+            ->withBody(new MemoryStream(json_encode([
                 "id" => 1,
                 "name" => "Spike",
                 "photoUrls" => []
@@ -278,7 +279,7 @@ abstract class AbstractRequesterTest extends ApiTestCase
     public function testValidateAssertBodyContains()
     {
         $expectedResponse = Response::getInstance(200)
-            ->withBody(\GuzzleHttp\Psr7\Utils::streamFor(json_encode([
+            ->withBody(new MemoryStream(json_encode([
                 "id" => 1,
                 "name" => "Spike",
                 "photoUrls" => []
@@ -307,10 +308,10 @@ abstract class AbstractRequesterTest extends ApiTestCase
     public function testValidateAssertBodyNotContains()
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
-        $this->expectExceptionMessage('Body does not contain \'Doris\'');
-
+        $this->expectExceptionMessage("Body does not contain 'Doris'");
+        
         $expectedResponse = Response::getInstance(200)
-            ->withBody(\GuzzleHttp\Psr7\Utils::streamFor(json_encode([
+            ->withBody(new MemoryStream(json_encode([
                 "id" => 1,
                 "name" => "Spike",
                 "photoUrls" => []

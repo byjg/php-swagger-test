@@ -12,12 +12,12 @@ class SwaggerSchemaTest extends TestCase
      */
     protected $object;
 
-    public function setUp(): void 
+    public function setUp(): void
     {
         $this->object = \ByJG\ApiTools\Base\Schema::getInstance(file_get_contents(__DIR__ . '/example/swagger.json'));
     }
 
-    public function tearDown(): void 
+    public function tearDown(): void
     {
         $this->object = null;
     }
@@ -365,7 +365,6 @@ class SwaggerSchemaTest extends TestCase
     }
 
     /**
-     *
      * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
      * @throws \ByJG\ApiTools\Exception\NotMatchedException
      * @throws \ByJG\ApiTools\Exception\PathNotFoundException
