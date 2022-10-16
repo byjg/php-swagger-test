@@ -1,0 +1,43 @@
+name: PHPUnit
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - "*.*.*"
+  pull_request:
+    branches:
+      - master
+  schedule:
+    - cron: "0 8 * * 1"
+
+jobs:
+  Build:
+    runs-on: 'ubuntu-latest'
+    container: 'byjg/php:${{ matrix.php-version }}-cli'
+    strategy:
+      matrix:
+        php-version:
+          - "8.1"
+          - "8.0"
+          - "7.4"
+          - "7.3"
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup test
+        run: |
+          composer install
+          SPEC=swagger php -S 127.0.0.1:8080 tests/rest/app.php &
+          SPEC=openapi php -S 127.0.0.1:8081 tests/rest/app.php &
+      - run: ./vendor/bin/phpunit
+
+  Documentation:
+    runs-on: 'ubuntu-latest'
+    needs: Build
+    if: github.ref == 'refs/heads/master'
+    env:
+      DOC_GITHUB_TOKEN: '${{ secrets.DOC_TOKEN }}'
+    steps:
+      - uses: actions/checkout@v3
+      - run: curl https://opensource.byjg.com/add-doc.sh | bash /dev/stdin php php-swagger-test

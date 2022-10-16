@@ -12,12 +12,12 @@ class SwaggerSchemaTest extends TestCase
      */
     protected $object;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->object = \ByJG\ApiTools\Base\Schema::getInstance(file_get_contents(__DIR__ . '/example/swagger.json'));
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->object = null;
     }
@@ -352,7 +352,6 @@ class SwaggerSchemaTest extends TestCase
     }
 
     /**
-     * @expectedException \ByJG\ApiTools\Exception\PathNotFoundException
      *
      * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
      * @throws \ByJG\ApiTools\Exception\NotMatchedException
@@ -360,18 +359,19 @@ class SwaggerSchemaTest extends TestCase
      */
     public function testGetPathFail()
     {
+        $this->expectException(\ByJG\ApiTools\Exception\PathNotFoundException::class);
+
         $this->object->getPathDefinition('/v2/pets', 'get');
     }
 
     /**
-     * @expectedException \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     *
      * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
      * @throws \ByJG\ApiTools\Exception\NotMatchedException
      * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      */
     public function testPathExistsButMethodDont()
     {
+        $this->expectException(\ByJG\ApiTools\Exception\HttpMethodNotFoundException::class);
         $this->object->getPathDefinition('/v2/pet', 'GET');
     }
 
@@ -436,35 +436,38 @@ class SwaggerSchemaTest extends TestCase
     }
 
     /**
-     * @expectedException \ByJG\ApiTools\Exception\InvalidDefinitionException
      *
      * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
      * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
      */
     public function testGetDefinitionFailed()
     {
+        $this->expectException(\ByJG\ApiTools\Exception\InvalidDefinitionException::class);
+
         $this->object->getDefinition('Order');
     }
 
     /**
-     * @expectedException \ByJG\ApiTools\Exception\InvalidDefinitionException
      *
      * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
      * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
      */
     public function testGetDefinitionFailed2()
     {
+        $this->expectException(\ByJG\ApiTools\Exception\InvalidDefinitionException::class);
+
         $this->object->getDefinition('1/2/Order');
     }
 
     /**
-     * @expectedException \ByJG\ApiTools\Exception\DefinitionNotFoundException
      *
      * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
      * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
      */
     public function testGetDefinitionFailed3()
     {
+        $this->expectException(\ByJG\ApiTools\Exception\DefinitionNotFoundException::class);
+
         $this->object->getDefinition('#/definitions/OrderNOtFound');
     }
 

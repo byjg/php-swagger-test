@@ -2,6 +2,8 @@
 
 namespace Test;
 
+use ByJG\ApiTools\Exception\InvalidRequestException;
+
 class SwaggerResponseBodyTest extends SwaggerBodyTestCase
 {
     /**
@@ -53,8 +55,6 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     }
 
     /**
-     * @expectedException \ByJG\ApiTools\Exception\NotMatchedException
-     * @expectedExceptionMessage Value 'notfound' in 'status' not matched in ENUM
      *
      * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
      * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
@@ -66,6 +66,9 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
      */
     public function testMatchResponseBodyEnumError()
     {
+        $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
+        $this->expectExceptionMessage("Value 'notfound' in 'status' not matched in ENUM");
+        
         $body = [
             "id" => 10,
             "petId" => 50,
@@ -79,8 +82,6 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     }
 
     /**
-     * @expectedException \ByJG\ApiTools\Exception\NotMatchedException
-     * @expectedExceptionMessage Expected 'id' to be numeric, but found 'ABC'
      *
      * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
      * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
@@ -92,6 +93,9 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
      */
     public function testMatchResponseBodyWrongNumber()
     {
+        $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
+        $this->expectExceptionMessage("Expected 'id' to be numeric, but found 'ABC'");
+        
         $body = [
             "id" => "ABC",
             "petId" => 50,
@@ -105,8 +109,6 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     }
 
     /**
-     * @expectedException \ByJG\ApiTools\Exception\NotMatchedException
-     * @expectedExceptionMessage The property(ies) 'more' has not defined in '#/definitions/Order'
      *
      * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
      * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
@@ -118,6 +120,9 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
      */
     public function testMatchResponseBodyMoreThanExpected()
     {
+        $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
+        $this->expectExceptionMessage("The property(ies) 'more' has not defined in '#/definitions/Order'");
+        
         $body = [
             "id" => "50",
             "petId" => 50,
@@ -177,8 +182,6 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     }
 
     /**
-     * @expectedException \ByJG\ApiTools\Exception\NotMatchedException
-     * @expectedExceptionMessage Value of property 'complete' is null, but should be of type 'boolean'
      *
      * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
      * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
@@ -190,6 +193,9 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
      */
     public function testMatchResponseBodyNotAllowNullValues()
     {
+        $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
+        $this->expectExceptionMessage("Value of property 'complete' is null, but should be of type 'boolean'");
+        
         $body = [
             "id"       => 10,
             "status"   => 'placed',
@@ -216,8 +222,6 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     }
 
     /**
-     * @expectedException \ByJG\ApiTools\Exception\NotMatchedException
-     * @expectedExceptionMessage Expected empty body for
      *
      * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
      * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
@@ -229,6 +233,9 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
      */
     public function testMatchResponseBodyNotEmpty()
     {
+        $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
+        $this->expectExceptionMessage("Expected empty body for");
+        
         $body = ['suppose'=>'not here'];
         $responseParameter = self::swaggerSchema()->getResponseParameters('/v2/pet/10', 'get', 400);
         $this->assertTrue($responseParameter->match($body));
@@ -421,8 +428,6 @@ EOL
 
     /**
      * Issue #9
-     * @expectedException \ByJG\ApiTools\Exception\InvalidRequestException
-     * @expectedExceptionMessageRegExp "I expected an array here.*"
      *
      * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
      * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
@@ -434,6 +439,9 @@ EOL
      */
     public function testIssue9Error()
     {
+        $this->expectException(InvalidRequestException::class);
+        $this->expectExceptionMessageMatches("/I expected an array here.*/");
+
         $body =
             [
                 [
@@ -484,12 +492,11 @@ EOL
         $this->assertTrue($responseParameter->match($body));
     }
 
-    /**
-     * @expectedException \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @expectedExceptionMessage Could not found status code '503'
-     */
     public function testResponseWithNoDefault()
     {
+        $this->expectException(\ByJG\ApiTools\Exception\InvalidDefinitionException::class);
+        $this->expectExceptionMessage("Could not found status code '503'");
+        
         $body = [];
         $responseParameter = $this->swaggerSchema()->getResponseParameters('/v2/user/login', 'get', 503);
     }
