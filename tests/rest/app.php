@@ -2,7 +2,7 @@
 namespace RestTest;
 
 use ByJG\RestServer\HttpRequestHandler;
-use ByJG\RestServer\Route\OpenApiRouteDefinition;
+use ByJG\RestServer\Route\OpenApiRouteList;
 use Exception;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
@@ -17,7 +17,7 @@ if (!file_exists($specification)) {
     throw new Exception("file $specification does not exists. Are you set the environment SPEC=openapi ?");
 }
 
-$routeDefinition = new OpenApiRouteDefinition($specification);
+$routeDefinition = new OpenApiRouteList($specification);
 
 $restServer = new HttpRequestHandler();
 $restServer->handle($routeDefinition);
