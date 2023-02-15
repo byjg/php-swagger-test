@@ -5,6 +5,42 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Launch Swagger Test Server",
+            "type": "php",
+            "request": "launch",
+            "env": {
+                "SPEC": "swagger"
+            },
+            "runtimeArgs": [
+                "-dxdebug.mode=debug",
+                "-dxdebug.start_with_request=yes",
+                "-S",
+                "localhost:8080",
+                "tests/rest/app.php"
+            ],
+            "program": "",
+            "cwd": "${workspaceRoot}",
+            "port": 9003
+        },
+        {
+            "name": "Launch OpenAPI Test Server",
+            "type": "php",
+            "request": "launch",
+            "env": {
+                "SPEC": "openapi"
+            },
+            "runtimeArgs": [
+                "-dxdebug.mode=debug",
+                "-dxdebug.start_with_request=yes",
+                "-S",
+                "localhost:8081",
+                "tests/rest/app.php"
+            ],
+            "program": "",
+            "cwd": "${workspaceRoot}",
+            "port": 9004
+        },
+        {
             "name": "Debug current Script in Console",
             "type": "php",
             "request": "launch",
