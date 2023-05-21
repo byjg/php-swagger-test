@@ -33,7 +33,7 @@ class Handler
     public function addPet($response, $request)
     {
         $pet = new Pet();
-        BinderObject::bindObject(json_decode($request->payload()), $pet);
+        BinderObject::bind(json_decode($request->payload()), $pet);
 
         if ($pet->getId() == "999") {
             // Simulate an error

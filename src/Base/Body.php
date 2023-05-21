@@ -106,6 +106,10 @@ abstract class Body
             $this->checkPattern($name, $body, $schemaArray['pattern']);
         }
 
+        if (!is_string($body)) {
+            throw new NotMatchedException("Value '" . var_export($body, true) . "' in '$name' is not string. ", $this->structure);
+        }
+
         return true;
     }
 

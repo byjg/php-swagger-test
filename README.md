@@ -1,14 +1,13 @@
 # PHP Swagger Test
 
+[![Build Status](https://github.com/byjg/php-swagger-test/actions/workflows/phpunit.yml/badge.svg?branch=master)](https://github.com/byjg/php-swagger-test/actions/workflows/phpunit.yml)
 [![Opensource ByJG](https://img.shields.io/badge/opensource-byjg-success.svg)](http://opensource.byjg.com)
 [![GitHub source](https://img.shields.io/badge/Github-source-informational?logo=github)](https://github.com/byjg/php-swagger-test/)
 [![GitHub license](https://img.shields.io/github/license/byjg/php-swagger-test.svg)](https://opensource.byjg.com/opensource/licensing.html)
 [![GitHub release](https://img.shields.io/github/release/byjg/php-swagger-test.svg)](https://github.com/byjg/php-swagger-test/releases/)
-[![Build Status](https://travis-ci.com/byjg/php-swagger-test.svg?branch=master)](https://travis-ci.com/byjg/php-swagger-test)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/byjg/php-swagger-test/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/byjg/php-swagger-test/?branch=master)
 
-
-A set of tools for testing in your REST calls based on the OpenApi specification using PHPUnit. 
+A set of tools for testing your REST calls based on the OpenApi specification using PHPUnit. 
 Currently, this library supports the OpenApi specifications `2.0` (formerly swagger) and `3.0`.
 Some features like callbacks, links and references to external documents/objects weren't implemented. 
 
@@ -29,7 +28,6 @@ You can use the Swagger Test library as:
 - Runtime parameters validator
 - Validate your specification
 
-
 ### Functional Test cases
 
 Swagger Test provides the class `SwaggerTestCase` for you extend and create a PHPUnit test case. The code will try to 
@@ -42,7 +40,7 @@ make a request to your API Method and check if the request parameters, status an
  */
 class MyTestCase extends \ByJG\ApiTools\ApiTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $schema = \ByJG\ApiTools\Base\Schema::getInstance(file_get_contents('/path/to/json/definition'));
         $this->setSchema($schema);
@@ -138,6 +136,7 @@ class MyAppRequester extends ByJG\ApiTools\AbstractRequester
     }
 }
 ```
+
 You now use an instance of this class in place of the `ApiRequester` class from the examples above. Of course, if you need to apply changes to the request, or the response in order
 to fit your framework, this is exactly the right place to do it.
 
@@ -211,7 +210,7 @@ class MyTest extends ApiTestCase
     public function testExpectOK()
     {
         $expectedResponse = \ByJG\Util\Psr7\Response::getInstance(200)
-            ->withBody(new MemoryStream(json_encode([
+            ->withBody(new \ByJG\Util\Psr7\MemoryStream(json_encode([
                 "id" => 1,
                 "name" => "Spike",
                 "photoUrls" => []
@@ -248,8 +247,6 @@ $request->withPsr7Request($psr7Request);
 // Return a ResponseInterface PSR7 component 
 $response = $request->send();
 ```
-
-
 
 ## Install
 

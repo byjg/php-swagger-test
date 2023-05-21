@@ -1,0 +1,74 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Swagger Test Server",
+            "type": "php",
+            "request": "launch",
+            "env": {
+                "SPEC": "swagger"
+            },
+            "runtimeArgs": [
+                "-dxdebug.mode=debug",
+                "-dxdebug.start_with_request=yes",
+                "-S",
+                "localhost:8080",
+                "tests/rest/app.php"
+            ],
+            "program": "",
+            "cwd": "${workspaceRoot}",
+            "port": 9003
+        },
+        {
+            "name": "Launch OpenAPI Test Server",
+            "type": "php",
+            "request": "launch",
+            "env": {
+                "SPEC": "openapi"
+            },
+            "runtimeArgs": [
+                "-dxdebug.mode=debug",
+                "-dxdebug.start_with_request=yes",
+                "-S",
+                "localhost:8081",
+                "tests/rest/app.php"
+            ],
+            "program": "",
+            "cwd": "${workspaceRoot}",
+            "port": 9004
+        },
+        {
+            "name": "Debug current Script in Console",
+            "type": "php",
+            "request": "launch",
+            "program": "${file}",
+            "cwd": "${fileDirname}",
+            "port": 0,
+            "runtimeArgs": [
+                "-dxdebug.start_with_request=yes"
+            ],
+            "env": {
+                "XDEBUG_MODE": "debug,develop",
+                "XDEBUG_CONFIG": "client_port=${port}"
+            }
+        },
+        {
+            "name": "PHPUnit Debug",
+            "type": "php",
+            "request": "launch",
+            "program": "${workspaceFolder}/vendor/bin/phpunit",
+            "cwd": "${workspaceFolder}",
+            "port": 0,
+            "runtimeArgs": [
+                "-dxdebug.start_with_request=yes"
+            ],
+            "env": {
+                "XDEBUG_MODE": "debug,develop",
+                "XDEBUG_CONFIG": "client_port=${port}"
+            }
+        }
+    ]
+}
