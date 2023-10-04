@@ -35,10 +35,10 @@ class SwaggerRequestBody extends Body
             if ($parameter['in'] === "formData") {
                 $hasFormData = true;
                 if (isset($parameter['required']) && $parameter['required'] === true && !isset($body[$parameter['name']])) {
-                    throw new RequiredArgumentNotFound("The formData parameter '${parameter['name']}' is required but it isn't found. ");
+                    throw new RequiredArgumentNotFound("The formData parameter '{$parameter['name']}' is required but it isn't found. ");
                 }
                 if (!$this->matchTypes($parameter['name'], $parameter, (isset($body[$parameter['name']]) ? $body[$parameter['name']] : null))) {
-                    throw new NotMatchedException("The formData parameter '${parameter['name']}' not match with the specification");
+                    throw new NotMatchedException("The formData parameter '{$parameter['name']}' not match with the specification");
                 }
             }
         }
