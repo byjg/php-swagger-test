@@ -280,6 +280,18 @@ abstract class Body
      */
     public function matchObjectProperties($name, $schemaArray, $body)
     {
+        if (!isset($schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES])) {
+            $schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES] = true;
+        }
+
+        if (is_bool($schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES])) {
+            if ($schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES]) {
+                $schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES] = [];
+            } else {
+                unset($schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES]);
+            }
+        }
+
         if (isset($schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES]) && !isset($schemaArray[self::SWAGGER_PROPERTIES])) {
             $schemaArray[self::SWAGGER_PROPERTIES] = [];
         }
@@ -345,7 +357,7 @@ abstract class Body
     /**
      * @param string $name
      * @param array $schemaArray
-     * @param array $body
+     * @param array|string $body
      * @return bool
      * @throws DefinitionNotFoundException
      * @throws InvalidDefinitionException
@@ -355,6 +367,10 @@ abstract class Body
      */
     protected function matchSchema($name, $schemaArray, $body)
     {
+        if ($schemaArray === []) {
+            return true;
+        }
+
         // Match Single Types
         if ($this->matchTypes($name, $schemaArray, $body)) {
             return true;
@@ -366,25 +382,19 @@ abstract class Body
 
         // Get References and try to match it again
         if (isset($schemaArray['$ref']) && !is_array($schemaArray['$ref'])) {
-            $defintion = $this->schema->getDefinition($schemaArray['$ref']);
-            return $this->matchSchema($schemaArray['$ref'], $defintion, $body);
-        }
-
-        // Match object properties
-        if ($this->matchObjectProperties($name, $schemaArray, $body)) {
-            return true;
+            $definition = $this->schema->getDefinition($schemaArray['$ref']);
+            return $this->matchSchema($schemaArray['$ref'], $definition, $body);
         }
 
         if (isset($schemaArray['allOf'])) {
             $allOfSchemas = $schemaArray['allOf'];
-            foreach ($allOfSchemas as &$schema) {
-                if (isset($schema['$ref'])) {
-                    $schema = $this->schema->getDefinition($schema['$ref']);
+            foreach ($allOfSchemas as $schema) {
+                if (!$this->matchSchema($name, $schema, $body)) {
+                    return false;
                 }
             }
-            unset($schema);
-            $mergedSchema = array_merge_recursive(...$allOfSchemas);
-            return $this->matchSchema($name, $mergedSchema, $body);
+
+            return true;
         }
 
         if (isset($schemaArray['oneOf'])) {
@@ -402,6 +412,11 @@ abstract class Body
             }
 
             return $matched;
+        }
+
+        // Match object properties
+        if ($this->matchObjectProperties($name, $schemaArray, $body)) {
+            return true;
         }
 
         /**

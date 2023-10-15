@@ -483,6 +483,7 @@ class SwaggerSchemaTest extends TestCase
         $this->assertEquals(
             [
                 "type"       => "object",
+                "additionalProperties" => false,
                 "properties" => [
                     "id"       => [
                         "type"   => "integer",
