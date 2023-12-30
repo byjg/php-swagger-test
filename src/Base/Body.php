@@ -361,7 +361,7 @@ abstract class Body
         }
 
         if(!isset($schemaArray['$ref']) && isset($schemaArray['content'])) {
-            $schemaArray['$ref'] = $schemaArray['content'][key($schemaArray['content'])]['schema']['$ref'];
+            $schemaArray = $schemaArray['content'][key($schemaArray['content'])]['schema'];
         }
 
         // Get References and try to match it again
