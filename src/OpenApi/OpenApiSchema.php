@@ -82,7 +82,7 @@ class OpenApiSchema extends Schema
                 }
                 if (!isset($this->jsonFile[self::SWAGGER_COMPONENTS][self::SWAGGER_PARAMETERS][$paramParts[3]])) {
                     throw new DefinitionNotFoundException(
-                        "Not find reference #/components/parameters/${paramParts[3]}"
+                        "Not find reference #/components/parameters/{$paramParts[3]}"
                     );
                 }
                 $parameter = $this->jsonFile[self::SWAGGER_COMPONENTS][self::SWAGGER_PARAMETERS][$paramParts[3]];
