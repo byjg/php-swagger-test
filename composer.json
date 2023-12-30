@@ -5,13 +5,13 @@
   "prefer-stable": true,
   "license": "MIT",
   "require": {
-    "byjg/webrequest": "dev-5.0.0rc",
+    "byjg/webrequest": "4.9.*",
     "php": ">=7.4",
     "ext-json": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "5.7.*|7.4.*|^9.5",
-    "byjg/restserver": "5.0.0.x-dev"
+    "byjg/restserver": "4.9.*"
   },
   "autoload": {
     "psr-4": {

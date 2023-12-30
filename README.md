@@ -272,5 +272,11 @@ This project uses the [byjg/webrequest](https://github.com/byjg/webrequest) comp
 It implements the PSR-7 specification, and a HttpClient / MockClient to do the requests.
 Check it out to get more information.
 
+## Dependencies
+
+```mermaid
+flowchart TD
+    byjg/swagger-test --> byjg/webrequest
+```
 ----
 [Open source ByJG](http://opensource.byjg.com)
