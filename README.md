@@ -251,7 +251,7 @@ $response = $request->send();
 ## Install
 
 ```bash
-composer require "byjg/swagger-test=5.0.*"
+composer require "byjg/swagger-test=4.9.*"
 ```
 
 ## Tests
