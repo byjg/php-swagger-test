@@ -8,8 +8,6 @@ on:
   pull_request:
     branches:
       - master
-  schedule:
-    - cron: "0 8 * * 1"
 
 jobs:
   Build:
@@ -18,10 +16,10 @@ jobs:
     strategy:
       matrix:
         php-version:
+          - "8.2"
           - "8.1"
           - "8.0"
           - "7.4"
-          - "7.3"
 
     steps:
       - uses: actions/checkout@v3

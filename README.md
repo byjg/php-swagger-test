@@ -7,15 +7,15 @@
 [![GitHub release](https://img.shields.io/github/release/byjg/php-swagger-test.svg)](https://github.com/byjg/php-swagger-test/releases/)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/byjg/php-swagger-test/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/byjg/php-swagger-test/?branch=master)
 
-A set of tools for testing your REST calls based on the OpenApi specification using PHPUnit. 
+A set of tools for testing your REST calls based on the OpenApi specification using PHPUnit.
 Currently, this library supports the OpenApi specifications `2.0` (formerly swagger) and `3.0`.
-Some features like callbacks, links and references to external documents/objects weren't implemented. 
+Some features like callbacks, links and references to external documents/objects weren't implemented.
 
 PHP Swagger Test can help you to test your REST Api. You can use this tool both for Unit Tests or Functional Tests.
 
-This tool reads a previously Swagger JSON file (not YAML) and enables you to test the request and response. 
-You can use the tool "https://github.com/zircote/swagger-php" for creating the JSON file when you are developing your
-rest API. 
+This tool reads a previously Swagger JSON file (not YAML) and enables you to test the request and response.
+You can use the tool "<https://github.com/zircote/swagger-php>" for creating the JSON file when you are developing your
+rest API.
 
 The ApiTestCase's assertion process is based on throwing exceptions if some validation or test failed.
 
@@ -30,7 +30,7 @@ You can use the Swagger Test library as:
 
 ### Functional Test cases
 
-Swagger Test provides the class `SwaggerTestCase` for you extend and create a PHPUnit test case. The code will try to 
+Swagger Test provides the class `SwaggerTestCase` for you extend and create a PHPUnit test case. The code will try to
 make a request to your API Method and check if the request parameters, status and object returned are OK.
 
 ```php
@@ -45,7 +45,7 @@ class MyTestCase extends \ByJG\ApiTools\ApiTestCase
         $schema = \ByJG\ApiTools\Base\Schema::getInstance(file_get_contents('/path/to/json/definition'));
         $this->setSchema($schema);
     }
-    
+
     /**
      * Test if the REST address /path/for/get/ID with the method GET returns what is
      * documented on the "swagger.json"
@@ -75,7 +75,7 @@ class MyTestCase extends \ByJG\ApiTools\ApiTestCase
     }
 
     /**
-     * Test if the REST address /path/for/post/ID with the method POST  
+     * Test if the REST address /path/for/post/ID with the method POST
      * and the request object ['name'=>'new name', 'field' => 'value'] will return an object
      * as is documented in the "swagger.json" file
      */
@@ -91,7 +91,7 @@ class MyTestCase extends \ByJG\ApiTools\ApiTestCase
     }
 
     /**
-     * Test if the REST address /another/path/for/post/{id} with the method POST  
+     * Test if the REST address /another/path/for/post/{id} with the method POST
      * and the request object ['name'=>'new name', 'field' => 'value'] will return an object
      * as is documented in the "swagger.json" file
      */
@@ -140,21 +140,21 @@ class MyAppRequester extends ByJG\ApiTools\AbstractRequester
 You now use an instance of this class in place of the `ApiRequester` class from the examples above. Of course, if you need to apply changes to the request, or the response in order
 to fit your framework, this is exactly the right place to do it.
 
-@todo: Explain in the Docs sections the `RestServer` component 
+@todo: Explain in the Docs sections the `RestServer` component
 
 ### Using it as Unit Test cases
 
-If you want mock the request API and just test the expected parameters, you are sending and 
+If you want mock the request API and just test the expected parameters, you are sending and
 receiving you have to:
 
-**1. Create the Swagger or OpenAPI Test Schema**
+#### 1. Create the Swagger or OpenAPI Test Schema
 
 ```php
 <?php
 $schema = \ByJG\ApiTools\Base\Schema::getInstance($contentsOfSchemaJson);
 ```
 
-**2. Get the definitions for your path**
+#### 2. Get the definitions for your path
 
 ```php
 <?php
@@ -169,7 +169,7 @@ $bodyRequestDef = $schema->getRequestParameters($path, $method);
 $bodyResponseDef = $schema->getResponseParameters($path, $method, $statusExpected);
 ```
 
-**3. Match the result**
+#### 3. Match the result
 
 ```php
 <?php
@@ -180,12 +180,12 @@ $bodyResponseDef->match($responseBody);
 ```
 
 If the request or response body does not match with the definition an exception NotMatchException will
-be thrown. 
+be thrown.
 
 ### Runtime parameters validator
 
 This tool was not developed only for unit and functional tests. You can use to validate if the required body
-parameters is the expected. 
+parameters is the expected.
 
 So, before your API Code you can validate the request body using:
 
@@ -201,7 +201,7 @@ $bodyRequestDef->match($requestBody);
 PHP Swagger has the class `MockRequester` with exact the same functionalities of `ApiRequester` class. The only
 difference is the `MockRequester` don't need to request to a real endpoint.
 
-This is used to validate request and response against your OpenAPI spec without running any server code. 
+This is used to validate request and response against your OpenAPI spec without running any server code.
 
 ```php
 <?php
@@ -217,7 +217,7 @@ class MyTest extends ApiTestCase
             ])));
 
         // The MockRequester does not send the request to a real endpoint
-        // Just returning the expected Response object sent in the constructor 
+        // Just returning the expected Response object sent in the constructor
         $request = new \ByJG\ApiTools\MockRequester($expectedResponse);
         $request
             ->withMethod('GET')
@@ -226,13 +226,13 @@ class MyTest extends ApiTestCase
         $this->assertRequest($request); // That should be "True" based on the specification
     }
 }
-```   
+```
 
 ## Integration with PSR7
 
 You can populate the `ApiRequester`/`MockRequester` with the information provided by the `RequestInterface` PSR7 interface.
 
-e.g.  
+e.g.
 
 ```php
 <?php
@@ -244,14 +244,22 @@ $psr7Request = \ByJG\Util\Psr7\Request::getInstance(new Uri("/method_to_be_teste
 $request = new \ByJG\ApiTools\ApiRequester();
 $request->withPsr7Request($psr7Request);
 
-// Return a ResponseInterface PSR7 component 
+// Return a ResponseInterface PSR7 component
 $response = $request->send();
 ```
 
 ## Install
 
 ```bash
-composer require "byjg/swagger-test=3.1.*"
+composer require "byjg/swagger-test=4.9.*"
+```
+
+## Tests
+
+```bash
+SPEC=swagger php -S 127.0.0.1:8080 tests/rest/app.php &
+SPEC=openapi php -S 127.0.0.1:8081 tests/rest/app.php &
+vendor/bin/phpunit
 ```
 
 ## Questions?
@@ -260,9 +268,15 @@ Please raise your issue on [Github issue](https://github.com/byjg/php-swagger-te
 
 ## References
 
-This project uses the [byjg/webrequest](https://github.com/byjg/webrequest) component. 
-It implements the PSR-7 specification, and a HttpClient / MockClient to do the requests. 
-Check it out to get more information. 
+This project uses the [byjg/webrequest](https://github.com/byjg/webrequest) component.
+It implements the PSR-7 specification, and a HttpClient / MockClient to do the requests.
+Check it out to get more information.
 
+## Dependencies
+
+```mermaid
+flowchart TD
+    byjg/swagger-test --> byjg/webrequest
+```
 ----
 [Open source ByJG](http://opensource.byjg.com)
