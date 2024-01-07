@@ -3,26 +3,16 @@
 namespace ByJG\ApiTools\Swagger;
 
 use ByJG\ApiTools\Base\Body;
-use ByJG\ApiTools\Exception\DefinitionNotFoundException;
-use ByJG\ApiTools\Exception\GenericSwaggerException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
-use ByJG\ApiTools\Exception\InvalidRequestException;
 use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
 
 class SwaggerRequestBody extends Body
 {
     /**
-     * @param string $body
-     * @return bool
-     * @throws GenericSwaggerException
-     * @throws InvalidDefinitionException
-     * @throws InvalidRequestException
-     * @throws NotMatchedException
-     * @throws RequiredArgumentNotFound
-     * @throws DefinitionNotFoundException
+     * @inheritDoc
      */
-    public function match($body)
+    public function match(mixed $body): bool
     {
         $hasFormData = false;
         foreach ($this->structure as $parameter) {
@@ -37,7 +27,7 @@ class SwaggerRequestBody extends Body
                 if (isset($parameter['required']) && $parameter['required'] === true && !isset($body[$parameter['name']])) {
                     throw new RequiredArgumentNotFound("The formData parameter '{$parameter['name']}' is required but it isn't found. ");
                 }
-                if (!$this->matchTypes($parameter['name'], $parameter, (isset($body[$parameter['name']]) ? $body[$parameter['name']] : null))) {
+                if (!$this->matchTypes($parameter['name'], $parameter, ($body[$parameter['name']] ?? null))) {
                     throw new NotMatchedException("The formData parameter '{$parameter['name']}' not match with the specification");
                 }
             }

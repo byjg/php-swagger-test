@@ -3,24 +3,14 @@
 namespace ByJG\ApiTools\Swagger;
 
 use ByJG\ApiTools\Base\Body;
-use ByJG\ApiTools\Exception\DefinitionNotFoundException;
-use ByJG\ApiTools\Exception\GenericSwaggerException;
-use ByJG\ApiTools\Exception\InvalidDefinitionException;
-use ByJG\ApiTools\Exception\InvalidRequestException;
 use ByJG\ApiTools\Exception\NotMatchedException;
 
 class SwaggerResponseBody extends Body
 {
     /**
-     * @param string $body
-     * @return bool
-     * @throws GenericSwaggerException
-     * @throws InvalidRequestException
-     * @throws NotMatchedException
-     * @throws DefinitionNotFoundException
-     * @throws InvalidDefinitionException
+     * @inheritDoc
      */
-    public function match($body)
+    public function match(mixed $body): bool
     {
         if (!isset($this->structure['schema'])) {
             if (!empty($body)) {
