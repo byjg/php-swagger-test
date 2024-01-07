@@ -7,7 +7,7 @@ use Throwable;
 
 class BaseException extends Exception
 {
-    protected $body;
+    protected mixed $body;
 
     public function __construct($message = "", $body = [], $code = 0, Throwable $previous = null)
     {
@@ -21,7 +21,7 @@ class BaseException extends Exception
     /**
      * @return mixed
      */
-    public function getBody()
+    public function getBody(): mixed
     {
         return $this->body;
     }
