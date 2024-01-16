@@ -14,7 +14,7 @@ Some features like callbacks, links and references to external documents/objects
 PHP Swagger Test can help you to test your REST Api. You can use this tool both for Unit Tests or Functional Tests.
 
 This tool reads a previously Swagger JSON file (not YAML) and enables you to test the request and response.
-You can use the tool "<https://github.com/zircote/swagger-php>" for creating the JSON file when you are developing your
+You can use the tool "[https://github.com/zircote/swagger-php](https://github.com/zircote/swagger-php)" for creating the JSON file when you are developing your
 rest API.
 
 The ApiTestCase's assertion process is based on throwing exceptions if some validation or test failed.
