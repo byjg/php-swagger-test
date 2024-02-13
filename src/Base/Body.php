@@ -7,11 +7,7 @@ use ByJG\ApiTools\Exception\GenericSwaggerException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\InvalidRequestException;
 use ByJG\ApiTools\Exception\NotMatchedException;
-use ByJG\ApiTools\OpenApi\OpenApiResponseBody;
-use ByJG\ApiTools\OpenApi\OpenApiSchema;
-use ByJG\ApiTools\Swagger\SwaggerResponseBody;
-use ByJG\ApiTools\Swagger\SwaggerSchema;
-use InvalidArgumentException;
+use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
 
 abstract class Body
 {
@@ -22,17 +18,17 @@ abstract class Body
     /**
      * @var Schema
      */
-    protected $schema;
+    protected Schema $schema;
 
     /**
      * @var array
      */
-    protected $structure;
+    protected array $structure;
 
     /**
      * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * OpenApi 2.0 does not describe null values, so this flag defines,
@@ -40,7 +36,7 @@ abstract class Body
      *
      * @var bool
      */
-    protected $allowNullValues;
+    protected bool $allowNullValues;
 
     /**
      * Body constructor.
@@ -50,49 +46,35 @@ abstract class Body
      * @param array $structure
      * @param bool $allowNullValues
      */
-    public function __construct(Schema $schema, $name, $structure, $allowNullValues = false)
+    public function __construct(Schema $schema, string $name, array $structure, bool $allowNullValues = false)
     {
         $this->schema = $schema;
         $this->name = $name;
-        if (!is_array($structure)) {
-            throw new InvalidArgumentException('I expected the structure to be an array');
-        }
         $this->structure = $structure;
         $this->allowNullValues = $allowNullValues;
     }
 
     /**
-     * @param Schema $schema
-     * @param string $name
-     * @param array $structure
-     * @param bool $allowNullValues
-     * @return OpenApiResponseBody|SwaggerResponseBody
+     * @param mixed $body
+     * @throws DefinitionNotFoundException
      * @throws GenericSwaggerException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws RequiredArgumentNotFound
+     * @return bool
      */
-    public static function getInstance(Schema $schema, $name, $structure, $allowNullValues = false)
-    {
-        if ($schema instanceof SwaggerSchema) {
-            return new SwaggerResponseBody($schema, $name, $structure, $allowNullValues);
-        }
-
-        if ($schema instanceof OpenApiSchema) {
-            return new OpenApiResponseBody($schema, $name, $structure, $allowNullValues);
-        }
-
-        throw new GenericSwaggerException("Cannot get instance SwaggerBody or SchemaBody from " . get_class($schema));
-    }
-
-    abstract public function match($body);
+    abstract public function match(mixed $body): bool;
 
     /**
      * @param string $name
      * @param array $schemaArray
-     * @param string $body
-     * @param string $type
-     * @return bool
+     * @param mixed $body
+     * @param mixed $type
+     * @return ?bool
      * @throws NotMatchedException
      */
-    protected function matchString($name, $schemaArray, $body, $type)
+    protected function matchString(string $name, array $schemaArray, mixed $body, mixed $type): ?bool
     {
         if ($type !== 'string') {
             return null;
@@ -113,10 +95,13 @@ abstract class Body
         return true;
     }
 
-    private function checkPattern($name, $body, $pattern)
+    /**
+     * @throws NotMatchedException
+     */
+    private function checkPattern(string $name, mixed $body, string $pattern): void
     {
         $pattern = '/' . rtrim(ltrim($pattern, '/'), '/') . '/';
-        $isSuccess = (bool) preg_match($pattern, $body, $matches);
+        $isSuccess = (bool) preg_match($pattern, $body);
 
         if (!$isSuccess) {
             throw new NotMatchedException("Value '$body' in '$name' not matched in pattern. ", $this->structure);
@@ -126,11 +111,11 @@ abstract class Body
     /**
      * @param string $name
      * @param array $schemaArray
-     * @param string $body
-     * @param string $type
-     * @return bool
+     * @param mixed $body
+     * @param mixed $type
+     * @return bool|null
      */
-    protected function matchFile($name, $schemaArray, $body, $type)
+    protected function matchFile(string $name, array $schemaArray, mixed $body, mixed $type): ?bool
     {
         if ($type !== 'file') {
             return null;
@@ -143,10 +128,10 @@ abstract class Body
      * @param string $name
      * @param string $body
      * @param string $type
-     * @return bool
+     * @return ?bool
      * @throws NotMatchedException
      */
-    protected function matchNumber($name, $body, $type)
+    protected function matchNumber(string $name, mixed $body, mixed $type): ?bool
     {
         if ($type !== 'integer' && $type !== 'float' && $type !== 'number') {
             return null;
@@ -167,10 +152,10 @@ abstract class Body
      * @param string $name
      * @param string $body
      * @param string $type
-     * @return bool
+     * @return ?bool
      * @throws NotMatchedException
      */
-    protected function matchBool($name, $body, $type)
+    protected function matchBool(string $name, mixed $body, mixed $type): ?bool
     {
         if ($type !== 'bool' && $type !== 'boolean') {
             return null;
@@ -188,14 +173,14 @@ abstract class Body
      * @param array $schemaArray
      * @param string $body
      * @param string $type
-     * @return bool
+     * @return ?bool
      * @throws DefinitionNotFoundException
      * @throws GenericSwaggerException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
      * @throws NotMatchedException
      */
-    protected function matchArray($name, $schemaArray, $body, $type)
+    protected function matchArray(string $name, array $schemaArray, mixed $body, mixed $type): ?bool
     {
         if ($type !== 'array') {
             return null;
@@ -212,11 +197,11 @@ abstract class Body
 
     /**
      * @param string $name
-     * @param array $schemaArray
+     * @param mixed $schemaArray
      * @param string $body
-     * @return mixed|null
+     * @return ?bool
      */
-    protected function matchTypes($name, $schemaArray, $body)
+    protected function matchTypes(string $name, mixed $schemaArray, mixed $body): ?bool
     {
         if (!isset($schemaArray['type'])) {
             return null;
@@ -278,7 +263,7 @@ abstract class Body
      * @throws InvalidRequestException
      * @throws NotMatchedException
      */
-    public function matchObjectProperties($name, $schemaArray, $body)
+    public function matchObjectProperties(string $name, mixed $schemaArray, mixed $body): ?bool
     {
         if (isset($schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES]) && !isset($schemaArray[self::SWAGGER_PROPERTIES])) {
             $schemaArray[self::SWAGGER_PROPERTIES] = [];
@@ -346,14 +331,14 @@ abstract class Body
      * @param string $name
      * @param array $schemaArray
      * @param array $body
-     * @return bool
+     * @return ?bool
      * @throws DefinitionNotFoundException
      * @throws InvalidDefinitionException
      * @throws GenericSwaggerException
      * @throws InvalidRequestException
      * @throws NotMatchedException
      */
-    protected function matchSchema($name, $schemaArray, $body)
+    protected function matchSchema(string $name, mixed $schemaArray, mixed $body): ?bool
     {
         // Match Single Types
         if ($this->matchTypes($name, $schemaArray, $body)) {
@@ -422,10 +407,10 @@ abstract class Body
      * @param string $body
      * @param string $type
      * @param bool $nullable
-     * @return bool
+     * @return ?bool
      * @throws NotMatchedException
      */
-    protected function matchNull($name, $body, $type, $nullable)
+    protected function matchNull(string $name, mixed $body, mixed $type, bool $nullable): ?bool
     {
         if (!is_null($body)) {
             return null;
