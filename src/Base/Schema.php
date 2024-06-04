@@ -6,6 +6,7 @@ use ByJG\ApiTools\Exception\DefinitionNotFoundException;
 use ByJG\ApiTools\Exception\GenericSwaggerException;
 use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
+use ByJG\ApiTools\Exception\InvalidRequestException;
 use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\ApiTools\Exception\PathNotFoundException;
 use ByJG\ApiTools\OpenApi\OpenApiSchema;
@@ -98,6 +99,9 @@ abstract class Schema
             $pathItemPattern = '~^' . preg_replace('~{(.*?)}~', '(?<\1>[^/]+)', $pathItem) . '$~';
 
             $matches = [];
+            if (empty($uri->getPath())) {
+                throw new InvalidRequestException('The path is empty');
+            }
             if (preg_match($pathItemPattern, $uri->getPath(), $matches)) {
                 $pathDef = $this->jsonFile[self::SWAGGER_PATHS][$pathItem];
                 if (!isset($pathDef[$method])) {
