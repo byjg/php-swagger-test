@@ -125,7 +125,7 @@
         "summary": "Get a response that should match two schemas",
         "responses": {
           "200": {
-            "description": "Returns any value",
+            "description": "Returns name and email",
             "content": {
               "application/json": {
                 "schema": {
@@ -161,7 +161,7 @@
         "summary": "Get a response that should match two schemas",
         "responses": {
           "200": {
-            "description": "Returns any value",
+            "description": "Returns name and email",
             "content": {
               "application/json": {
                 "schema": {
@@ -172,6 +172,39 @@
                     },
                     {
                       "$ref": "#/components/schemas/EmailObject"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/nestedallofref": {
+      "get": {
+        "tags": [
+          "general"
+        ],
+        "summary": "Get a response that should match two schemas",
+        "responses": {
+          "200": {
+            "description": "Returns name, email and password",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/NameEmailObject"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "password": {
+                          "type": "string"
+                        }
+                      }
                     }
                   ]
                 }
@@ -222,6 +255,7 @@
       },
       "AnyValue": {},
       "NameObject": {
+        "required": ["name"],
         "properties": {
           "name": {
             "type": "string"
@@ -229,11 +263,23 @@
         }
       },
       "EmailObject": {
+        "required": ["email"],
         "properties": {
           "email": {
             "type": "string"
           }
         }
+      },
+      "NameEmailObject": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NameObject"
+          },
+          {
+            "$ref": "#/components/schemas/EmailObject"
+          }
+        ]
       }
     }
   }
