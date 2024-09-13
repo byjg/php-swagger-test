@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace Tests\Classes;
 
 use ByJG\RestServer\HttpRequest;
 use ByJG\RestServer\HttpResponse;

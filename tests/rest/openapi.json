@@ -28,7 +28,7 @@
           "pet"
         ],
         "summary": "Add a new pet to the store",
-        "operationId": "Tests\\Handler::addPet",
+        "operationId": "Tests\\Classes\\Handler::addPet",
         "requestBody": {
           "description": "Pet object that needs to be added to the store",
           "content": {
@@ -61,7 +61,7 @@
         ],
         "summary": "Find pet by ID",
         "description": "Returns a single pet",
-        "operationId": "Tests\\Handler::getPetById",
+        "operationId": "Tests\\Classes\\Handler::getPetById",
         "parameters": [
           {
             "name": "petId",
@@ -107,7 +107,7 @@
           "admins"
         ],
         "summary": "adds an inventory item",
-        "operationId": "Tests\\Handler::processUpload",
+        "operationId": "Tests\\Classes\\Handler::processUpload",
         "description": "Adds an item to the system",
         "responses": {
           "200": {

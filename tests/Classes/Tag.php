@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests;
+namespace Tests\Classes;
 
-class Category
+class Tag
 {
     protected $id;
     protected $name;
@@ -17,7 +17,6 @@ class Category
         $this->id = $id;
         $this->name = $name;
     }
-
 
     /**
      * @return mixed

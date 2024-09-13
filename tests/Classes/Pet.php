@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace Tests\Classes;
 
 class Pet
 {
