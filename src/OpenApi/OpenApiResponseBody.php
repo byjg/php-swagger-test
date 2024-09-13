@@ -20,10 +20,10 @@ class OpenApiResponseBody extends Body
         }
         
         if(!isset($this->structure['content']) && isset($this->structure['$ref'])){
-            $defintion = $this->schema->getDefinition($this->structure['$ref']);
-            return $this->matchSchema($this->name, $defintion, $body);
+            $definition = $this->schema->getDefinition($this->structure['$ref']);
+            return $this->matchSchema($this->name, $definition, $body) ?? false;
         }
         
-        return $this->matchSchema($this->name, $this->structure['content'][key($this->structure['content'])]['schema'], $body);
+        return $this->matchSchema($this->name, $this->structure['content'][key($this->structure['content'])]['schema'], $body) ?? false;
     }
 }

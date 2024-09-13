@@ -131,7 +131,7 @@ abstract class AbstractRequester
         $uri = $this->psr7Request->getUri();
 
         if (is_null($query)) {
-            $uri = $uri->withQuery(null);
+            $uri = $uri->withQuery("");
             $this->psr7Request = $this->psr7Request->withUri($uri);
             return $this;
         }
@@ -160,6 +160,10 @@ abstract class AbstractRequester
         return $this;
     }
 
+    /**
+     * @param RequestInterface $requestInterface
+     * @return $this
+     */
     public function withPsr7Request(RequestInterface $requestInterface): self
     {
         $this->psr7Request = $requestInterface->withHeader("Accept", "application/json");
@@ -226,10 +230,8 @@ abstract class AbstractRequester
         $this->psr7Request = $this->psr7Request->withUri($uri);
 
         // Prepare Body to Match Against Specification
-        $requestBody = $this->psr7Request->getBody();
+        $requestBody = $this->psr7Request->getBody()->getContents();
         if (!empty($requestBody)) {
-            $requestBody = $requestBody->getContents();
-
             $contentType = $this->psr7Request->getHeaderLine("content-type");
             if (empty($contentType) || str_contains($contentType, "application/json")) {
                 $requestBody = json_decode($requestBody, true);

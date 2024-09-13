@@ -1,6 +1,6 @@
 <?php
 
-namespace RestTest;
+namespace Test;
 
 use ByJG\RestServer\HttpRequest;
 use ByJG\RestServer\HttpResponse;

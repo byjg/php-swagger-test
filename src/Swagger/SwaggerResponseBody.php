@@ -18,6 +18,6 @@ class SwaggerResponseBody extends Body
             }
             return true;
         }
-        return $this->matchSchema($this->name, $this->structure['schema'], $body);
+        return $this->matchSchema($this->name, $this->structure['schema'], $body) ?? false;
     }
 }

@@ -126,12 +126,13 @@ abstract class Body
 
     /**
      * @param string $name
-     * @param string $body
-     * @param string $type
+     * @param array $schemaArray
+     * @param mixed $body
+     * @param mixed $type
      * @return ?bool
      * @throws NotMatchedException
      */
-    protected function matchNumber(string $name, mixed $body, mixed $type): ?bool
+    protected function matchNumber(string $name, array $schemaArray, mixed $body, mixed $type): ?bool
     {
         if ($type !== 'integer' && $type !== 'float' && $type !== 'number') {
             return null;
@@ -150,8 +151,8 @@ abstract class Body
 
     /**
      * @param string $name
-     * @param string $body
-     * @param string $type
+     * @param mixed $body
+     * @param mixed $type
      * @return ?bool
      * @throws NotMatchedException
      */
@@ -171,8 +172,8 @@ abstract class Body
     /**
      * @param string $name
      * @param array $schemaArray
-     * @param string $body
-     * @param string $type
+     * @param mixed $body
+     * @param mixed $type
      * @return ?bool
      * @throws DefinitionNotFoundException
      * @throws GenericSwaggerException
@@ -198,7 +199,7 @@ abstract class Body
     /**
      * @param string $name
      * @param mixed $schemaArray
-     * @param string $body
+     * @param mixed $body
      * @return ?bool
      */
     protected function matchTypes(string $name, mixed $schemaArray, mixed $body): ?bool
@@ -221,9 +222,9 @@ abstract class Body
                 return $this->matchString($name, $schemaArray, $body, $type);
             },
 
-            function () use ($name, $body, $type)
+            function () use ($name, $schemaArray, $body, $type)
             {
-                return $this->matchNumber($name, $body, $type);
+                return $this->matchNumber($name, $schemaArray, $body, $type);
             },
 
             function () use ($name, $body, $type)
@@ -255,7 +256,7 @@ abstract class Body
     /**
      * @param string $name
      * @param array $schemaArray
-     * @param string $body
+     * @param mixed $body
      * @return bool|null
      * @throws DefinitionNotFoundException
      * @throws GenericSwaggerException
@@ -351,8 +352,8 @@ abstract class Body
 
         // Get References and try to match it again
         if (isset($schemaArray['$ref']) && !is_array($schemaArray['$ref'])) {
-            $defintion = $this->schema->getDefinition($schemaArray['$ref']);
-            return $this->matchSchema($schemaArray['$ref'], $defintion, $body);
+            $definition = $this->schema->getDefinition($schemaArray['$ref']);
+            return $this->matchSchema($schemaArray['$ref'], $definition, $body);
         }
 
         // Match object properties
@@ -374,16 +375,16 @@ abstract class Body
 
         if (isset($schemaArray['oneOf'])) {
             $matched = false;
-            $catchedException = null;
+            $catchException = null;
             foreach ($schemaArray['oneOf'] as $schema) {
                 try {
                     $matched = $matched || $this->matchSchema($name, $schema, $body);
                 } catch (NotMatchedException $exception) {
-                    $catchedException = $exception;
+                    $catchException = $exception;
                 }
             }
-            if ($catchedException !== null && $matched === false) {
-                throw $catchedException;
+            if ($catchException !== null && $matched === false) {
+                throw $catchException;
             }
 
             return $matched;
@@ -409,8 +410,8 @@ abstract class Body
 
     /**
      * @param string $name
-     * @param string $body
-     * @param string $type
+     * @param mixed $body
+     * @param mixed $type
      * @param bool $nullable
      * @return ?bool
      * @throws NotMatchedException

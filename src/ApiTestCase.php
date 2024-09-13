@@ -19,9 +19,9 @@ use Psr\Http\Message\ResponseInterface;
 abstract class ApiTestCase extends TestCase
 {
     /**
-     * @var Schema
+     * @var Schema|null
      */
-    protected Schema $schema;
+    protected ?Schema $schema = null;
 
     /**
      * @var AbstractRequester|null

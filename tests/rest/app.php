@@ -1,5 +1,5 @@
 <?php
-namespace RestTest;
+namespace Test;
 
 use ByJG\RestServer\HttpRequestHandler;
 use ByJG\RestServer\Route\OpenApiRouteList;

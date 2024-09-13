@@ -66,6 +66,7 @@ abstract class Schema
      * @throws DefinitionNotFoundException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
      * @throws NotMatchedException
      * @throws PathNotFoundException
      */
@@ -126,15 +127,16 @@ abstract class Schema
     /**
      * @param string $path
      * @param string $method
-     * @param string $status
+     * @param int $status
      * @return Body
      * @throws DefinitionNotFoundException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
      * @throws NotMatchedException
      * @throws PathNotFoundException
      */
-    public function getResponseParameters(string $path, string $method, string $status): Body
+    public function getResponseParameters(string $path, string $method, int $status): Body
     {
         $structure = $this->getPathDefinition($path, $method);
 

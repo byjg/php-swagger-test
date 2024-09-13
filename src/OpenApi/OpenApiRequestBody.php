@@ -19,10 +19,10 @@ class OpenApiRequestBody extends Body
             }
 
             if (isset($this->structure['$ref'])) {
-                return $this->matchSchema($this->name, $this->structure, $body);
+                return $this->matchSchema($this->name, $this->structure, $body) ?? false;
             }
 
-            return $this->matchSchema($this->name, $this->structure['content'][key($this->structure['content'])]['schema'], $body);
+            return $this->matchSchema($this->name, $this->structure['content'][key($this->structure['content'])]['schema'], $body) ?? false;
         }
 
         if (!empty($body)) {

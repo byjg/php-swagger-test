@@ -27,7 +27,7 @@
         ],
         "summary": "Add a new pet to the store",
         "description": "",
-        "operationId": "RestTest\\Handler::addPet",
+        "operationId": "Test\\Handler::addPet",
         "consumes": [
           "application/json",
           "application/xml"
@@ -61,7 +61,7 @@
         ],
         "summary": "Find pet by ID",
         "description": "Returns a single pet",
-        "operationId": "RestTest\\Handler::getPetById",
+        "operationId": "Test\\Handler::getPetById",
         "produces": [
           "application/json",
           "application/xml"
@@ -96,7 +96,7 @@
       "post" : {
         "tags" : [ "admins" ],
         "summary" : "adds an inventory item",
-        "operationId": "RestTest\\Handler::processUpload",
+        "operationId": "Test\\Handler::processUpload",
         "description" : "Adds an item to the system",
         "consumes" : [ "multipart/form-data" ],
         "produces" : [ "application/json" ],
