@@ -4,7 +4,7 @@ namespace RestTest;
 
 use ByJG\RestServer\HttpRequest;
 use ByJG\RestServer\HttpResponse;
-use ByJG\Serializer\BinderObject;
+use ByJG\Serializer\ObjectCopy;
 
 class Handler
 {
@@ -28,12 +28,11 @@ class Handler
     /**
      * @param HttpResponse $response
      * @param HttpRequest $request
-     * @throws \ByJG\Serializer\Exception\InvalidArgumentException
      */
     public function addPet($response, $request)
     {
         $pet = new Pet();
-        BinderObject::bind(json_decode($request->payload()), $pet);
+        ObjectCopy::copy(json_decode($request->payload()), $pet);
 
         if ($pet->getId() == "999") {
             // Simulate an error
