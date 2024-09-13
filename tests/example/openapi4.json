@@ -1,5 +1,6 @@
 {
   "openapi": "3.0.0",
+  "paths": {},
   "info": {
     "description": "This is a sample server Petstore server.  You can find out more about\nSwagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net,\n`special-key` to test the authorization filters.",
     "version": "1.0.0",

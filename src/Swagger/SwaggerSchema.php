@@ -6,6 +6,7 @@ use ByJG\ApiTools\Base\Body;
 use ByJG\ApiTools\Base\Schema;
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
+use ByJG\ApiTools\Exception\InvalidRequestException;
 use ByJG\ApiTools\Exception\NotMatchedException;
 
 class SwaggerSchema extends Schema
@@ -89,6 +90,7 @@ class SwaggerSchema extends Schema
 
     /**
      * @inheritDoc
+     * @throws InvalidRequestException
      */
     public function getRequestParameters(string $path, string $method): Body
     {

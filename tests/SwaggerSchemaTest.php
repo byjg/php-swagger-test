@@ -1,7 +1,13 @@
 <?php
 
-namespace Test;
+namespace Tests;
 
+use ByJG\ApiTools\Exception\DefinitionNotFoundException;
+use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
+use ByJG\ApiTools\Exception\InvalidDefinitionException;
+use ByJG\ApiTools\Exception\InvalidRequestException;
+use ByJG\ApiTools\Exception\NotMatchedException;
+use ByJG\ApiTools\Exception\PathNotFoundException;
 use ByJG\ApiTools\Swagger\SwaggerSchema;
 use PHPUnit\Framework\TestCase;
 
@@ -28,9 +34,12 @@ class SwaggerSchemaTest extends TestCase
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
      */
     public function testGetPathDirectMatch()
     {
@@ -129,9 +138,12 @@ class SwaggerSchemaTest extends TestCase
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
      */
     public function testGetPathPatternMatch()
     {
@@ -284,11 +296,12 @@ class SwaggerSchemaTest extends TestCase
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
      */
     public function testGetPathPatternMatch2()
     {
@@ -353,9 +366,12 @@ class SwaggerSchemaTest extends TestCase
 
     /**
      *
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
      */
     public function testGetPathFail()
     {
@@ -365,9 +381,12 @@ class SwaggerSchemaTest extends TestCase
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
      */
     public function testPathExistsButMethodDont()
     {
@@ -377,9 +396,12 @@ class SwaggerSchemaTest extends TestCase
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
      */
     public function testGetPathStructure()
     {

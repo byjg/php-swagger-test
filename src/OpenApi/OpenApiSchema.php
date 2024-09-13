@@ -6,6 +6,7 @@ use ByJG\ApiTools\Base\Body;
 use ByJG\ApiTools\Base\Schema;
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
+use ByJG\ApiTools\Exception\InvalidRequestException;
 use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\Util\Uri;
 
@@ -107,6 +108,7 @@ class OpenApiSchema extends Schema
 
     /**
      * @inheritDoc
+     * @throws InvalidRequestException
      */
     public function getRequestParameters(string $path, string $method): Body
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Test;
+namespace Tests;
 
 use ByJG\ApiTools\ApiTestCase;
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
@@ -22,6 +22,19 @@ use ByJG\Util\Psr7\MemoryStream;
 
 abstract class AbstractRequesterTest extends ApiTestCase
 {
+    /**
+     * @throws GenericSwaggerException
+     * @throws DefinitionNotFoundException
+     * @throws NotMatchedException
+     * @throws RequiredArgumentNotFound
+     * @throws HttpMethodNotFoundException
+     * @throws PathNotFoundException
+     * @throws StatusCodeNotMatchedException
+     * @throws RequestException
+     * @throws InvalidRequestException
+     * @throws MessageException
+     * @throws InvalidDefinitionException
+     */
     public function testExpectOK()
     {
         $expectedResponse = Response::getInstance(200)

@@ -1,19 +1,27 @@
 <?php
 
-namespace Test;
+namespace Tests;
 
+use ByJG\ApiTools\Exception\DefinitionNotFoundException;
+use ByJG\ApiTools\Exception\GenericSwaggerException;
+use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
+use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\InvalidRequestException;
+use ByJG\ApiTools\Exception\NotMatchedException;
+use ByJG\ApiTools\Exception\PathNotFoundException;
+use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
 
 class SwaggerResponseBodyTest extends SwaggerBodyTestCase
 {
     /**
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\InvalidRequestException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      */
     public function testMatchResponseBody()
     {
@@ -56,13 +64,14 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
 
     /**
      *
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\InvalidRequestException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      */
     public function testMatchResponseBodyEnumError()
     {
@@ -83,13 +92,14 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
 
     /**
      *
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\InvalidRequestException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      */
     public function testMatchResponseBodyWrongNumber()
     {
@@ -110,13 +120,14 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
 
     /**
      *
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\InvalidRequestException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      */
     public function testMatchResponseBodyMoreThanExpected()
     {
@@ -137,13 +148,14 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\InvalidRequestException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      */
     public function testMatchResponseBodyLessFields()
     {
@@ -157,13 +169,14 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\InvalidRequestException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      */
     public function testMatchResponseBodyAllowNullValues()
     {
@@ -183,13 +196,14 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
 
     /**
      *
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\InvalidRequestException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      */
     public function testMatchResponseBodyNotAllowNullValues()
     {
@@ -206,13 +220,14 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\InvalidRequestException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      */
     public function testMatchResponseBodyEmpty()
     {
@@ -223,13 +238,14 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
 
     /**
      *
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\InvalidRequestException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      */
     public function testMatchResponseBodyNotEmpty()
     {
@@ -242,13 +258,14 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\InvalidRequestException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      */
     public function testMatchResponseBodyComplex()
     {
@@ -279,13 +296,14 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\InvalidRequestException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      */
     public function testMatchResponseBodyWhenValueWithNestedPropertiesIsNullAndNullsAreAllowed()
     {
@@ -314,12 +332,14 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      */
     public function testNotMatchResponseBodyWhenValueWithPatterns()
     {
@@ -344,12 +364,14 @@ EOL
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      */
     public function testMatchResponseBodyWhenValueWithPatterns()
     {
@@ -363,12 +385,14 @@ EOL
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      */
     public function testMatchResponseBodyWhenValueWithStringPatternError()
     {
@@ -394,12 +418,14 @@ EOL
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      */
     public function testMatchResponseBodyWhenValueWithNumberPatternError()
     {
@@ -427,13 +453,14 @@ EOL
     /**
      * Issue #9
      *
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\InvalidRequestException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      */
     public function testIssue9()
     {
@@ -459,13 +486,14 @@ EOL
     /**
      * Issue #9
      *
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\InvalidRequestException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      */
     public function testIssue9Error()
     {
@@ -492,13 +520,14 @@ EOL
     /**
      * Issue #9
      *
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\InvalidRequestException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws InvalidRequestException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      */
     public function testMatchAnyValue()
     {
@@ -515,6 +544,16 @@ EOL
         $this->assertTrue($responseParameter->match($body));
     }
 
+    /**
+     * @throws GenericSwaggerException
+     * @throws DefinitionNotFoundException
+     * @throws PathNotFoundException
+     * @throws NotMatchedException
+     * @throws InvalidRequestException
+     * @throws RequiredArgumentNotFound
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     */
     public function testResponseDefault()
     {
         $body = [];
@@ -522,6 +561,13 @@ EOL
         $this->assertTrue($responseParameter->match($body));
     }
 
+    /**
+     * @throws DefinitionNotFoundException
+     * @throws PathNotFoundException
+     * @throws NotMatchedException
+     * @throws InvalidRequestException
+     * @throws HttpMethodNotFoundException
+     */
     public function testResponseWithNoDefault()
     {
         $this->expectException(\ByJG\ApiTools\Exception\InvalidDefinitionException::class);

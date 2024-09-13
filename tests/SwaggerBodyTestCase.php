@@ -1,6 +1,6 @@
 <?php
 
-namespace Test;
+namespace Tests;
 
 use ByJG\ApiTools\Swagger\SwaggerSchema;
 use PHPUnit\Framework\TestCase;
@@ -18,7 +18,7 @@ class SwaggerBodyTestCase extends TestCase
      * @param bool $allowNullValues
      * @return SwaggerSchema
      */
-    protected static function swaggerSchema($allowNullValues = false)
+    protected static function swaggerSchema(bool $allowNullValues = false): SwaggerSchema
     {
         return \ByJG\ApiTools\Base\Schema::getInstance(
             self::getSwaggerJsonContent(),
@@ -30,7 +30,7 @@ class SwaggerBodyTestCase extends TestCase
      * @param bool $allowNullValues
      * @return SwaggerSchema
      */
-    protected static function swaggerSchema2($allowNullValues = false)
+    protected static function swaggerSchema2(bool $allowNullValues = false): SwaggerSchema
     {
         return \ByJG\ApiTools\Base\Schema::getInstance(
             self::getSwaggerJsonContent_No2(),
@@ -41,7 +41,7 @@ class SwaggerBodyTestCase extends TestCase
     /**
      * @return string
      */
-    protected static function getSwaggerJsonContent()
+    protected static function getSwaggerJsonContent(): string
     {
         return file_get_contents(__DIR__ . '/example/swagger.json');
     }
@@ -49,7 +49,7 @@ class SwaggerBodyTestCase extends TestCase
     /**
      * @return string
      */
-    protected static function getSwaggerJsonContent_No2()
+    protected static function getSwaggerJsonContent_No2(): string
     {
         return file_get_contents(__DIR__ . '/example/swagger2.json');
     }

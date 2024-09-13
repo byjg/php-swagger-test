@@ -1,6 +1,13 @@
 <?php
 
-namespace Test;
+namespace Tests;
+
+use ByJG\ApiTools\Exception\DefinitionNotFoundException;
+use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
+use ByJG\ApiTools\Exception\InvalidDefinitionException;
+use ByJG\ApiTools\Exception\InvalidRequestException;
+use ByJG\ApiTools\Exception\NotMatchedException;
+use ByJG\ApiTools\Exception\PathNotFoundException;
 
 class OpenApiRequestBodyTest extends OpenApiBodyTestCase
 {
@@ -80,11 +87,12 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
 
     /**
      *
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
      */
     public function testMatchDataType()
     {
@@ -96,12 +104,29 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
     }
 
     // @todo Validate parameters in query
+
+    /**
+     * @throws DefinitionNotFoundException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     */
     public function testMatchParameterInQuery()
     {
         self::openApiSchema()->getRequestParameters('/v2/pet/findByStatus?status=pending', 'get');
         $this->assertTrue(true);
     }
 
+    /**
+     * @throws DefinitionNotFoundException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     */
     public function testMatchParameterInQuery2()
     {
         self::openApiSchema3()->getRequestParameters('/tests/12345?count=20&offset=2', 'get');
@@ -110,11 +135,12 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
 
     /**
      *
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws InvalidRequestException
      */
     public function testMatchParameterInQuery3()
     {

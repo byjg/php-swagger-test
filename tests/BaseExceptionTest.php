@@ -1,6 +1,6 @@
 <?php
 
-namespace Test;
+namespace Tests;
 
 use ByJG\ApiTools\Exception\GenericSwaggerException;
 use PHPUnit\Framework\TestCase;

@@ -1,10 +1,21 @@
 <?php
 
-namespace Test;
+namespace Tests;
 
 use ByJG\ApiTools\ApiRequester;
 use ByJG\ApiTools\ApiTestCase;
+use ByJG\ApiTools\Exception\DefinitionNotFoundException;
+use ByJG\ApiTools\Exception\GenericSwaggerException;
+use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
+use ByJG\ApiTools\Exception\InvalidDefinitionException;
+use ByJG\ApiTools\Exception\InvalidRequestException;
+use ByJG\ApiTools\Exception\NotMatchedException;
+use ByJG\ApiTools\Exception\PathNotFoundException;
+use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
+use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
 use ByJG\ApiTools\MockRequester;
+use ByJG\Util\Exception\MessageException;
+use ByJG\Util\Exception\RequestException;
 use ByJG\Util\Helper\RequestMultiPart;
 use ByJG\Util\MultiPartItem;
 use ByJG\Util\Psr7\Request;
@@ -24,6 +35,17 @@ use ByJG\Util\Psr7\MemoryStream;
 abstract class TestingTestCase extends ApiTestCase
 {
 
+    /**
+     * @throws GenericSwaggerException
+     * @throws DefinitionNotFoundException
+     * @throws PathNotFoundException
+     * @throws StatusCodeNotMatchedException
+     * @throws NotMatchedException
+     * @throws InvalidRequestException
+     * @throws RequiredArgumentNotFound
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     */
     public function testGet()
     {
         $request = new ApiRequester();
@@ -34,6 +56,19 @@ abstract class TestingTestCase extends ApiTestCase
         $this->assertRequest($request);
     }
 
+    /**
+     * @throws GenericSwaggerException
+     * @throws DefinitionNotFoundException
+     * @throws NotMatchedException
+     * @throws RequiredArgumentNotFound
+     * @throws HttpMethodNotFoundException
+     * @throws PathNotFoundException
+     * @throws StatusCodeNotMatchedException
+     * @throws RequestException
+     * @throws InvalidRequestException
+     * @throws MessageException
+     * @throws InvalidDefinitionException
+     */
     public function testPost()
     {
         $body = [
@@ -68,12 +103,15 @@ abstract class TestingTestCase extends ApiTestCase
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
-     * @throws \ByJG\ApiTools\Exception\StatusCodeNotMatchedException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
+     * @throws StatusCodeNotMatchedException
      */
     public function testAddError()
     {
@@ -96,12 +134,15 @@ abstract class TestingTestCase extends ApiTestCase
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
-     * @throws \ByJG\ApiTools\Exception\StatusCodeNotMatchedException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
+     * @throws StatusCodeNotMatchedException
      */
     public function testPostError()
     {
@@ -124,6 +165,19 @@ abstract class TestingTestCase extends ApiTestCase
         $this->assertRequest($request);
     }
 
+    /**
+     * @throws GenericSwaggerException
+     * @throws PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws StatusCodeNotMatchedException
+     * @throws RequestException
+     * @throws NotMatchedException
+     * @throws RequiredArgumentNotFound
+     * @throws InvalidRequestException
+     * @throws MessageException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     */
     public function testMultipart()
     {
         $multipart = [
