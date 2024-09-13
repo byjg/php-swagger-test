@@ -399,6 +399,11 @@ abstract class Body
             return true;
         }
 
+        // Match any object
+        if (count($schemaArray) === 1 && isset($schemaArray['type']) && $schemaArray['type'] === 'object') {
+            return true;
+        }
+
         throw new GenericSwaggerException("Not all cases are defined. Please open an issue about this. Schema: $name");
     }
 
