@@ -11,8 +11,8 @@ class MyTest extends ApiTestCase
 {
     public function testExpectOK()
     {
-        $expectedResponse = \ByJG\Util\Psr7\Response::getInstance(200)
-            ->withBody(new \ByJG\Util\Psr7\MemoryStream(json_encode([
+        $expectedResponse = \ByJG\WebRequest\Psr7\Response::getInstance(200)
+            ->withBody(new \ByJG\WebRequest\Psr7\MemoryStream(json_encode([
                 "id" => 1,
                 "name" => "Spike",
                 "photoUrls" => []
@@ -39,7 +39,7 @@ e.g.
 ```php
 <?php
 
-$psr7Request = \ByJG\Util\Psr7\Request::getInstance(new Uri("/method_to_be_tested?param1=value1"))
+$psr7Request = \ByJG\WebRequest\Psr7\Request::getInstance(new Uri("/method_to_be_tested?param1=value1"))
     ->withMethod("GET")
     ->withBody('{"foo":"bar"}');
 

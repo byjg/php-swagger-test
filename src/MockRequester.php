@@ -3,10 +3,10 @@
 
 namespace ByJG\ApiTools;
 
-use ByJG\Util\Exception\MessageException;
-use ByJG\Util\Exception\RequestException;
-use ByJG\Util\MockClient;
-use ByJG\Util\Psr7\Response;
+use ByJG\WebRequest\Exception\MessageException;
+use ByJG\WebRequest\Exception\RequestException;
+use ByJG\WebRequest\MockClient;
+use ByJG\WebRequest\Psr7\Response;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
