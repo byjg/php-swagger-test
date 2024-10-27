@@ -3,7 +3,6 @@
 namespace ByJG\ApiTools\Base;
 
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
-use ByJG\ApiTools\Exception\GenericSwaggerException;
 use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\InvalidRequestException;
@@ -16,9 +15,9 @@ use InvalidArgumentException;
 
 abstract class Schema
 {
-    protected $jsonFile;
-    protected $allowNullValues = false;
-    protected $specificationVersion;
+    protected array $jsonFile;
+    protected bool $allowNullValues = false;
+    protected string $specificationVersion;
 
     const SWAGGER_PATHS = "paths";
     const SWAGGER_PARAMETERS = "parameters";
@@ -28,7 +27,7 @@ abstract class Schema
      * Returns the major specification version
      * @return string
      */
-    public function getSpecificationVersion()
+    public function getSpecificationVersion(): string
     {
         return $this->specificationVersion;
     }
@@ -43,15 +42,11 @@ abstract class Schema
      * @param bool $extraArgs
      * @return Schema
      */
-    public static function getInstance($data, $extraArgs = false)
+    public static function getInstance(array|string $data, bool $extraArgs = false): Schema
     {
         // when given a string, decode from JSON
         if (is_string($data)) {
             $data = json_decode($data, true);
-        }
-        // make sure we got an array
-        if (!is_array($data)) {
-            throw new InvalidArgumentException('schema must be given as array or JSON string');
         }
         // check which type of file we got and dispatch to derived class constructor
         if (isset($data['swagger'])) {
@@ -71,10 +66,11 @@ abstract class Schema
      * @throws DefinitionNotFoundException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
      * @throws NotMatchedException
      * @throws PathNotFoundException
      */
-    public function getPathDefinition($path, $method)
+    public function getPathDefinition(string $path, string $method): mixed
     {
         $method = strtolower($method);
 
@@ -92,7 +88,7 @@ abstract class Schema
 
         // Try inline parameter
         foreach (array_keys($this->jsonFile[self::SWAGGER_PATHS]) as $pathItem) {
-            if (strpos($pathItem, '{') === false) {
+            if (!str_contains($pathItem, '{')) {
                 continue;
             }
 
@@ -131,16 +127,16 @@ abstract class Schema
     /**
      * @param string $path
      * @param string $method
-     * @param string $status
+     * @param int $status
      * @return Body
      * @throws DefinitionNotFoundException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
      * @throws NotMatchedException
      * @throws PathNotFoundException
-     * @throws GenericSwaggerException
      */
-    public function getResponseParameters($path, $method, $status)
+    public function getResponseParameters(string $path, string $method, int $status): Body
     {
         $structure = $this->getPathDefinition($path, $method);
 
@@ -156,7 +152,7 @@ abstract class Schema
             }
         }
 
-        return Body::getInstance($this, "$method $status $path", $structure['responses'][$verifyStatus]);
+        return $this->getResponseBody($this, "$method $status $path", $structure['responses'][$verifyStatus]);
     }
 
     /**
@@ -165,24 +161,27 @@ abstract class Schema
      *
      * @return bool
      */
-    public function isAllowNullValues()
+    public function isAllowNullValues(): bool
     {
         return $this->allowNullValues;
     }
 
-    abstract public function getServerUrl();
+    /**
+     * @return string
+     */
+    abstract public function getServerUrl(): string;
 
     /**
-     * @param $parameterIn
-     * @param $parameters
-     * @param $arguments
+     * @param string $parameterIn
+     * @param array $parameters
+     * @param array $arguments
      * @throws DefinitionNotFoundException
      * @throws InvalidDefinitionException
      * @throws NotMatchedException
      */
-    abstract protected function validateArguments($parameterIn, $parameters, $arguments);
+    abstract protected function validateArguments(string $parameterIn, array $parameters, array $arguments): void;
 
-    abstract public function getBasePath();
+    abstract public function getBasePath(): string;
 
     /**
      * @param $name
@@ -190,14 +189,28 @@ abstract class Schema
      * @throws DefinitionNotFoundException
      * @throws InvalidDefinitionException
      */
-    abstract public function getDefinition($name);
+    abstract public function getDefinition($name): mixed;
 
     /**
-     * @param $path
-     * @param $method
+     * @param string $path
+     * @param string $method
      * @return Body
      * @throws HttpMethodNotFoundException
      * @throws PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
      */
-    abstract public function getRequestParameters($path, $method);
+    abstract public function getRequestParameters(string $path, string $method): Body;
+
+    /**
+     * @param Schema $schema
+     * @param string $name
+     * @param array $structure
+     * @param bool $allowNullValues
+     * @return Body
+     */
+    abstract public function getResponseBody(Schema $schema, string $name, array $structure, bool $allowNullValues = false): Body;
 }

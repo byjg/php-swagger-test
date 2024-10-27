@@ -7,24 +7,26 @@ use ByJG\ApiTools\Exception\DefinitionNotFoundException;
 use ByJG\ApiTools\Exception\GenericSwaggerException;
 use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
+use ByJG\ApiTools\Exception\InvalidRequestException;
 use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\ApiTools\Exception\PathNotFoundException;
+use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
 use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
-use ByJG\Util\Psr7\MessageException;
-use ByJG\Util\Psr7\Response;
+use ByJG\WebRequest\Psr7\Response;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
 
 abstract class ApiTestCase extends TestCase
 {
     /**
-     * @var Schema
+     * @var Schema|null
      */
-    protected $schema;
+    protected ?Schema $schema = null;
 
     /**
-     * @var AbstractRequester
+     * @var AbstractRequester|null
      */
-    protected $requester = null;
+    protected ?AbstractRequester $requester = null;
 
     /**
      * configure the schema to use for requests
@@ -33,20 +35,20 @@ abstract class ApiTestCase extends TestCase
      *
      * @param Schema|null $schema
      */
-    public function setSchema($schema)
+    public function setSchema(?Schema $schema): void
     {
         $this->schema = $schema;
     }
 
-    public function setRequester(AbstractRequester $requester)
+    public function setRequester(AbstractRequester $requester): void
     {
         $this->requester = $requester;
     }
 
     /**
-     * @return AbstractRequester
+     * @return AbstractRequester|null
      */
-    protected function getRequester()
+    protected function getRequester(): AbstractRequester|null
     {
         if (is_null($this->requester)) {
             $this->requester = new ApiRequester();
@@ -58,28 +60,29 @@ abstract class ApiTestCase extends TestCase
      * @param string $method The HTTP Method: GET, PUT, DELETE, POST, etc
      * @param string $path The REST path call
      * @param int $statusExpected
-     * @param array|null $query
-     * @param array|null $requestBody
+     * @param string|array|null $query
+     * @param array|string|null $requestBody
      * @param array $requestHeader
      * @return mixed
      * @throws DefinitionNotFoundException
      * @throws GenericSwaggerException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
      * @throws NotMatchedException
      * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      * @throws StatusCodeNotMatchedException
-     * @throws MessageException
      * @deprecated Use assertRequest instead
      */
     protected function makeRequest(
-        $method,
-        $path,
-        $statusExpected = 200,
-        $query = null,
-        $requestBody = null,
-        $requestHeader = []
-    ) {
+        string $method,
+        string $path,
+        int $statusExpected = 200,
+        string|array|null $query = null,
+        array|string $requestBody = null,
+        array $requestHeader = []
+    ): ResponseInterface {
         $this->checkSchema();
         $body = $this->requester
             ->withSchema($this->schema)
@@ -92,8 +95,8 @@ abstract class ApiTestCase extends TestCase
             ->send();
 
         // Note:
-        // This code is only reached if the send is successful and
-        // all matches are satisfied. Otherwise an error is throwed before
+        // This code is only reached if to send is successful and
+        // all matches are satisfied. Otherwise, an error is throwed before
         // reach this
         $this->assertTrue(true);
 
@@ -107,12 +110,13 @@ abstract class ApiTestCase extends TestCase
      * @throws GenericSwaggerException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
      * @throws NotMatchedException
      * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      * @throws StatusCodeNotMatchedException
-     * @throws MessageException
      */
-    public function assertRequest(AbstractRequester $request)
+    public function assertRequest(AbstractRequester $request): ResponseInterface
     {
         // Add own schema if nothing is passed.
         if (!$request->hasSchema()) {
@@ -124,8 +128,8 @@ abstract class ApiTestCase extends TestCase
         $body = $request->send();
 
         // Note:
-        // This code is only reached if the send is successful and
-        // all matches are satisfied. Otherwise an error is throwed before
+        // This code is only reached if to send is successful and
+        // all matches are satisfied. Otherwise, an error is throwed before
         // reach this
         $this->assertTrue(true);
 
@@ -135,7 +139,7 @@ abstract class ApiTestCase extends TestCase
     /**
      * @throws GenericSwaggerException
      */
-    protected function checkSchema()
+    protected function checkSchema(): void
     {
         if (!$this->schema) {
             throw new GenericSwaggerException('You have to configure a schema for either the request or the testcase');

@@ -2,39 +2,34 @@
 
 namespace ByJG\ApiTools\OpenApi;
 
+use ByJG\ApiTools\Base\Body;
 use ByJG\ApiTools\Base\Schema;
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
-use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
+use ByJG\ApiTools\Exception\InvalidRequestException;
 use ByJG\ApiTools\Exception\NotMatchedException;
-use ByJG\ApiTools\Exception\PathNotFoundException;
 use ByJG\Util\Uri;
-use InvalidArgumentException;
 
 class OpenApiSchema extends Schema
 {
 
-    protected $serverVariables = [];
+    protected array $serverVariables = [];
 
     /**
      * Initialize with schema data, which can be a PHP array or encoded as JSON.
      *
      * @param array|string $data
      */
-    public function __construct($data)
+    public function __construct(array|string $data)
     {
         // when given a string, decode from JSON
         if (is_string($data)) {
             $data = json_decode($data, true);
         }
-        // make sure we got an array
-        if (!is_array($data)) {
-            throw new InvalidArgumentException('schema must be given as array or JSON string');
-        }
         $this->jsonFile = $data;
     }
 
-    public function getServerUrl()
+    public function getServerUrl(): string
     {
         if (!isset($this->jsonFile['servers'])) {
             return '';
@@ -50,27 +45,22 @@ class OpenApiSchema extends Schema
         }
 
         foreach ($this->serverVariables as $var => $value) {
-            $serverUrl = preg_replace("/\{$var\}/", $value, $serverUrl);
+            $serverUrl = (string)preg_replace("/\{$var}/", $value, $serverUrl);
         }
 
         return $serverUrl;
     }
 
-    public function getBasePath()
+    public function getBasePath(): string
     {
         $uriServer = new Uri($this->getServerUrl());
         return $uriServer->getPath();
     }
 
     /**
-     * @param $parameterIn
-     * @param $parameters
-     * @param $arguments
-     * @throws DefinitionNotFoundException
-     * @throws InvalidDefinitionException
-     * @throws NotMatchedException
+     * @inheritDoc
      */
-    protected function validateArguments($parameterIn, $parameters, $arguments)
+    protected function validateArguments(string $parameterIn, array $parameters, array $arguments): void
     {
         foreach ($parameters as $parameter) {
             if (isset($parameter['$ref'])) {
@@ -82,7 +72,7 @@ class OpenApiSchema extends Schema
                 }
                 if (!isset($this->jsonFile[self::SWAGGER_COMPONENTS][self::SWAGGER_PARAMETERS][$paramParts[3]])) {
                     throw new DefinitionNotFoundException(
-                        "Not find reference #/components/parameters/{$paramParts[3]}"
+                        "Not find reference #/components/parameters/$paramParts[3]"
                     );
                 }
                 $parameter = $this->jsonFile[self::SWAGGER_COMPONENTS][self::SWAGGER_PARAMETERS][$paramParts[3]];
@@ -101,7 +91,7 @@ class OpenApiSchema extends Schema
      * @throws DefinitionNotFoundException
      * @throws InvalidDefinitionException
      */
-    public function getDefinition($name)
+    public function getDefinition($name): mixed
     {
         $nameParts = explode('/', $name);
 
@@ -117,16 +107,10 @@ class OpenApiSchema extends Schema
     }
 
     /**
-     * @param $path
-     * @param $method
-     * @return OpenApiRequestBody
-     * @throws DefinitionNotFoundException
-     * @throws HttpMethodNotFoundException
-     * @throws InvalidDefinitionException
-     * @throws NotMatchedException
-     * @throws PathNotFoundException
+     * @inheritDoc
+     * @throws InvalidRequestException
      */
-    public function getRequestParameters($path, $method)
+    public function getRequestParameters(string $path, string $method): Body
     {
         $structure = $this->getPathDefinition($path, $method);
 
@@ -136,8 +120,16 @@ class OpenApiSchema extends Schema
         return new OpenApiRequestBody($this, "$method $path", $structure['requestBody']);
     }
 
-    public function setServerVariable($var, $value)
+    public function setServerVariable(string $var, string $value): void
     {
         $this->serverVariables[$var] = $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getResponseBody(Schema $schema, string $name, array $structure, bool $allowNullValues = false): Body
+    {
+        return new OpenApiResponseBody($schema, $name, $structure, $allowNullValues);
     }
 }

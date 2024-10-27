@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Test;
+namespace Tests;
 
 use ByJG\ApiTools\Base\Schema;
 

@@ -2,13 +2,12 @@
 
 namespace ByJG\ApiTools\Swagger;
 
+use ByJG\ApiTools\Base\Body;
 use ByJG\ApiTools\Base\Schema;
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
-use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
+use ByJG\ApiTools\Exception\InvalidRequestException;
 use ByJG\ApiTools\Exception\NotMatchedException;
-use ByJG\ApiTools\Exception\PathNotFoundException;
-use InvalidArgumentException;
 
 class SwaggerSchema extends Schema
 {
@@ -18,18 +17,14 @@ class SwaggerSchema extends Schema
      * @param array|string $data
      * @param bool $allowNullValues
      */
-    public function __construct($data, $allowNullValues = false)
+    public function __construct(array|string $data, bool $allowNullValues = false)
     {
         // when given a string, decode from JSON
         if (is_string($data)) {
             $data = json_decode($data, true);
         }
-        // make sure we got an array
-        if (!is_array($data)) {
-            throw new InvalidArgumentException('schema must be given as array or JSON string');
-        }
         $this->jsonFile = $data;
-        $this->allowNullValues = (bool) $allowNullValues;
+        $this->allowNullValues = $allowNullValues;
     }
 
     public function getHttpSchema()
@@ -39,15 +34,15 @@ class SwaggerSchema extends Schema
 
     public function getHost()
     {
-        return isset($this->jsonFile['host']) ? $this->jsonFile['host'] : '';
+        return $this->jsonFile['host'] ?? '';
     }
 
-    public function getBasePath()
+    public function getBasePath(): string
     {
-        return isset($this->jsonFile['basePath']) ? $this->jsonFile['basePath'] : '';
+        return $this->jsonFile['basePath'] ?? '';
     }
 
-    public function getServerUrl()
+    public function getServerUrl(): string
     {
         $httpSchema = $this->getHttpSchema();
         if (!empty($httpSchema)) {
@@ -59,12 +54,9 @@ class SwaggerSchema extends Schema
     }
 
     /**
-     * @param $parameterIn
-     * @param $parameters
-     * @param $arguments
-     * @throws NotMatchedException
+     * @inheritDoc
      */
-    protected function validateArguments($parameterIn, $parameters, $arguments)
+    protected function validateArguments(string $parameterIn, array $parameters, array $arguments): void
     {
         foreach ($parameters as $parameter) {
             if ($parameter['in'] === $parameterIn
@@ -81,7 +73,7 @@ class SwaggerSchema extends Schema
      * @throws DefinitionNotFoundException
      * @throws InvalidDefinitionException
      */
-    public function getDefinition($name)
+    public function getDefinition($name): mixed
     {
         $nameParts = explode('/', $name);
 
@@ -97,16 +89,10 @@ class SwaggerSchema extends Schema
     }
 
     /**
-     * @param $path
-     * @param $method
-     * @return SwaggerRequestBody
-     * @throws DefinitionNotFoundException
-     * @throws HttpMethodNotFoundException
-     * @throws InvalidDefinitionException
-     * @throws NotMatchedException
-     * @throws PathNotFoundException
+     * @inheritDoc
+     * @throws InvalidRequestException
      */
-    public function getRequestParameters($path, $method)
+    public function getRequestParameters(string $path, string $method): Body
     {
         $structure = $this->getPathDefinition($path, $method);
 
@@ -120,10 +106,18 @@ class SwaggerSchema extends Schema
      * OpenApi 2.0 doesn't describe null values, so this flag defines,
      * if match is ok when one of property
      *
-     * @param $value
+     * @param string|bool $value
      */
-    public function setAllowNullValues($value)
+    public function setAllowNullValues(string|bool $value): void
     {
         $this->allowNullValues = (bool) $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getResponseBody(Schema $schema, string $name, array $structure, bool $allowNullValues = false): Body
+    {
+        return new SwaggerResponseBody($schema, $name, $structure, $allowNullValues);
     }
 }

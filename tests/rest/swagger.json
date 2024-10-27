@@ -4,13 +4,13 @@
     "description": "This is a minimal server to test the Swagger/OpenAPI.",
     "version": "1.0.0",
     "title": "Swagger Petstore",
-    "termsOfService": "http://swagger.io/terms/",
+    "termsOfService": "https://swagger.io/terms/",
     "contact": {
       "email": "apiteam@swagger.io"
     },
     "license": {
       "name": "Apache 2.0",
-      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     }
   },
   "host": "127.0.0.1:8080",
@@ -27,7 +27,7 @@
         ],
         "summary": "Add a new pet to the store",
         "description": "",
-        "operationId": "RestTest\\Handler::addPet",
+        "operationId": "Tests\\Classes\\Handler::addPet",
         "consumes": [
           "application/json",
           "application/xml"
@@ -61,7 +61,7 @@
         ],
         "summary": "Find pet by ID",
         "description": "Returns a single pet",
-        "operationId": "RestTest\\Handler::getPetById",
+        "operationId": "Tests\\Classes\\Handler::getPetById",
         "produces": [
           "application/json",
           "application/xml"
@@ -96,7 +96,7 @@
       "post" : {
         "tags" : [ "admins" ],
         "summary" : "adds an inventory item",
-        "operationId": "RestTest\\Handler::processUpload",
+        "operationId": "Tests\\Classes\\Handler::processUpload",
         "description" : "Adds an item to the system",
         "consumes" : [ "multipart/form-data" ],
         "produces" : [ "application/json" ],

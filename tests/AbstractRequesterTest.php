@@ -1,16 +1,40 @@
 <?php
 
-namespace Test;
+namespace Tests;
 
 use ByJG\ApiTools\ApiTestCase;
+use ByJG\ApiTools\Exception\DefinitionNotFoundException;
+use ByJG\ApiTools\Exception\GenericSwaggerException;
+use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
+use ByJG\ApiTools\Exception\InvalidDefinitionException;
+use ByJG\ApiTools\Exception\InvalidRequestException;
+use ByJG\ApiTools\Exception\NotMatchedException;
+use ByJG\ApiTools\Exception\PathNotFoundException;
+use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
+use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
 use ByJG\ApiTools\MockRequester;
-use ByJG\Util\Psr7\Request;
-use ByJG\Util\Psr7\Response;
+use ByJG\WebRequest\Exception\MessageException;
+use ByJG\WebRequest\Exception\RequestException;
+use ByJG\WebRequest\Psr7\Request;
+use ByJG\WebRequest\Psr7\Response;
 use ByJG\Util\Uri;
-use ByJG\Util\Psr7\MemoryStream;
+use ByJG\WebRequest\Psr7\MemoryStream;
 
 abstract class AbstractRequesterTest extends ApiTestCase
 {
+    /**
+     * @throws GenericSwaggerException
+     * @throws DefinitionNotFoundException
+     * @throws NotMatchedException
+     * @throws RequiredArgumentNotFound
+     * @throws HttpMethodNotFoundException
+     * @throws PathNotFoundException
+     * @throws StatusCodeNotMatchedException
+     * @throws RequestException
+     * @throws InvalidRequestException
+     * @throws MessageException
+     * @throws InvalidDefinitionException
+     */
     public function testExpectOK()
     {
         $expectedResponse = Response::getInstance(200)
@@ -39,14 +63,17 @@ abstract class AbstractRequesterTest extends ApiTestCase
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
-     * @throws \ByJG\ApiTools\Exception\StatusCodeNotMatchedException
-     * @throws \ByJG\Util\Psr7\MessageException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws MessageException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequestException
+     * @throws RequiredArgumentNotFound
+     * @throws StatusCodeNotMatchedException
      */
     public function testExpectError()
     {
@@ -68,14 +95,17 @@ abstract class AbstractRequesterTest extends ApiTestCase
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
-     * @throws \ByJG\ApiTools\Exception\StatusCodeNotMatchedException
-     * @throws \ByJG\Util\Psr7\MessageException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws MessageException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequestException
+     * @throws RequiredArgumentNotFound
+     * @throws StatusCodeNotMatchedException
      */
     public function testValidateAssertResponse()
     {
@@ -96,14 +126,17 @@ abstract class AbstractRequesterTest extends ApiTestCase
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
-     * @throws \ByJG\ApiTools\Exception\StatusCodeNotMatchedException
-     * @throws \ByJG\Util\Psr7\MessageException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws MessageException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequestException
+     * @throws RequiredArgumentNotFound
+     * @throws StatusCodeNotMatchedException
      */
     public function testValidateAssertResponse404()
     {
@@ -119,14 +152,17 @@ abstract class AbstractRequesterTest extends ApiTestCase
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
-     * @throws \ByJG\ApiTools\Exception\StatusCodeNotMatchedException
-     * @throws \ByJG\Util\Psr7\MessageException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws MessageException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequestException
+     * @throws RequiredArgumentNotFound
+     * @throws StatusCodeNotMatchedException
      */
     public function testValidateAssertResponse404WithContent()
     {
@@ -146,14 +182,17 @@ abstract class AbstractRequesterTest extends ApiTestCase
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
-     * @throws \ByJG\ApiTools\Exception\StatusCodeNotMatchedException
-     * @throws \ByJG\Util\Psr7\MessageException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws MessageException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequestException
+     * @throws RequiredArgumentNotFound
+     * @throws StatusCodeNotMatchedException
      */
     public function testValidateAssertResponseNotExpected()
     {
@@ -172,14 +211,17 @@ abstract class AbstractRequesterTest extends ApiTestCase
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
-     * @throws \ByJG\ApiTools\Exception\StatusCodeNotMatchedException
-     * @throws \ByJG\Util\Psr7\MessageException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws MessageException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequestException
+     * @throws RequiredArgumentNotFound
+     * @throws StatusCodeNotMatchedException
      */
     public function testValidateAssertHeaderContains()
     {
@@ -202,14 +244,17 @@ abstract class AbstractRequesterTest extends ApiTestCase
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
-     * @throws \ByJG\ApiTools\Exception\StatusCodeNotMatchedException
-     * @throws \ByJG\Util\Psr7\MessageException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws MessageException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequestException
+     * @throws RequiredArgumentNotFound
+     * @throws StatusCodeNotMatchedException
      */
     public function testValidateAssertHeaderContainsWrongValue()
     {
@@ -235,14 +280,17 @@ abstract class AbstractRequesterTest extends ApiTestCase
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
-     * @throws \ByJG\ApiTools\Exception\StatusCodeNotMatchedException
-     * @throws \ByJG\Util\Psr7\MessageException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws MessageException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequestException
+     * @throws RequiredArgumentNotFound
+     * @throws StatusCodeNotMatchedException
      */
     public function testValidateAssertHeaderContainsNonExistent()
     {
@@ -267,14 +315,17 @@ abstract class AbstractRequesterTest extends ApiTestCase
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
-     * @throws \ByJG\ApiTools\Exception\StatusCodeNotMatchedException
-     * @throws \ByJG\Util\Psr7\MessageException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws MessageException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequestException
+     * @throws RequiredArgumentNotFound
+     * @throws StatusCodeNotMatchedException
      */
     public function testValidateAssertBodyContains()
     {
@@ -296,14 +347,17 @@ abstract class AbstractRequesterTest extends ApiTestCase
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
-     * @throws \ByJG\ApiTools\Exception\StatusCodeNotMatchedException
-     * @throws \ByJG\Util\Psr7\MessageException
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
+     * @throws StatusCodeNotMatchedException
+     * @throws MessageException
+     * @throws RequestException
      */
     public function testValidateAssertBodyNotContains()
     {

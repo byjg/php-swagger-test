@@ -3,26 +3,15 @@
 namespace ByJG\ApiTools\OpenApi;
 
 use ByJG\ApiTools\Base\Body;
-use ByJG\ApiTools\Exception\DefinitionNotFoundException;
-use ByJG\ApiTools\Exception\GenericSwaggerException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
-use ByJG\ApiTools\Exception\InvalidRequestException;
-use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
 
 class OpenApiRequestBody extends Body
 {
     /**
-     * @param string $body
-     * @return bool
-     * @throws GenericSwaggerException
-     * @throws InvalidDefinitionException
-     * @throws InvalidRequestException
-     * @throws NotMatchedException
-     * @throws RequiredArgumentNotFound
-     * @throws DefinitionNotFoundException
+     * @inheritDoc
      */
-    public function match($body)
+    public function match(mixed $body): bool
     {
         if (isset($this->structure['content']) || isset($this->structure['$ref'])) {
             if (isset($this->structure['required']) && $this->structure['required'] === true && empty($body)) {
@@ -30,10 +19,10 @@ class OpenApiRequestBody extends Body
             }
 
             if (isset($this->structure['$ref'])) {
-                return $this->matchSchema($this->name, $this->structure, $body);
+                return $this->matchSchema($this->name, $this->structure, $body) ?? false;
             }
 
-            return $this->matchSchema($this->name, $this->structure['content'][key($this->structure['content'])]['schema'], $body);
+            return $this->matchSchema($this->name, $this->structure['content'][key($this->structure['content'])]['schema'], $body) ?? false;
         }
 
         if (!empty($body)) {

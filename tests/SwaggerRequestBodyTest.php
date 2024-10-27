@@ -1,6 +1,13 @@
 <?php
 
-namespace Test;
+namespace Tests;
+
+use ByJG\ApiTools\Exception\DefinitionNotFoundException;
+use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
+use ByJG\ApiTools\Exception\InvalidDefinitionException;
+use ByJG\ApiTools\Exception\InvalidRequestException;
+use ByJG\ApiTools\Exception\NotMatchedException;
+use ByJG\ApiTools\Exception\PathNotFoundException;
 
 class SwaggerRequestBodyTest extends SwaggerBodyTestCase
 {
@@ -77,9 +84,12 @@ class SwaggerRequestBodyTest extends SwaggerBodyTestCase
 
     /**
      *
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
+     * @throws DefinitionNotFoundException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws InvalidRequestException
      */
     public function testMatchDataType()
     {

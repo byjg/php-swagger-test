@@ -1,6 +1,6 @@
 <?php
 
-namespace RestTest;
+namespace Tests\Classes;
 
 class Tag
 {

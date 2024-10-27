@@ -1,15 +1,9 @@
 <?php
-namespace RestTest;
 
 use ByJG\RestServer\HttpRequestHandler;
 use ByJG\RestServer\Route\OpenApiRouteList;
-use Exception;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
-require_once __DIR__ . '/classes/Handler.php';
-require_once __DIR__ . '/classes/Pet.php';
-require_once __DIR__ . '/classes/Category.php';
-require_once __DIR__ . '/classes/Tag.php';
 
 $specification = __DIR__ . '/' . getenv('SPEC') .  '.json';
 

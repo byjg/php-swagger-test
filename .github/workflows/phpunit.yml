@@ -16,10 +16,9 @@ jobs:
     strategy:
       matrix:
         php-version:
+          - "8.3"
           - "8.2"
           - "8.1"
-          - "8.0"
-          - "7.4"
 
     steps:
       - uses: actions/checkout@v4
@@ -29,6 +28,7 @@ jobs:
           SPEC=swagger php -S 127.0.0.1:8080 tests/rest/app.php &
           SPEC=openapi php -S 127.0.0.1:8081 tests/rest/app.php &
       - run: ./vendor/bin/phpunit
+      - run: ./vendor/bin/psalm
 
   Documentation:
     if: github.ref == 'refs/heads/master'
