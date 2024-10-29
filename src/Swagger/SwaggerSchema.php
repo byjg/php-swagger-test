@@ -3,11 +3,11 @@
 namespace ByJG\ApiTools\Swagger;
 
 use ByJG\ApiTools\Base\Body;
+use ByJG\ApiTools\Base\Parameter;
 use ByJG\ApiTools\Base\Schema;
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\InvalidRequestException;
-use ByJG\ApiTools\Exception\NotMatchedException;
 
 class SwaggerSchema extends Schema
 {
@@ -59,10 +59,9 @@ class SwaggerSchema extends Schema
     protected function validateArguments(string $parameterIn, array $parameters, array $arguments): void
     {
         foreach ($parameters as $parameter) {
-            if ($parameter['in'] === $parameterIn
-                && $parameter['type'] === "integer"
-                && filter_var($arguments[$parameter['name']], FILTER_VALIDATE_INT) === false) {
-                throw new NotMatchedException('Path expected an integer value');
+            if ($parameter['in'] === $parameterIn) {
+                $parameterMatch = new Parameter($this, $parameter['name'], $parameter ?? []);
+                $parameterMatch->match($arguments[$parameter['name']] ?? null);
             }
         }
     }

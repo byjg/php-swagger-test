@@ -432,7 +432,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
                 ],
             ];
 
-        $responseParameter = $this->openApiSchema2()->getResponseParameters('/v2/languages', 'get', 200);
+        $responseParameter = $this->openApiSchema2()->getResponseParameters('/v2/languages?site=test', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 
@@ -466,7 +466,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
                 ]
             ];
 
-        $responseParameter = $this->openApiSchema2()->getResponseParameters('/v2/languages', 'get', 200);
+        $responseParameter = $this->openApiSchema2()->getResponseParameters('/v2/languages?site=test', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 
@@ -547,6 +547,6 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
         $this->expectExceptionMessage("Could not found status code '503'");
         
         $body = [];
-        $responseParameter = $this->openApiSchema()->getResponseParameters('/v2/user/login', 'get', 503);
+        $responseParameter = $this->openApiSchema()->getResponseParameters('/v2/user/login?username=foo&password=bar', 'get', 503);
     }
 }

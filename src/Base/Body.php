@@ -209,7 +209,7 @@ abstract class Body
         }
 
         $type = $schemaArray['type'];
-        $nullable = isset($schemaArray['nullable']) ? (bool)$schemaArray['nullable'] : $this->schema->isAllowNullValues();
+        $nullable = isset($schemaArray['nullable']) ? (bool)$schemaArray['nullable'] : ($this->allowNullValues || $this->schema->isAllowNullValues());
 
         $validators = [
             function () use ($name, $body, $type, $nullable)

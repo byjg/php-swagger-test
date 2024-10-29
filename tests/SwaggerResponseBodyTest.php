@@ -479,7 +479,7 @@ EOL
                 ]
             ],
         ];
-        $responseParameter = $this->swaggerSchema2()->getResponseParameters('/v2/languages', 'get', 200);
+        $responseParameter = $this->swaggerSchema2()->getResponseParameters('/v2/languages?site=test', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 
@@ -513,7 +513,7 @@ EOL
                     "isDefault" => false
                 ]
             ];
-        $responseParameter = $this->swaggerSchema2()->getResponseParameters('/v2/languages', 'get', 200);
+        $responseParameter = $this->swaggerSchema2()->getResponseParameters('/v2/languages?site=test', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 
@@ -574,6 +574,6 @@ EOL
         $this->expectExceptionMessage("Could not found status code '503'");
         
         $body = [];
-        $responseParameter = $this->swaggerSchema()->getResponseParameters('/v2/user/login', 'get', 503);
+        $responseParameter = $this->swaggerSchema()->getResponseParameters('/v2/user/login?username=foo&password=bar', 'get', 503);
     }
 }
