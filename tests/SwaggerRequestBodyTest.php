@@ -94,7 +94,7 @@ class SwaggerRequestBodyTest extends SwaggerBodyTestCase
     public function testMatchDataType()
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
-        $this->expectExceptionMessage("Path expected an integer value");
+        $this->expectExceptionMessage("Expected 'petId' to be numeric, but found 'STRING'");
         
         self::swaggerSchema()->getRequestParameters('/v2/pet/STRING', 'get');
         $this->assertTrue(true);

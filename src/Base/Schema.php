@@ -81,6 +81,10 @@ abstract class Schema
         // Try direct match
         if (isset($this->jsonFile[self::SWAGGER_PATHS][$uri->getPath()])) {
             if (isset($this->jsonFile[self::SWAGGER_PATHS][$uri->getPath()][$method])) {
+
+                parse_str($uri->getQuery(), $matches);
+                $this->prepareToValidateArguments($uri->getPath(), $method, 'query', $matches);
+
                 return $this->jsonFile[self::SWAGGER_PATHS][$uri->getPath()][$method];
             }
             throw new HttpMethodNotFoundException("The http method '$method' not found in '$path'");
@@ -104,24 +108,33 @@ abstract class Schema
                     throw new HttpMethodNotFoundException("The http method '$method' not found in '$path'");
                 }
 
-                $parametersPathMethod = [];
-                $parametersPath = [];
-
-                if (isset($pathDef[$method][self::SWAGGER_PARAMETERS])) {
-                    $parametersPathMethod = $pathDef[$method][self::SWAGGER_PARAMETERS];
-                }
-
-                if (isset($pathDef[self::SWAGGER_PARAMETERS])) {
-                    $parametersPath = $pathDef[self::SWAGGER_PARAMETERS];
-                }
-
-                $this->validateArguments('path', array_merge($parametersPathMethod, $parametersPath), $matches);
+                $this->prepareToValidateArguments($pathItem, $method, 'path', $matches);
+                parse_str($uri->getQuery(), $queryParsed);
+                $this->prepareToValidateArguments($pathItem, $method, 'query', $queryParsed);
 
                 return $pathDef[$method];
             }
         }
 
         throw new PathNotFoundException('Path "' . $path . '" not found');
+    }
+
+    protected function prepareToValidateArguments(string $path, string $method, string $parameterIn, $matches): void
+    {
+        $pathDef = $this->jsonFile[self::SWAGGER_PATHS][$path];
+
+        $parametersPathMethod = [];
+        $parametersPath = [];
+
+        if (isset($pathDef[$method][self::SWAGGER_PARAMETERS])) {
+            $parametersPathMethod = $pathDef[$method][self::SWAGGER_PARAMETERS];
+        }
+
+        if (isset($pathDef[self::SWAGGER_PARAMETERS])) {
+            $parametersPath = $pathDef[self::SWAGGER_PARAMETERS];
+        }
+
+        $this->validateArguments($parameterIn, array_merge($parametersPathMethod, $parametersPath), $matches);
     }
 
     /**

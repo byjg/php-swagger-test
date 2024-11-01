@@ -77,7 +77,7 @@ abstract class AbstractRequesterTest extends ApiTestCase
      */
     public function testExpectError()
     {
-        $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
+        $this->expectException(NotMatchedException::class);
         $this->expectExceptionMessage("Required property 'name'");
         
         $expectedResponse = Response::getInstance(200)
@@ -91,6 +91,26 @@ abstract class AbstractRequesterTest extends ApiTestCase
             ->withMethod('GET')
             ->withPath("/pet/1");
 
+        $this->assertRequest($request);
+    }
+
+    public function testExpectParamError()
+    {
+        $expectedResponse = Response::getInstance(200)
+            ->withBody(new MemoryStream(json_encode([
+                "id" => 1,
+                "name" => "Spike",
+                "photoUrls" => []
+            ])));
+
+        // Basic Request
+        $request = new MockRequester($expectedResponse);
+        $request
+            ->withMethod('GET')
+            ->withPath("/pet/ABC");
+
+        $this->expectException(NotMatchedException::class);
+        $this->expectExceptionMessage("Expected 'petId' to be numeric, but found 'ABC'.");
         $this->assertRequest($request);
     }
 
@@ -166,7 +186,7 @@ abstract class AbstractRequesterTest extends ApiTestCase
      */
     public function testValidateAssertResponse404WithContent()
     {
-        $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
+        $this->expectException(NotMatchedException::class);
         $this->expectExceptionMessage("Expected empty body for GET 404 /v2/pet/1");
         
         $expectedResponse = Response::getInstance(404)
@@ -258,7 +278,7 @@ abstract class AbstractRequesterTest extends ApiTestCase
      */
     public function testValidateAssertHeaderContainsWrongValue()
     {
-        $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
+        $this->expectException(NotMatchedException::class);
         $this->expectExceptionMessage("Does not exists header 'X-Test' with value 'Different'");
         
         $expectedResponse = Response::getInstance(200)
@@ -294,7 +314,7 @@ abstract class AbstractRequesterTest extends ApiTestCase
      */
     public function testValidateAssertHeaderContainsNonExistent()
     {
-        $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
+        $this->expectException(NotMatchedException::class);
         $this->expectExceptionMessage("Does not exists header 'X-Test' with value 'Different'");
         
         $expectedResponse = Response::getInstance(200)
@@ -361,7 +381,7 @@ abstract class AbstractRequesterTest extends ApiTestCase
      */
     public function testValidateAssertBodyNotContains()
     {
-        $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
+        $this->expectException(NotMatchedException::class);
         $this->expectExceptionMessage("Body does not contain 'Doris'");
         
         $expectedResponse = Response::getInstance(200)

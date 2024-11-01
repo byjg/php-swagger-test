@@ -3,11 +3,11 @@
 namespace ByJG\ApiTools\OpenApi;
 
 use ByJG\ApiTools\Base\Body;
+use ByJG\ApiTools\Base\Parameter;
 use ByJG\ApiTools\Base\Schema;
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\InvalidRequestException;
-use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\Util\Uri;
 
 class OpenApiSchema extends Schema
@@ -77,10 +77,9 @@ class OpenApiSchema extends Schema
                 }
                 $parameter = $this->jsonFile[self::SWAGGER_COMPONENTS][self::SWAGGER_PARAMETERS][$paramParts[3]];
             }
-            if ($parameter['in'] === $parameterIn &&
-                $parameter['schema']['type'] === "integer"
-                && filter_var($arguments[$parameter['name']], FILTER_VALIDATE_INT) === false) {
-                throw new NotMatchedException('Path expected an integer value');
+            if ($parameter['in'] === $parameterIn) {
+                $parameterMatch = new Parameter($this, $parameter['name'], $parameter["schema"] ?? [], true);
+                $parameterMatch->match($arguments[$parameter['name']] ?? null);
             }
         }
     }

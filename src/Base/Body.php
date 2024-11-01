@@ -89,7 +89,7 @@ abstract class Body
         }
 
         if (!is_string($body)) {
-            throw new NotMatchedException("Value '" . var_export($body, true) . "' in '$name' is not string. ", $this->structure);
+            throw new NotMatchedException("Value '" . str_replace("\n", "", var_export($body, true)) . "' in '$name' is not string. ", $this->structure);
         }
 
         return true;
@@ -209,7 +209,7 @@ abstract class Body
         }
 
         $type = $schemaArray['type'];
-        $nullable = isset($schemaArray['nullable']) ? (bool)$schemaArray['nullable'] : $this->schema->isAllowNullValues();
+        $nullable = isset($schemaArray['nullable']) ? (bool)$schemaArray['nullable'] : ($this->allowNullValues || $this->schema->isAllowNullValues());
 
         $validators = [
             function () use ($name, $body, $type, $nullable)
