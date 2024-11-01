@@ -89,7 +89,7 @@ abstract class Body
         }
 
         if (!is_string($body)) {
-            throw new NotMatchedException("Value '" . var_export($body, true) . "' in '$name' is not string. ", $this->structure);
+            throw new NotMatchedException("Value '" . str_replace("\n", "", var_export($body, true)) . "' in '$name' is not string. ", $this->structure);
         }
 
         return true;
