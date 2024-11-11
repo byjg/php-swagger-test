@@ -65,6 +65,23 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
         $this->assertTrue($responseParameter->match($body));
     }
 
+    public function testMatchResponseBodyWithHtmlResponse()
+    {
+        $openApiSchema = self::openApiSchema();
+
+        $body = [
+            "id" => 10,
+            "petId" => 50,
+            "quantity" => 1,
+            "shipDate" => '2010-10-20',
+            "status" => 'placed',
+            "complete" => true
+        ];
+
+        $responseParameter = $openApiSchema->getResponseParameters('/v2/store/orderhtml', 'post', 200);
+        $this->assertTrue($responseParameter->match($body));
+    }
+
     /**
      * @throws DefinitionNotFoundException
      * @throws GenericSwaggerException
