@@ -136,6 +136,21 @@ abstract class ApiTestCase extends TestCase
         return $body;
     }
 
+    public function assertRequestException(AbstractRequester $request, string $exceptionClass, string $exceptionMessage = null): void
+    {
+        try {
+            $this->assertRequest($request);
+            $this->fail("Expected exception " . $exceptionClass);
+        } catch (\Exception $ex) {
+            $this->assertInstanceOf($exceptionClass, $ex);
+
+            if (!empty($exceptionMessage)) {
+                $this->assertStringContainsString($exceptionMessage, $ex->getMessage());
+            }
+        }
+    }
+
+
     /**
      * @throws GenericSwaggerException
      */

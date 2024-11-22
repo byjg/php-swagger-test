@@ -13,12 +13,12 @@ use ByJG\ApiTools\Exception\PathNotFoundException;
 use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
 use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
 use ByJG\ApiTools\MockRequester;
+use ByJG\Util\Uri;
 use ByJG\WebRequest\Exception\MessageException;
 use ByJG\WebRequest\Exception\RequestException;
+use ByJG\WebRequest\Psr7\MemoryStream;
 use ByJG\WebRequest\Psr7\Request;
 use ByJG\WebRequest\Psr7\Response;
-use ByJG\Util\Uri;
-use ByJG\WebRequest\Psr7\MemoryStream;
 
 abstract class AbstractRequesterTest extends ApiTestCase
 {
@@ -109,9 +109,7 @@ abstract class AbstractRequesterTest extends ApiTestCase
             ->withMethod('GET')
             ->withPath("/pet/ABC");
 
-        $this->expectException(NotMatchedException::class);
-        $this->expectExceptionMessage("Expected 'petId' to be numeric, but found 'ABC'.");
-        $this->assertRequest($request);
+        $this->assertRequestException($request, NotMatchedException::class, "Expected 'petId' to be numeric, but found 'ABC'.");
     }
 
     /**
@@ -172,23 +170,11 @@ abstract class AbstractRequesterTest extends ApiTestCase
     }
 
     /**
-     * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
-     * @throws HttpMethodNotFoundException
-     * @throws InvalidDefinitionException
-     * @throws InvalidRequestException
      * @throws MessageException
-     * @throws NotMatchedException
-     * @throws PathNotFoundException
      * @throws RequestException
-     * @throws RequiredArgumentNotFound
-     * @throws StatusCodeNotMatchedException
      */
     public function testValidateAssertResponse404WithContent()
     {
-        $this->expectException(NotMatchedException::class);
-        $this->expectExceptionMessage("Expected empty body for GET 404 /v2/pet/1");
-        
         $expectedResponse = Response::getInstance(404)
             ->withBody(new MemoryStream('{"error":"not found"}'));
 
@@ -198,27 +184,15 @@ abstract class AbstractRequesterTest extends ApiTestCase
             ->withPath("/pet/1")
             ->assertResponseCode(404);
 
-        $this->assertRequest($request);
+        $this->assertRequestException($request, NotMatchedException::class, "Expected empty body for GET 404 /v2/pet/1");
     }
 
     /**
-     * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
-     * @throws HttpMethodNotFoundException
-     * @throws InvalidDefinitionException
-     * @throws InvalidRequestException
      * @throws MessageException
-     * @throws NotMatchedException
-     * @throws PathNotFoundException
      * @throws RequestException
-     * @throws RequiredArgumentNotFound
-     * @throws StatusCodeNotMatchedException
      */
     public function testValidateAssertResponseNotExpected()
     {
-        $this->expectException(\ByJG\ApiTools\Exception\StatusCodeNotMatchedException::class);
-        $this->expectExceptionMessage("Status code not matched: Expected 404, got 522");
-        
         $expectedResponse = Response::getInstance(522);
 
         $request = new MockRequester($expectedResponse);
@@ -227,7 +201,7 @@ abstract class AbstractRequesterTest extends ApiTestCase
             ->withPath("/pet/1")
             ->assertResponseCode(404);
 
-        $this->assertRequest($request);
+        $this->assertRequestException($request, StatusCodeNotMatchedException::class, "Status code not matched: Expected 404, got 522");
     }
 
     /**
@@ -264,23 +238,11 @@ abstract class AbstractRequesterTest extends ApiTestCase
     }
 
     /**
-     * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
-     * @throws HttpMethodNotFoundException
-     * @throws InvalidDefinitionException
-     * @throws InvalidRequestException
      * @throws MessageException
-     * @throws NotMatchedException
-     * @throws PathNotFoundException
      * @throws RequestException
-     * @throws RequiredArgumentNotFound
-     * @throws StatusCodeNotMatchedException
      */
     public function testValidateAssertHeaderContainsWrongValue()
     {
-        $this->expectException(NotMatchedException::class);
-        $this->expectExceptionMessage("Does not exists header 'X-Test' with value 'Different'");
-        
         $expectedResponse = Response::getInstance(200)
             ->withBody(new MemoryStream(json_encode([
                 "id" => 1,
@@ -296,27 +258,15 @@ abstract class AbstractRequesterTest extends ApiTestCase
             ->assertResponseCode(200)
             ->assertHeaderContains("X-Test", "Different");
 
-        $this->assertRequest($request);
+        $this->assertRequestException($request, NotMatchedException::class, "Does not exists header 'X-Test' with value 'Different'");
     }
 
     /**
-     * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
-     * @throws HttpMethodNotFoundException
-     * @throws InvalidDefinitionException
-     * @throws InvalidRequestException
      * @throws MessageException
-     * @throws NotMatchedException
-     * @throws PathNotFoundException
      * @throws RequestException
-     * @throws RequiredArgumentNotFound
-     * @throws StatusCodeNotMatchedException
      */
     public function testValidateAssertHeaderContainsNonExistent()
     {
-        $this->expectException(NotMatchedException::class);
-        $this->expectExceptionMessage("Does not exists header 'X-Test' with value 'Different'");
-        
         $expectedResponse = Response::getInstance(200)
             ->withBody(new MemoryStream(json_encode([
                 "id" => 1,
@@ -331,7 +281,7 @@ abstract class AbstractRequesterTest extends ApiTestCase
             ->assertResponseCode(200)
             ->assertHeaderContains("X-Test", "Different");
 
-        $this->assertRequest($request);
+        $this->assertRequestException($request, NotMatchedException::class, "Does not exists header 'X-Test' with value 'Different'");
     }
 
     /**
