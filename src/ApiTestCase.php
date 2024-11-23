@@ -15,6 +15,7 @@ use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
 use ByJG\WebRequest\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
+use Throwable;
 
 abstract class ApiTestCase extends TestCase
 {
@@ -136,17 +137,19 @@ abstract class ApiTestCase extends TestCase
         return $body;
     }
 
-    public function assertRequestException(AbstractRequester $request, string $exceptionClass, string $exceptionMessage = null): void
+    public function assertRequestException(AbstractRequester $request, string $exceptionClass, string $exceptionMessage = null): Throwable
     {
         try {
             $this->assertRequest($request);
             $this->fail("Expected exception " . $exceptionClass);
-        } catch (\Exception $ex) {
+        } catch (Throwable $ex) {
             $this->assertInstanceOf($exceptionClass, $ex);
 
             if (!empty($exceptionMessage)) {
                 $this->assertStringContainsString($exceptionMessage, $ex->getMessage());
             }
+
+            return $ex;
         }
     }
 
