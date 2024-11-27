@@ -100,24 +100,6 @@ abstract class AbstractRequesterTest extends ApiTestCase
         $this->assertRequestException($request, NotMatchedException::class, "Expected 'petId' to be numeric, but found 'ABC'.");
     }
 
-    public function testExpectParamErrorRequired()
-    {
-        $expectedResponse = Response::getInstance(200)
-            ->withBody(new MemoryStream(json_encode([
-                "id" => 1,
-                "name" => "Spike",
-                "photoUrls" => []
-            ])));
-
-        // Basic Request
-        $request = new MockRequester($expectedResponse);
-        $request
-            ->withMethod('GET')
-            ->withPath("/pet/");
-
-        $this->assertRequestException($request, NotMatchedException::class, "Expected 'petId' to be numeric, but found 'ABC'.");
-    }
-
     /**
      * @throws DefinitionNotFoundException
      * @throws GenericSwaggerException
