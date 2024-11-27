@@ -60,7 +60,7 @@ class SwaggerSchema extends Schema
     {
         foreach ($parameters as $parameter) {
             if ($parameter['in'] === $parameterIn) {
-                $parameterMatch = new Parameter($this, $parameter['name'], $parameter ?? []);
+                $parameterMatch = new Parameter($this, $parameter['name'], $parameter ?? [], !($parameter["required"] ?? false));
                 $parameterMatch->match($arguments[$parameter['name']] ?? null);
             }
         }

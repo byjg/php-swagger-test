@@ -78,7 +78,7 @@ class OpenApiSchema extends Schema
                 $parameter = $this->jsonFile[self::SWAGGER_COMPONENTS][self::SWAGGER_PARAMETERS][$paramParts[3]];
             }
             if ($parameter['in'] === $parameterIn) {
-                $parameterMatch = new Parameter($this, $parameter['name'], $parameter["schema"] ?? [], true);
+                $parameterMatch = new Parameter($this, $parameter['name'], $parameter["schema"] ?? [], !($parameter["required"] ?? false));
                 $parameterMatch->match($arguments[$parameter['name']] ?? null);
             }
         }

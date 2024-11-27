@@ -121,6 +121,30 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
         $this->assertTrue(true);
     }
 
+    public function testMatchParameterInQueryRequired()
+    {
+        $this->expectException(NotMatchedException::class);
+        $this->expectExceptionMessage("Value of property 'status' is null, but should be of type 'array'");
+
+        self::openApiSchema()->getRequestParameters('/v2/pet/findByStatus', 'get');
+    }
+
+    public function testMatchParameterInQueryRequired2()
+    {
+        $this->expectException(NotMatchedException::class);
+        $this->expectExceptionMessage("Value of property 'username' is null, but should be of type 'string");
+
+        self::openApiSchema()->getRequestParameters('/user/login', 'get');
+    }
+
+    public function testMatchParameterInQueryRequired3()
+    {
+        $this->expectException(NotMatchedException::class);
+        $this->expectExceptionMessage("Value of property 'password' is null, but should be of type 'string");
+
+        self::openApiSchema()->getRequestParameters('/user/login?username=test', 'get');
+    }
+
     public function testMatchParameterInQueryNotValid()
     {
         $this->expectException(NotMatchedException::class);

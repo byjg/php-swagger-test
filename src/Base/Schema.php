@@ -119,6 +119,11 @@ abstract class Schema
         throw new PathNotFoundException('Path "' . $path . '" not found');
     }
 
+    /**
+     * @throws DefinitionNotFoundException
+     * @throws NotMatchedException
+     * @throws InvalidDefinitionException
+     */
     protected function prepareToValidateArguments(string $path, string $method, string $parameterIn, $matches): void
     {
         $pathDef = $this->jsonFile[self::SWAGGER_PATHS][$path];
@@ -142,11 +147,9 @@ abstract class Schema
      * @param string $method
      * @param int $status
      * @return Body
-     * @throws DefinitionNotFoundException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
-     * @throws NotMatchedException
      * @throws PathNotFoundException
      */
     public function getResponseParameters(string $path, string $method, int $status): Body
