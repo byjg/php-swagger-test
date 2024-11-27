@@ -111,7 +111,7 @@ class OpenApiSchema extends Schema
      */
     public function getRequestParameters(string $path, string $method): Body
     {
-        $structure = $this->getPathDefinition($path, $method);
+        $structure = $this->parsePathRequest($path, $method, true);
 
         if (!isset($structure['requestBody'])) {
             return new OpenApiRequestBody($this, "$method $path", []);

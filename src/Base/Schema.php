@@ -70,7 +70,7 @@ abstract class Schema
      * @throws NotMatchedException
      * @throws PathNotFoundException
      */
-    public function getPathDefinition(string $path, string $method): mixed
+    protected function parsePathRequest(string $path, string $method, bool $validateQuery): mixed
     {
         $method = strtolower($method);
 
@@ -82,8 +82,10 @@ abstract class Schema
         if (isset($this->jsonFile[self::SWAGGER_PATHS][$uri->getPath()])) {
             if (isset($this->jsonFile[self::SWAGGER_PATHS][$uri->getPath()][$method])) {
 
-                parse_str($uri->getQuery(), $matches);
-                $this->prepareToValidateArguments($uri->getPath(), $method, 'query', $matches);
+                if ($validateQuery) {
+                    parse_str($uri->getQuery(), $matches);
+                    $this->prepareToValidateArguments($uri->getPath(), $method, 'query', $matches);
+                }
 
                 return $this->jsonFile[self::SWAGGER_PATHS][$uri->getPath()][$method];
             }
@@ -109,14 +111,22 @@ abstract class Schema
                 }
 
                 $this->prepareToValidateArguments($pathItem, $method, 'path', $matches);
-                parse_str($uri->getQuery(), $queryParsed);
-                $this->prepareToValidateArguments($pathItem, $method, 'query', $queryParsed);
+
+                if ($validateQuery) {
+                    parse_str($uri->getQuery(), $queryParsed);
+                    $this->prepareToValidateArguments($pathItem, $method, 'query', $queryParsed);
+                }
 
                 return $pathDef[$method];
             }
         }
 
         throw new PathNotFoundException('Path "' . $path . '" not found');
+    }
+
+    public function getPathDefinition(string $path, string $method): mixed
+    {
+        return $this->parsePathRequest($path, $method, false);
     }
 
     /**

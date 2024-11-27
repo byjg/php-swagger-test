@@ -93,7 +93,7 @@ class SwaggerSchema extends Schema
      */
     public function getRequestParameters(string $path, string $method): Body
     {
-        $structure = $this->getPathDefinition($path, $method);
+        $structure = $this->parsePathRequest($path, $method, true);
 
         if (!isset($structure[self::SWAGGER_PARAMETERS])) {
             return new SwaggerRequestBody($this, "$method $path", []);
