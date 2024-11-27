@@ -141,7 +141,6 @@ abstract class ApiTestCase extends TestCase
     {
         try {
             $this->assertRequest($request);
-            $this->fail("Expected exception " . $exceptionClass);
         } catch (Throwable $ex) {
             $this->assertInstanceOf($exceptionClass, $ex);
 
@@ -151,6 +150,7 @@ abstract class ApiTestCase extends TestCase
 
             return $ex;
         }
+        $this->fail("Expected exception '{$exceptionClass}' but no exception was thrown");
     }
 
 

@@ -63,23 +63,11 @@ abstract class AbstractRequesterTest extends ApiTestCase
     }
 
     /**
-     * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
-     * @throws HttpMethodNotFoundException
-     * @throws InvalidDefinitionException
-     * @throws InvalidRequestException
      * @throws MessageException
-     * @throws NotMatchedException
-     * @throws PathNotFoundException
      * @throws RequestException
-     * @throws RequiredArgumentNotFound
-     * @throws StatusCodeNotMatchedException
      */
     public function testExpectError()
     {
-        $this->expectException(NotMatchedException::class);
-        $this->expectExceptionMessage("Required property 'name'");
-        
         $expectedResponse = Response::getInstance(200)
             ->withBody(new MemoryStream(json_encode([
                 "id" => 1,
@@ -91,7 +79,7 @@ abstract class AbstractRequesterTest extends ApiTestCase
             ->withMethod('GET')
             ->withPath("/pet/1");
 
-        $this->assertRequest($request);
+        $this->assertRequestException($request, NotMatchedException::class, "Required property 'name'");
     }
 
     public function testExpectParamError()
@@ -108,6 +96,24 @@ abstract class AbstractRequesterTest extends ApiTestCase
         $request
             ->withMethod('GET')
             ->withPath("/pet/ABC");
+
+        $this->assertRequestException($request, NotMatchedException::class, "Expected 'petId' to be numeric, but found 'ABC'.");
+    }
+
+    public function testExpectParamErrorRequired()
+    {
+        $expectedResponse = Response::getInstance(200)
+            ->withBody(new MemoryStream(json_encode([
+                "id" => 1,
+                "name" => "Spike",
+                "photoUrls" => []
+            ])));
+
+        // Basic Request
+        $request = new MockRequester($expectedResponse);
+        $request
+            ->withMethod('GET')
+            ->withPath("/pet/");
 
         $this->assertRequestException($request, NotMatchedException::class, "Expected 'petId' to be numeric, but found 'ABC'.");
     }
