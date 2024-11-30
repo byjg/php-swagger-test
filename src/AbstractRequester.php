@@ -209,7 +209,7 @@ abstract class AbstractRequester
      * @throws RequiredArgumentNotFound
      * @throws StatusCodeNotMatchedException
      */
-    public function send(): ResponseInterface
+    public function send(bool $matchQueryParams = true): ResponseInterface
     {
         // Process URI based on the OpenAPI schema
         $uriSchema = new Uri($this->schema->getServerUrl());
@@ -248,7 +248,7 @@ abstract class AbstractRequester
         }
 
         // Check if the body is the expected before request
-        $bodyRequestDef = $this->schema->getRequestParameters($this->psr7Request->getUri()->getPath(), $this->psr7Request->getMethod(), $this->psr7Request->getUri()->getQuery());
+        $bodyRequestDef = $this->schema->getRequestParameters($this->psr7Request->getUri()->getPath(), $this->psr7Request->getMethod(), $matchQueryParams ? $this->psr7Request->getUri()->getQuery() : null);
         $bodyRequestDef->match($requestBody);
 
         // Handle Request

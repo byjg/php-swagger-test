@@ -117,7 +117,7 @@ abstract class ApiTestCase extends TestCase
      * @throws RequiredArgumentNotFound
      * @throws StatusCodeNotMatchedException
      */
-    public function assertRequest(AbstractRequester $request): ResponseInterface
+    public function assertRequest(AbstractRequester $request, bool $matchQueryParams = true): ResponseInterface
     {
         // Add own schema if nothing is passed.
         if (!$request->hasSchema()) {
@@ -126,7 +126,7 @@ abstract class ApiTestCase extends TestCase
         }
 
         // Request based on the Swagger Request definitios
-        $body = $request->send();
+        $body = $request->send($matchQueryParams);
 
         // Note:
         // This code is only reached if to send is successful and
@@ -137,10 +137,10 @@ abstract class ApiTestCase extends TestCase
         return $body;
     }
 
-    public function assertRequestException(AbstractRequester $request, string $exceptionClass, string $exceptionMessage = null): Throwable
+    public function assertRequestException(AbstractRequester $request, string $exceptionClass, string $exceptionMessage = null, bool $matchQueryParams = true): Throwable
     {
         try {
-            $this->assertRequest($request);
+            $this->assertRequest($request, $matchQueryParams);
         } catch (Throwable $ex) {
             $this->assertInstanceOf($exceptionClass, $ex);
 
