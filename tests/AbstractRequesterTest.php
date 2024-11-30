@@ -338,4 +338,37 @@ abstract class AbstractRequesterTest extends ApiTestCase
 
         $this->assertRequest($request);
     }
+
+    public function testMatchParameterInQueryAssert()
+    {
+        $expectedResponse = Response::getInstance(200)
+            ->withBody(new MemoryStream(json_encode([
+                "status" => "a",
+            ])));
+
+        // Basic Request
+        $request = new MockRequester($expectedResponse);
+        $request
+            ->withMethod('GET')
+            ->withPath("/check")
+            ->withQuery(["status" => "1"]);
+
+        $this->assertRequest($request);
+    }
+
+    public function testMissingParameterInQueryAssert()
+    {
+        $expectedResponse = Response::getInstance(200)
+            ->withBody(new MemoryStream(json_encode([
+                "status" => "a",
+            ])));
+
+        // Basic Request
+        $request = new MockRequester($expectedResponse);
+        $request
+            ->withMethod('GET')
+            ->withPath("/check");
+
+        $this->assertRequestException($request, NotMatchedException::class, "Value of property 'status' is null, but should be of type 'integer'");
+    }
 }

@@ -126,7 +126,7 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
         $this->expectException(NotMatchedException::class);
         $this->expectExceptionMessage("Value of property 'status' is null, but should be of type 'array'");
 
-        self::openApiSchema()->getRequestParameters('/v2/pet/findByStatus', 'get');
+        self::openApiSchema()->getRequestParameters('/v2/pet/findByStatus', 'get', "");
     }
 
     public function testMatchParameterInQueryRequired2()
@@ -134,7 +134,7 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
         $this->expectException(NotMatchedException::class);
         $this->expectExceptionMessage("Value of property 'username' is null, but should be of type 'string");
 
-        self::openApiSchema()->getRequestParameters('/user/login', 'get');
+        self::openApiSchema()->getRequestParameters('/user/login', 'get', "");
     }
 
     public function testMatchParameterInQueryRequired3()
@@ -142,7 +142,15 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
         $this->expectException(NotMatchedException::class);
         $this->expectExceptionMessage("Value of property 'password' is null, but should be of type 'string");
 
-        self::openApiSchema()->getRequestParameters('/user/login?username=test', 'get');
+        self::openApiSchema()->getRequestParameters('/user/login', 'get', "username=test");
+    }
+
+    public function testMatchParameterInQueryNotDefined()
+    {
+        $this->expectException(NotMatchedException::class);
+        $this->expectExceptionMessage("There are parameters that are not defined in the schema: notdefined");
+
+        self::openApiSchema()->getRequestParameters('/user/login', 'get', "username=test&password=test&notdefined=error");
     }
 
     public function testMatchParameterInQueryNotValid()
@@ -150,7 +158,7 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
         $this->expectException(NotMatchedException::class);
         $this->expectExceptionMessage("Value 'ABC' in 'status' not matched in ENUM");
 
-        self::openApiSchema()->getRequestParameters('/v2/pet/findByStatus?status=ABC', 'get');
+        self::openApiSchema()->getRequestParameters('/v2/pet/findByStatus', 'get', "status=ABC");
     }
 
     /**
@@ -163,7 +171,7 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
      */
     public function testMatchParameterInQuery2()
     {
-        self::openApiSchema3()->getRequestParameters('/tests/12345?count=20&offset=2', 'get');
+        self::openApiSchema3()->getRequestParameters('/tests/12345', 'get', "count=20&offset=2");
         $this->assertTrue(true);
     }
 
@@ -180,8 +188,8 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
     {
         $this->expectException(NotMatchedException::class);
         $this->expectExceptionMessage("Expected 'test_id' to be numeric, but found 'STRING'");
-        
-        self::openApiSchema3()->getRequestParameters('/tests/STRING?count=20&offset=2', 'get');
+
+        self::openApiSchema3()->getRequestParameters('/tests/STRING', 'get', "count=20&offset=2");
         $this->assertTrue(true);
     }
 
@@ -190,7 +198,7 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
         $this->expectException(NotMatchedException::class);
         $this->expectExceptionMessage("Expected 'count' to be numeric, but found 'ABC'");
 
-        self::openApiSchema3()->getRequestParameters('/tests/12345?count=ABC&offset=2', 'get');
+        self::openApiSchema3()->getRequestParameters('/tests/12345', 'get', "count=ABC&offset=2");
         $this->assertTrue(true);
     }
 
@@ -199,7 +207,7 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
         $this->expectException(NotMatchedException::class);
         $this->expectExceptionMessage("Expected 'offset' to be numeric, but found 'ABC'");
 
-        self::openApiSchema3()->getRequestParameters('/tests/12345?count=20&offset=ABC', 'get');
+        self::openApiSchema3()->getRequestParameters('/tests/12345', 'get', "count=20&offset=ABC");
         $this->assertTrue(true);
     }
 

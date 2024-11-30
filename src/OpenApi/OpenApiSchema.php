@@ -8,6 +8,7 @@ use ByJG\ApiTools\Base\Schema;
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\InvalidRequestException;
+use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\Util\Uri;
 
 class OpenApiSchema extends Schema
@@ -62,6 +63,10 @@ class OpenApiSchema extends Schema
      */
     protected function validateArguments(string $parameterIn, array $parameters, array $arguments): void
     {
+        $checked = array_filter($arguments, function ($key) {
+            return !is_numeric($key);
+        }, ARRAY_FILTER_USE_KEY);
+
         foreach ($parameters as $parameter) {
             if (isset($parameter['$ref'])) {
                 $paramParts = explode("/", $parameter['$ref']);
@@ -81,6 +86,12 @@ class OpenApiSchema extends Schema
                 $parameterMatch = new Parameter($this, $parameter['name'], $parameter["schema"] ?? [], !($parameter["required"] ?? false));
                 $parameterMatch->match($arguments[$parameter['name']] ?? null);
             }
+
+            unset($checked[$parameter['name']]);
+        }
+
+        if (!empty($checked)) {
+            throw new NotMatchedException("There are parameters that are not defined in the schema: " . implode(", ", array_keys($checked)));
         }
     }
 
@@ -109,9 +120,9 @@ class OpenApiSchema extends Schema
      * @inheritDoc
      * @throws InvalidRequestException
      */
-    public function getRequestParameters(string $path, string $method): Body
+    public function getRequestParameters(string $path, string $method, ?string $queryString = null): Body
     {
-        $structure = $this->parsePathRequest($path, $method, true);
+        $structure = $this->parsePathRequest($path, $method, $queryString);
 
         if (!isset($structure['requestBody'])) {
             return new OpenApiRequestBody($this, "$method $path", []);

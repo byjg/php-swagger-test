@@ -70,7 +70,7 @@ abstract class Schema
      * @throws NotMatchedException
      * @throws PathNotFoundException
      */
-    protected function parsePathRequest(string $path, string $method, bool $validateQuery): mixed
+    protected function parsePathRequest(string $path, string $method, ?string $queryString = null): mixed
     {
         $method = strtolower($method);
 
@@ -82,8 +82,8 @@ abstract class Schema
         if (isset($this->jsonFile[self::SWAGGER_PATHS][$uri->getPath()])) {
             if (isset($this->jsonFile[self::SWAGGER_PATHS][$uri->getPath()][$method])) {
 
-                if ($validateQuery) {
-                    parse_str($uri->getQuery(), $matches);
+                if (!is_null($queryString)) {
+                    parse_str($queryString, $matches);
                     $this->prepareToValidateArguments($uri->getPath(), $method, 'query', $matches);
                 }
 
@@ -112,8 +112,8 @@ abstract class Schema
 
                 $this->prepareToValidateArguments($pathItem, $method, 'path', $matches);
 
-                if ($validateQuery) {
-                    parse_str($uri->getQuery(), $queryParsed);
+                if (!is_null($queryString)) {
+                    parse_str($queryString, $queryParsed);
                     $this->prepareToValidateArguments($pathItem, $method, 'query', $queryParsed);
                 }
 
@@ -126,7 +126,7 @@ abstract class Schema
 
     public function getPathDefinition(string $path, string $method): mixed
     {
-        return $this->parsePathRequest($path, $method, false);
+        return $this->parsePathRequest($path, $method);
     }
 
     /**
@@ -229,7 +229,7 @@ abstract class Schema
      * @throws NotMatchedException
      * @throws PathNotFoundException
      */
-    abstract public function getRequestParameters(string $path, string $method): Body;
+    abstract public function getRequestParameters(string $path, string $method, ?string $queryString = null): Body;
 
     /**
      * @param Schema $schema

@@ -248,7 +248,7 @@ abstract class AbstractRequester
         }
 
         // Check if the body is the expected before request
-        $bodyRequestDef = $this->schema->getRequestParameters($this->psr7Request->getUri()->getPath(), $this->psr7Request->getMethod());
+        $bodyRequestDef = $this->schema->getRequestParameters($this->psr7Request->getUri()->getPath(), $this->psr7Request->getMethod(), $this->psr7Request->getUri()->getQuery());
         $bodyRequestDef->match($requestBody);
 
         // Handle Request

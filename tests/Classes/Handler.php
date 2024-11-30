@@ -58,4 +58,9 @@ class Handler
         );
         $response->write($pet);
     }
+
+    public function check($response, $request)
+    {
+        $response->write(["status" => $request->get("status")]);
+    }
 }

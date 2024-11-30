@@ -128,6 +128,49 @@
           }
         }
       }
+    },
+    "/check": {
+      "get": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Check the parameters",
+        "description": "Check the parameters",
+        "operationId": "Tests\\Classes\\Handler::check",
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "The status to be checked",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Pet not found"
+          }
+        }
+      }
     }
   },
   "definitions": {

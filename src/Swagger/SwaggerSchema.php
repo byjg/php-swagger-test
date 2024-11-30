@@ -91,9 +91,9 @@ class SwaggerSchema extends Schema
      * @inheritDoc
      * @throws InvalidRequestException
      */
-    public function getRequestParameters(string $path, string $method): Body
+    public function getRequestParameters(string $path, string $method, ?string $queryString = null): Body
     {
-        $structure = $this->parsePathRequest($path, $method, true);
+        $structure = $this->parsePathRequest($path, $method, $queryString);
 
         if (!isset($structure[self::SWAGGER_PARAMETERS])) {
             return new SwaggerRequestBody($this, "$method $path", []);

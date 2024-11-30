@@ -101,6 +101,53 @@
         }
       }
     },
+    "/check": {
+      "get": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Check the parameters",
+        "description": "Check the parameters",
+        "operationId": "Tests\\Classes\\Handler::check",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "The status to be checked",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied",
+            "content": {}
+          },
+          "404": {
+            "description": "Pet not found",
+            "content": {}
+          }
+        }
+      }
+    },
     "/inventory" : {
       "post": {
         "tags": [
