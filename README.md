@@ -9,13 +9,22 @@
 
 A set of tools for testing your REST calls based on the OpenApi specification using PHPUnit.
 Currently, this library supports the OpenApi specifications `2.0` (formerly swagger) and `3.0`.
-Some features like callbacks, links and references to external documents/objects weren't implemented.
 
-PHP Swagger Test can help you to test your REST Api. You can use this tool both for Unit Tests or Functional Tests.
+Some features of the OpenAPI specification are not fully implemented:
 
-This tool reads a previously Swagger JSON file (not YAML) and enables you to test the request and response.
+- Callbacks (OpenAPI 3.0)
+- Links (OpenAPI 3.0)
+- References to external documents/objects
+- Complex schema validations
+
+For details on the schema classes and their specific features, see [Schema Classes](docs/schema-classes.md).
+
+PHP Swagger Test can help you to test your REST API. You can use this tool both for Unit Tests or Functional Tests.
+
+This tool reads an OpenAPI/Swagger specification in JSON format (not YAML) and enables you to test the request and
+response.
 You can use the tool "[https://github.com/zircote/swagger-php](https://github.com/zircote/swagger-php)" for creating the JSON file when you are developing your
-rest API.
+REST API.
 
 The ApiTestCase's assertion process is based on throwing exceptions if some validation or test failed.
 
@@ -27,6 +36,7 @@ You can use the Swagger Test library as:
 - [Contract test cases](docs/contract-tests.md)
 - [Runtime parameters validator](docs/runtime-parameters-validator.md)
 - [Mocking Requests and Validate your specification](docs/mock-requests.md)
+- [Working with different schema versions](docs/schema-classes.md)
 
 Who is using this library?
 

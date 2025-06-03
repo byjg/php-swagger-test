@@ -1,3 +1,7 @@
+---
+sidebar_position: 4
+---
+
 # Mock Requests
 
 PHP Swagger has the class `MockRequester` with exact the same functionalities of `ApiRequester` class. The only

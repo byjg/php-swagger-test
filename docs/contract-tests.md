@@ -1,3 +1,7 @@
+---
+sidebar_position: 2
+---
+
 # Contract Tests
 
 Sometimes, you want to run functional tests without making the actual HTTP
@@ -29,7 +33,30 @@ You now use an instance of this class in place of the `ApiRequester` class from 
 Of course, if you need to apply changes to the request, or the response in order
 to fit your framework, this is exactly the right place to do it.
 
-@todo: Explain in the Docs sections the `RestServer` component
+## Using with RestServer component
+
+The [byjg/restserver](https://github.com/byjg/php-restserver) component can be used to create a server that handles
+requests based on OpenAPI/Swagger specifications. This is useful for testing your API without setting up a full web
+server.
+
+```php
+<?php
+use ByJG\RestServer\HttpRequestHandler;
+use ByJG\RestServer\Route\OpenApiRouteList;
+
+// Load the OpenAPI/Swagger specification
+$specification = '/path/to/specification.json';
+
+// Create a route definition based on the specification
+$routeDefinition = new OpenApiRouteList($specification);
+
+// Create a request handler and handle the routes
+$restServer = new HttpRequestHandler();
+$restServer->handle($routeDefinition);
+```
+
+This code will create a server that handles requests according to the routes defined in your OpenAPI/Swagger
+specification.
 
 ## Using it as Unit Test cases
 

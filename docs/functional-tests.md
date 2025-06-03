@@ -1,3 +1,7 @@
+---
+sidebar_position: 1
+---
+
 # Functional Test cases
 
 Swagger Test provides the class `ApiTestCase` for you extend and create a PHPUnit test case. The code will try to
