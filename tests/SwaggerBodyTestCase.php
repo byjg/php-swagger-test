@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use ByJG\ApiTools\OpenApi\OpenApiSchema;
 use ByJG\ApiTools\Swagger\SwaggerSchema;
 use PHPUnit\Framework\TestCase;
 
@@ -16,9 +17,9 @@ class SwaggerBodyTestCase extends TestCase
 
     /**
      * @param bool $allowNullValues
-     * @return SwaggerSchema
+     * @return SwaggerSchema|OpenApiSchema
      */
-    protected static function swaggerSchema(bool $allowNullValues = false): SwaggerSchema
+    protected static function swaggerSchema(bool $allowNullValues = false): SwaggerSchema|OpenApiSchema
     {
         return \ByJG\ApiTools\Base\Schema::getInstance(
             self::getSwaggerJsonContent(),
@@ -28,9 +29,9 @@ class SwaggerBodyTestCase extends TestCase
 
     /**
      * @param bool $allowNullValues
-     * @return SwaggerSchema
+     * @return SwaggerSchema|OpenApiSchema
      */
-    protected static function swaggerSchema2(bool $allowNullValues = false): SwaggerSchema
+    protected static function swaggerSchema2(bool $allowNullValues = false): SwaggerSchema|OpenApiSchema
     {
         return \ByJG\ApiTools\Base\Schema::getInstance(
             self::getSwaggerJsonContent_No2(),

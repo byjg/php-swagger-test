@@ -4,6 +4,7 @@ namespace Tests;
 
 use ByJG\ApiTools\Base\Schema;
 use ByJG\ApiTools\OpenApi\OpenApiSchema;
+use ByJG\ApiTools\Swagger\SwaggerSchema;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -16,9 +17,9 @@ class OpenApiBodyTestCase extends TestCase
 {
     /**
      * @param bool $allowNullValues
-     * @return OpenApiSchema
+     * @return OpenApiSchema|SwaggerSchema
      */
-    protected static function openApiSchema(bool $allowNullValues = false): OpenApiSchema
+    protected static function openApiSchema(bool $allowNullValues = false): OpenApiSchema|SwaggerSchema
     {
         return Schema::getInstance(
             self::getOpenApiJsonContent(),
@@ -28,9 +29,9 @@ class OpenApiBodyTestCase extends TestCase
 
     /**
      * @param bool $allowNullValues
-     * @return OpenApiSchema
+     * @return OpenApiSchema|SwaggerSchema
      */
-    protected static function openApiSchema2(bool $allowNullValues = false): OpenApiSchema
+    protected static function openApiSchema2(bool $allowNullValues = false): OpenApiSchema|SwaggerSchema
     {
         return Schema::getInstance(
             self::getOpenApiJsonContent_No2(),
@@ -40,9 +41,9 @@ class OpenApiBodyTestCase extends TestCase
 
     /**
      * @param bool $allowNullValues
-     * @return OpenApiSchema
+     * @return OpenApiSchema|SwaggerSchema
      */
-    protected static function openApiSchema3(bool $allowNullValues = false): OpenApiSchema
+    protected static function openApiSchema3(bool $allowNullValues = false): OpenApiSchema|SwaggerSchema
     {
         return Schema::getInstance(
             self::getOpenApiJsonContent_No3(),
@@ -52,9 +53,9 @@ class OpenApiBodyTestCase extends TestCase
 
     /**
      * @param bool $allowNullValues
-     * @return OpenApiSchema
+     * @return OpenApiSchema|SwaggerSchema
      */
-    protected static function openApiSchema5(bool $allowNullValues = false): OpenApiSchema
+    protected static function openApiSchema5(bool $allowNullValues = false): OpenApiSchema|SwaggerSchema
     {
         return Schema::getInstance(
             self::getOpenApiJsonContent_No5(),
