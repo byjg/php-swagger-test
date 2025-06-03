@@ -86,12 +86,12 @@ class OpenApiSchema extends Schema
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @return mixed
      * @throws DefinitionNotFoundException
      * @throws InvalidDefinitionException
      */
-    public function getDefinition($name): mixed
+    public function getDefinition(string $name): mixed
     {
         $nameParts = explode('/', $name);
 

@@ -28,7 +28,7 @@ class SwaggerSchemaTest extends TestCase
         $this->object = null;
     }
 
-    public function testGetBasePath()
+    public function testGetBasePath(): void
     {
         $this->assertEquals('/v2', $this->object->getBasePath());
     }
@@ -41,7 +41,7 @@ class SwaggerSchemaTest extends TestCase
      * @throws NotMatchedException
      * @throws PathNotFoundException
      */
-    public function testGetPathDirectMatch()
+    public function testGetPathDirectMatch(): void
     {
         $this->assertEquals(
             [
@@ -145,7 +145,7 @@ class SwaggerSchemaTest extends TestCase
      * @throws NotMatchedException
      * @throws PathNotFoundException
      */
-    public function testGetPathPatternMatch()
+    public function testGetPathPatternMatch(): void
     {
         $this->assertEquals(
             [
@@ -303,7 +303,7 @@ class SwaggerSchemaTest extends TestCase
      * @throws NotMatchedException
      * @throws PathNotFoundException
      */
-    public function testGetPathPatternMatch2()
+    public function testGetPathPatternMatch2(): void
     {
         $this->assertEquals(
             [
@@ -365,7 +365,6 @@ class SwaggerSchemaTest extends TestCase
     }
 
     /**
-     *
      * @throws DefinitionNotFoundException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
@@ -373,7 +372,7 @@ class SwaggerSchemaTest extends TestCase
      * @throws NotMatchedException
      * @throws PathNotFoundException
      */
-    public function testGetPathFail()
+    public function testGetPathFail(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\PathNotFoundException::class);
 
@@ -388,7 +387,7 @@ class SwaggerSchemaTest extends TestCase
      * @throws NotMatchedException
      * @throws PathNotFoundException
      */
-    public function testPathExistsButMethodDont()
+    public function testPathExistsButMethodDont(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\HttpMethodNotFoundException::class);
 
@@ -403,7 +402,7 @@ class SwaggerSchemaTest extends TestCase
      * @throws NotMatchedException
      * @throws PathNotFoundException
      */
-    public function testGetPathStructure()
+    public function testGetPathStructure(): void
     {
         $pathDefintion = $this->object->getPathDefinition('/v2/pet', 'PUT');
 
@@ -459,11 +458,10 @@ class SwaggerSchemaTest extends TestCase
     }
 
     /**
-     *
      * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
      * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
      */
-    public function testGetDefinitionFailed()
+    public function testGetDefinitionFailed(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\InvalidDefinitionException::class);
 
@@ -471,11 +469,10 @@ class SwaggerSchemaTest extends TestCase
     }
 
     /**
-     *
      * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
      * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
      */
-    public function testGetDefinitionFailed2()
+    public function testGetDefinitionFailed2(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\InvalidDefinitionException::class);
 
@@ -483,11 +480,10 @@ class SwaggerSchemaTest extends TestCase
     }
 
     /**
-     *
      * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
      * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
      */
-    public function testGetDefinitionFailed3()
+    public function testGetDefinitionFailed3(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\DefinitionNotFoundException::class);
 
@@ -498,7 +494,7 @@ class SwaggerSchemaTest extends TestCase
      * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
      * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
      */
-    public function testGetDefinition()
+    public function testGetDefinition(): void
     {
         $order = $this->object->getDefinition('#/definitions/Order');
 
@@ -544,13 +540,13 @@ class SwaggerSchemaTest extends TestCase
         );
     }
 
-    public function testItNotAllowsNullValuesByDefault()
+    public function testItNotAllowsNullValuesByDefault(): void
     {
         $schema = \ByJG\ApiTools\Base\Schema::getInstance('{"swagger": "2.0"}');
         $this->assertFalse($schema->isAllowNullValues());
     }
 
-    public function testItAllowsNullValues()
+    public function testItAllowsNullValues(): void
     {
         $allowNullValues = true;
         $schema = \ByJG\ApiTools\Base\Schema::getInstance('{"swagger": "2.0"}', $allowNullValues);

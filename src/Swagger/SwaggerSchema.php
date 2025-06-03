@@ -27,12 +27,12 @@ class SwaggerSchema extends Schema
         $this->allowNullValues = $allowNullValues;
     }
 
-    public function getHttpSchema()
+    public function getHttpSchema(): string
     {
         return isset($this->jsonFile['schemes']) ? $this->jsonFile['schemes'][0] : '';
     }
 
-    public function getHost()
+    public function getHost(): string
     {
         return $this->jsonFile['host'] ?? '';
     }
@@ -68,12 +68,12 @@ class SwaggerSchema extends Schema
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @return mixed
      * @throws DefinitionNotFoundException
      * @throws InvalidDefinitionException
      */
-    public function getDefinition($name): mixed
+    public function getDefinition(string $name): mixed
     {
         $nameParts = explode('/', $name);
 

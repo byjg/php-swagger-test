@@ -184,12 +184,12 @@ abstract class Schema
     abstract public function getBasePath(): string;
 
     /**
-     * @param $name
+     * @param string $name
      * @return mixed
      * @throws DefinitionNotFoundException
      * @throws InvalidDefinitionException
      */
-    abstract public function getDefinition($name): mixed;
+    abstract public function getDefinition(string $name): mixed;
 
     /**
      * @param string $path

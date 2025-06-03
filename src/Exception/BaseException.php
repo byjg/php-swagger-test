@@ -9,7 +9,7 @@ class BaseException extends Exception
 {
     protected mixed $body;
 
-    public function __construct($message = "", $body = [], $code = 0, Throwable $previous = null)
+    public function __construct(string $message = "", mixed $body = [], int $code = 0, ?Throwable $previous = null)
     {
         $this->body = $body;
         if (!empty($body)) {

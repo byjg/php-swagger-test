@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 class BaseExceptionTest extends TestCase
 {
 
-    public function testGetBody()
+    public function testGetBody(): void
     {
         $exception = new GenericSwaggerException("message", ["a" => 10]);
 

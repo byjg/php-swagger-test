@@ -14,14 +14,14 @@ use ByJG\ApiTools\Exception\PathNotFoundException;
 use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
 use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
 use ByJG\ApiTools\MockRequester;
+use ByJG\Util\Uri;
 use ByJG\WebRequest\Exception\MessageException;
 use ByJG\WebRequest\Exception\RequestException;
 use ByJG\WebRequest\Helper\RequestMultiPart;
 use ByJG\WebRequest\MultiPartItem;
+use ByJG\WebRequest\Psr7\MemoryStream;
 use ByJG\WebRequest\Psr7\Request;
 use ByJG\WebRequest\Psr7\Response;
-use ByJG\Util\Uri;
-use ByJG\WebRequest\Psr7\MemoryStream;
 
 /**
  * Class TestingTestCase
@@ -46,7 +46,7 @@ abstract class TestingTestCase extends ApiTestCase
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      */
-    public function testGet()
+    public function testGet(): void
     {
         $request = new ApiRequester();
         $request
@@ -69,7 +69,7 @@ abstract class TestingTestCase extends ApiTestCase
      * @throws MessageException
      * @throws InvalidDefinitionException
      */
-    public function testPost()
+    public function testPost(): void
     {
         $body = [
             'id' => 1,
@@ -113,7 +113,7 @@ abstract class TestingTestCase extends ApiTestCase
      * @throws RequiredArgumentNotFound
      * @throws StatusCodeNotMatchedException
      */
-    public function testAddError()
+    public function testAddError(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
         $this->expectExceptionMessage("Required property 'name'");
@@ -144,7 +144,7 @@ abstract class TestingTestCase extends ApiTestCase
      * @throws RequiredArgumentNotFound
      * @throws StatusCodeNotMatchedException
      */
-    public function testPostError()
+    public function testPostError(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
         $this->expectExceptionMessage("Expected empty body");
@@ -178,7 +178,7 @@ abstract class TestingTestCase extends ApiTestCase
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      */
-    public function testMultipart()
+    public function testMultipart(): void
     {
         $multipart = [
             new MultiPartItem("note", "somenote"),

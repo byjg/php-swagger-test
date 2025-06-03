@@ -21,7 +21,7 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
      * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      * @throws \ByJG\ApiTools\Exception\RequiredArgumentNotFound
      */
-    public function testMatchRequestBody()
+    public function testMatchRequestBody(): void
     {
         $body = [
             "id" => "10",
@@ -37,7 +37,6 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
     }
 
     /**
-     *
      * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
      * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
      * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
@@ -47,7 +46,7 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
      * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      * @throws \ByJG\ApiTools\Exception\RequiredArgumentNotFound
      */
-    public function testMatchRequiredRequestBodyEmpty()
+    public function testMatchRequiredRequestBodyEmpty(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\RequiredArgumentNotFound::class);
         $this->expectExceptionMessage("The body is required");
@@ -57,7 +56,6 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
     }
 
     /**
-     *
      * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
      * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
      * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
@@ -67,7 +65,7 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
      * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      * @throws \ByJG\ApiTools\Exception\RequiredArgumentNotFound
      */
-    public function testMatchInexistantBodyDefinition()
+    public function testMatchInexistantBodyDefinition(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\InvalidDefinitionException::class);
         $this->expectExceptionMessage("Body is passed but there is no request body definition");
@@ -86,7 +84,6 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
     }
 
     /**
-     *
      * @throws DefinitionNotFoundException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
@@ -94,7 +91,7 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
      * @throws NotMatchedException
      * @throws PathNotFoundException
      */
-    public function testMatchDataType()
+    public function testMatchDataType(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
         $this->expectExceptionMessage("Path expected an integer value");
@@ -113,7 +110,7 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
      * @throws NotMatchedException
      * @throws PathNotFoundException
      */
-    public function testMatchParameterInQuery()
+    public function testMatchParameterInQuery(): void
     {
         self::openApiSchema()->getRequestParameters('/v2/pet/findByStatus?status=pending', 'get');
         $this->assertTrue(true);
@@ -127,14 +124,13 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
      * @throws NotMatchedException
      * @throws PathNotFoundException
      */
-    public function testMatchParameterInQuery2()
+    public function testMatchParameterInQuery2(): void
     {
         self::openApiSchema3()->getRequestParameters('/tests/12345?count=20&offset=2', 'get');
         $this->assertTrue(true);
     }
 
     /**
-     *
      * @throws DefinitionNotFoundException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
@@ -142,7 +138,7 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
      * @throws PathNotFoundException
      * @throws InvalidRequestException
      */
-    public function testMatchParameterInQuery3()
+    public function testMatchParameterInQuery3(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
         $this->expectExceptionMessage("Path expected an integer value");
@@ -153,7 +149,6 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
 
 
     /**
-     *
      * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
      * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
      * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
@@ -163,7 +158,7 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
      * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      * @throws \ByJG\ApiTools\Exception\RequiredArgumentNotFound
      */
-    public function testMatchRequestBodyRequired1()
+    public function testMatchRequestBodyRequired1(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
         $this->expectExceptionMessage("Required property");
@@ -190,7 +185,7 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
      * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      * @throws \ByJG\ApiTools\Exception\RequiredArgumentNotFound
      */
-    public function testMatchRequestBodyRequiredNullsNotAllowed()
+    public function testMatchRequestBodyRequiredNullsNotAllowed(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
         $this->expectExceptionMessage("Value of property 'name' is null, but should be of type 'string'");
@@ -216,7 +211,7 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
      * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      * @throws \ByJG\ApiTools\Exception\RequiredArgumentNotFound
      */
-    public function testMatchRequestBodyRequiredNullsAllowed()
+    public function testMatchRequestBodyRequiredNullsAllowed(): void
     {
         $allowNullValues = true;
         $body = [
@@ -243,7 +238,7 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
      * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      * @throws \ByJG\ApiTools\Exception\RequiredArgumentNotFound
      */
-    public function testMatchRequestBodyRequired3()
+    public function testMatchRequestBodyRequired3(): void
     {
         $body = [
             "id" => "10",
@@ -268,7 +263,7 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
      * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      * @throws \ByJG\ApiTools\Exception\RequiredArgumentNotFound
      */
-    public function testMatchRequestBodyRequired_Issue21()
+    public function testMatchRequestBodyRequired_Issue21(): void
     {
         // Full Request
         $body = [
@@ -292,7 +287,7 @@ class OpenApiRequestBodyTest extends OpenApiBodyTestCase
      * @throws \ByJG\ApiTools\Exception\PathNotFoundException
      * @throws \ByJG\ApiTools\Exception\RequiredArgumentNotFound
      */
-    public function testMatchRequestBodyRequired_Issue21_Required()
+    public function testMatchRequestBodyRequired_Issue21_Required(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
         $this->expectExceptionMessage("Required property 'user_uuid'");

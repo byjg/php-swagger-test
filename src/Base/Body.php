@@ -96,7 +96,9 @@ abstract class Body
     }
 
     /**
-     * @throws NotMatchedException
+     * @param numeric $body
+     *@throws NotMatchedException
+     *
      */
     private function checkPattern(string $name, mixed $body, string $pattern): void
     {
@@ -330,8 +332,8 @@ abstract class Body
 
     /**
      * @param string $name
-     * @param array $schemaArray
-     * @param array $body
+     * @param mixed $schemaArray
+     * @param mixed $body
      * @return ?bool
      * @throws DefinitionNotFoundException
      * @throws InvalidDefinitionException

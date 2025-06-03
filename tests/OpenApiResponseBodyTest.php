@@ -23,7 +23,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchResponseBody()
+    public function testMatchResponseBody(): void
     {
         $openApiSchema = self::openApiSchema();
 
@@ -75,7 +75,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchResponseBodyWithRefInsteadOfContent()
+    public function testMatchResponseBodyWithRefInsteadOfContent(): void
     {
         $openApiSchema = self::openApiSchema5();
 
@@ -89,7 +89,6 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
     }
 
     /**
-     *
      * @throws DefinitionNotFoundException
      * @throws GenericSwaggerException
      * @throws HttpMethodNotFoundException
@@ -99,7 +98,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchResponseBodyEnumError()
+    public function testMatchResponseBodyEnumError(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
         $this->expectExceptionMessage("Value 'notfound' in 'status' not matched in ENUM");
@@ -118,7 +117,6 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
     }
 
     /**
-     *
      * @throws DefinitionNotFoundException
      * @throws GenericSwaggerException
      * @throws HttpMethodNotFoundException
@@ -128,7 +126,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchResponseBodyWrongNumber()
+    public function testMatchResponseBodyWrongNumber(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
         $this->expectExceptionMessage("Expected 'id' to be numeric, but found 'ABC'");
@@ -147,7 +145,6 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
     }
 
     /**
-     *
      * @throws DefinitionNotFoundException
      * @throws GenericSwaggerException
      * @throws HttpMethodNotFoundException
@@ -157,7 +154,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchResponseBodyMoreThanExpected()
+    public function testMatchResponseBodyMoreThanExpected(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
         $this->expectExceptionMessage("The property(ies) 'more' has not defined in '#/components/schemas/Order'");
@@ -186,7 +183,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchResponseBodyLessFields()
+    public function testMatchResponseBodyLessFields(): void
     {
         $body = [
             "id"       => 10,
@@ -208,7 +205,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchResponseBodyAllowNullValues()
+    public function testMatchResponseBodyAllowNullValues(): void
     {
         $allowNullValues = true;
         $body = [
@@ -226,7 +223,6 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
     }
 
     /**
-     *
      * @throws DefinitionNotFoundException
      * @throws GenericSwaggerException
      * @throws HttpMethodNotFoundException
@@ -236,7 +232,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchResponseBodyNotAllowNullValues()
+    public function testMatchResponseBodyNotAllowNullValues(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
         $this->expectExceptionMessage("Value of property 'complete' is null, but should be of type 'boolean'");
@@ -261,7 +257,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchResponseBodyEmpty()
+    public function testMatchResponseBodyEmpty(): void
     {
         $body = null;
 
@@ -270,7 +266,6 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
     }
 
     /**
-     *
      * @throws DefinitionNotFoundException
      * @throws GenericSwaggerException
      * @throws HttpMethodNotFoundException
@@ -280,7 +275,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchResponseBodyNotEmpty()
+    public function testMatchResponseBodyNotEmpty(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
         $this->expectExceptionMessage("Expected empty body for");
@@ -301,7 +296,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchResponseBodyComplex()
+    public function testMatchResponseBodyComplex(): void
     {
         $body = [
             "id" => 10,
@@ -340,7 +335,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchResponseBodyWhenValueWithNestedPropertiesIsNullAndNullsAreAllowed()
+    public function testMatchResponseBodyWhenValueWithNestedPropertiesIsNullAndNullsAreAllowed(): void
     {
         $allowNullValues = true;
         $body = [
@@ -377,7 +372,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      */
-    public function testAdditionalPropertiesInObjectInResponseBody()
+    public function testAdditionalPropertiesInObjectInResponseBody(): void
     {
         $body = ['value1' => 1, 'value2' => 2];
         $responseParameter = self::openApiSchema5()->getResponseParameters('/tests/additional_properties', 'get', 200);
@@ -393,7 +388,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      */
-    public function testAdditionalPropertiesInObjectInResponseBodyDoNotMatch()
+    public function testAdditionalPropertiesInObjectInResponseBodyDoNotMatch(): void
     {
         $this->expectExceptionMessage("Expected 'value2' to be numeric, but found 'string'");
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
@@ -414,7 +409,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testIssue9()
+    public function testIssue9(): void
     {
         $body =
             [
@@ -448,7 +443,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testIssue9Error()
+    public function testIssue9Error(): void
     {
         $this->expectException(InvalidRequestException::class);
         $this->expectExceptionMessageMatches("/I expected an array here.*/");
@@ -482,7 +477,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchAnyValue()
+    public function testMatchAnyValue(): void
     {
         $body = "string";
         $responseParameter = $this->openApiSchema2()->getResponseParameters('/v2/anyvalue', 'get', 200);
@@ -507,7 +502,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      * @throws InvalidRequestException
      * @throws InvalidDefinitionException
      */
-    public function testMatchAllOf()
+    public function testMatchAllOf(): void
     {
         $body = ["name" => "Bob", "email" => "bob@example.com"];
         $responseParameter = $this->openApiSchema2()->getResponseParameters('/v2/allof', 'get', 200);
@@ -527,7 +522,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      */
-    public function testResponseDefault()
+    public function testResponseDefault(): void
     {
         $body = [];
         $responseParameter = $this->openApiSchema()->getResponseParameters('/v2/user', 'post', 503);
@@ -541,7 +536,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      * @throws InvalidRequestException
      * @throws HttpMethodNotFoundException
      */
-    public function testResponseWithNoDefault()
+    public function testResponseWithNoDefault(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\InvalidDefinitionException::class);
         $this->expectExceptionMessage("Could not found status code '503'");
