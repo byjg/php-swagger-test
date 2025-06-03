@@ -5,9 +5,9 @@ namespace Tests;
 
 use ByJG\ApiTools\Base\Schema;
 
-require_once "AbstractRequesterTest.php";
+require_once "AbstractRequester.php";
 
-class OpenApiTest extends AbstractRequesterTest
+class OpenApi extends AbstractRequester
 {
     #[\Override]
     public function setUp(): void

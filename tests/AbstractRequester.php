@@ -20,7 +20,7 @@ use ByJG\WebRequest\Psr7\MemoryStream;
 use ByJG\WebRequest\Psr7\Request;
 use ByJG\WebRequest\Psr7\Response;
 
-abstract class AbstractRequesterTest extends ApiTestCase
+abstract class AbstractRequester extends ApiTestCase
 {
     /**
      * @throws GenericSwaggerException
