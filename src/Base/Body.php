@@ -103,7 +103,7 @@ abstract class Body
     private function checkPattern(string $name, mixed $body, string $pattern): void
     {
         $pattern = '/' . rtrim(ltrim($pattern, '/'), '/') . '/';
-        $isSuccess = (bool) preg_match($pattern, $body);
+        $isSuccess = (bool)preg_match($pattern, (string)$body);
 
         if (!$isSuccess) {
             throw new NotMatchedException("Value '$body' in '$name' not matched in pattern. ", $this->structure);
@@ -214,32 +214,32 @@ abstract class Body
         $nullable = isset($schemaArray['nullable']) ? (bool)$schemaArray['nullable'] : $this->schema->isAllowNullValues();
 
         $validators = [
-            function () use ($name, $body, $type, $nullable)
+            function () use ($name, $body, $type, $nullable): bool|null
             {
                 return $this->matchNull($name, $body, $type, $nullable);
             },
 
-            function () use ($name, $schemaArray, $body, $type)
+            function () use ($name, $schemaArray, $body, $type): bool|null
             {
                 return $this->matchString($name, $schemaArray, $body, $type);
             },
 
-            function () use ($name, $schemaArray, $body, $type)
+            function () use ($name, $schemaArray, $body, $type): bool|null
             {
                 return $this->matchNumber($name, $schemaArray, $body, $type);
             },
 
-            function () use ($name, $body, $type)
+            function () use ($name, $body, $type): bool|null
             {
                 return $this->matchBool($name, $body, $type);
             },
 
-            function () use ($name, $schemaArray, $body, $type)
+            function () use ($name, $schemaArray, $body, $type): bool|null
             {
                 return $this->matchArray($name, $schemaArray, $body, $type);
             },
 
-            function () use ($name, $schemaArray, $body, $type)
+            function () use ($name, $schemaArray, $body, $type): bool|null
             {
                 return $this->matchFile($name, $schemaArray, $body, $type);
             },

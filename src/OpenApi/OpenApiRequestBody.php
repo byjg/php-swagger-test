@@ -11,6 +11,7 @@ class OpenApiRequestBody extends Body
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function match(mixed $body): bool
     {
         if (isset($this->structure['content']) || isset($this->structure['$ref'])) {

@@ -10,6 +10,7 @@ class SwaggerResponseBody extends Body
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function match(mixed $body): bool
     {
         if (!isset($this->structure['schema'])) {

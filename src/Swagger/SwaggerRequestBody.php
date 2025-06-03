@@ -12,6 +12,7 @@ class SwaggerRequestBody extends Body
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function match(mixed $body): bool
     {
         $hasFormData = false;

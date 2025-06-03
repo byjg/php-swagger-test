@@ -37,11 +37,13 @@ class SwaggerSchema extends Schema
         return $this->jsonFile['host'] ?? '';
     }
 
+    #[\Override]
     public function getBasePath(): string
     {
         return $this->jsonFile['basePath'] ?? '';
     }
 
+    #[\Override]
     public function getServerUrl(): string
     {
         $httpSchema = $this->getHttpSchema();
@@ -56,6 +58,7 @@ class SwaggerSchema extends Schema
     /**
      * @inheritDoc
      */
+    #[\Override]
     protected function validateArguments(string $parameterIn, array $parameters, array $arguments): void
     {
         foreach ($parameters as $parameter) {
@@ -73,6 +76,7 @@ class SwaggerSchema extends Schema
      * @throws DefinitionNotFoundException
      * @throws InvalidDefinitionException
      */
+    #[\Override]
     public function getDefinition(string $name): mixed
     {
         $nameParts = explode('/', $name);
@@ -92,6 +96,7 @@ class SwaggerSchema extends Schema
      * @inheritDoc
      * @throws InvalidRequestException
      */
+    #[\Override]
     public function getRequestParameters(string $path, string $method): Body
     {
         $structure = $this->getPathDefinition($path, $method);
@@ -116,6 +121,7 @@ class SwaggerSchema extends Schema
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getResponseBody(Schema $schema, string $name, array $structure, bool $allowNullValues = false): Body
     {
         return new SwaggerResponseBody($schema, $name, $structure, $allowNullValues);

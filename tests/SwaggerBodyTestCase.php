@@ -39,17 +39,17 @@ class SwaggerBodyTestCase extends TestCase
     }
 
     /**
-     * @return string
+     * @return false|string
      */
-    protected static function getSwaggerJsonContent(): string
+    protected static function getSwaggerJsonContent(): string|false
     {
         return file_get_contents(__DIR__ . '/example/swagger.json');
     }
 
     /**
-     * @return string
+     * @return false|string
      */
-    protected static function getSwaggerJsonContent_No2(): string
+    protected static function getSwaggerJsonContent_No2(): string|false
     {
         return file_get_contents(__DIR__ . '/example/swagger2.json');
     }

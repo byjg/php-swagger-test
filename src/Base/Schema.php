@@ -40,9 +40,9 @@ abstract class Schema
      *
      * @param array|string $data
      * @param bool $extraArgs
-     * @return Schema
+     * @return SwaggerSchema|OpenApiSchema
      */
-    public static function getInstance(array|string $data, bool $extraArgs = false): Schema
+    public static function getInstance(array|string $data, bool $extraArgs = false): SwaggerSchema|OpenApiSchema
     {
         // when given a string, decode from JSON
         if (is_string($data)) {

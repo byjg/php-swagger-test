@@ -18,11 +18,13 @@ class OpenApiSchemaTest extends TestCase
      */
     protected $openapiObject;
 
+    #[\Override]
     public function setUp(): void
     {
         $this->openapiObject = new OpenApiSchema(file_get_contents(__DIR__ . '/example/openapi.json'));
     }
 
+    #[\Override]
     public function tearDown(): void
     {
         $this->openapiObject = null;

@@ -6,6 +6,7 @@ use ByJG\WebRequest\Exception\MessageException;
 use ByJG\WebRequest\Exception\NetworkException;
 use ByJG\WebRequest\Exception\RequestException;
 use ByJG\WebRequest\HttpClient;
+use Override;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -36,6 +37,7 @@ class ApiRequester extends AbstractRequester
      * @throws NetworkException
      * @throws RequestException
      */
+    #[Override]
     protected function handleRequest(RequestInterface $request): ResponseInterface
     {
         $request = $request->withHeader("User-Agent", "ByJG Swagger Test");
