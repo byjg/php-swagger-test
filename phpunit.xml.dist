@@ -4,33 +4,32 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
-
 <!-- see http://www.phpunit.de/wiki/Documentation -->
-<phpunit bootstrap="./vendor/autoload.php"
-         colors="true"
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         bootstrap="./vendor/autoload.php" colors="true"
          testdox="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          convertDeprecationsToExceptions="true"
-         stopOnFailure="false">
+         stopOnFailure="false"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
 
     <php>
-        <ini name="display_errors" value="On" />
-        <ini name="display_startup_errors" value="On" />
-        <ini name="error_reporting" value="E_ALL" />
+        <ini name="display_errors" value="On"/>
+        <ini name="display_startup_errors" value="On"/>
+        <ini name="error_reporting" value="E_ALL"/>
     </php>
-    
-    <filter>
-        <whitelist>
+
+    <coverage>
+        <include>
             <directory>./src</directory>
-        </whitelist>
-    </filter>
-    
+        </include>
+    </coverage>
+
     <testsuites>
         <testsuite name="Test Suite">
             <directory>./tests/</directory>
         </testsuite>
     </testsuites>
-    
 </phpunit>

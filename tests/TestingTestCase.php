@@ -14,14 +14,14 @@ use ByJG\ApiTools\Exception\PathNotFoundException;
 use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
 use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
 use ByJG\ApiTools\MockRequester;
+use ByJG\Util\Uri;
 use ByJG\WebRequest\Exception\MessageException;
 use ByJG\WebRequest\Exception\RequestException;
 use ByJG\WebRequest\Helper\RequestMultiPart;
 use ByJG\WebRequest\MultiPartItem;
+use ByJG\WebRequest\Psr7\MemoryStream;
 use ByJG\WebRequest\Psr7\Request;
 use ByJG\WebRequest\Psr7\Response;
-use ByJG\Util\Uri;
-use ByJG\WebRequest\Psr7\MemoryStream;
 
 /**
  * Class TestingTestCase
@@ -115,9 +115,6 @@ abstract class TestingTestCase extends ApiTestCase
      */
     public function testAddError()
     {
-        $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
-        $this->expectExceptionMessage("Required property 'name'");
-        
         $request = new ApiRequester();
         $request
             ->withMethod('POST')
@@ -130,25 +127,13 @@ abstract class TestingTestCase extends ApiTestCase
                 'status' => 'available'
             ]);
 
-        $this->assertRequest($request);
+        $this->assertRequestException($request, NotMatchedException::class, "Required property 'name'");
     }
 
     /**
-     * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
-     * @throws HttpMethodNotFoundException
-     * @throws InvalidDefinitionException
-     * @throws InvalidRequestException
-     * @throws NotMatchedException
-     * @throws PathNotFoundException
-     * @throws RequiredArgumentNotFound
-     * @throws StatusCodeNotMatchedException
      */
     public function testPostError()
     {
-        $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
-        $this->expectExceptionMessage("Expected empty body");
-        
         $request = new ApiRequester();
         $request
             ->withMethod('POST')
@@ -162,7 +147,7 @@ abstract class TestingTestCase extends ApiTestCase
                 'status' => 'available'
             ]);
 
-        $this->assertRequest($request);
+        $this->assertRequestException($request, NotMatchedException::class, "Expected empty body");
     }
 
     /**

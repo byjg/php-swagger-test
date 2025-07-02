@@ -3,11 +3,11 @@
 namespace ByJG\ApiTools\Swagger;
 
 use ByJG\ApiTools\Base\Body;
+use ByJG\ApiTools\Base\Parameter;
 use ByJG\ApiTools\Base\Schema;
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\InvalidRequestException;
-use ByJG\ApiTools\Exception\NotMatchedException;
 
 class SwaggerSchema extends Schema
 {
@@ -59,10 +59,9 @@ class SwaggerSchema extends Schema
     protected function validateArguments(string $parameterIn, array $parameters, array $arguments): void
     {
         foreach ($parameters as $parameter) {
-            if ($parameter['in'] === $parameterIn
-                && $parameter['type'] === "integer"
-                && filter_var($arguments[$parameter['name']], FILTER_VALIDATE_INT) === false) {
-                throw new NotMatchedException('Path expected an integer value');
+            if ($parameter['in'] === $parameterIn) {
+                $parameterMatch = new Parameter($this, $parameter['name'], $parameter ?? [], !($parameter["required"] ?? false));
+                $parameterMatch->match($arguments[$parameter['name']] ?? null);
             }
         }
     }
@@ -92,9 +91,9 @@ class SwaggerSchema extends Schema
      * @inheritDoc
      * @throws InvalidRequestException
      */
-    public function getRequestParameters(string $path, string $method): Body
+    public function getRequestParameters(string $path, string $method, ?string $queryString = null): Body
     {
-        $structure = $this->getPathDefinition($path, $method);
+        $structure = $this->parsePathRequest($path, $method, $queryString);
 
         if (!isset($structure[self::SWAGGER_PARAMETERS])) {
             return new SwaggerRequestBody($this, "$method $path", []);

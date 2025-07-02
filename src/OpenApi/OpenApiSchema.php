@@ -3,6 +3,7 @@
 namespace ByJG\ApiTools\OpenApi;
 
 use ByJG\ApiTools\Base\Body;
+use ByJG\ApiTools\Base\Parameter;
 use ByJG\ApiTools\Base\Schema;
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
@@ -62,6 +63,10 @@ class OpenApiSchema extends Schema
      */
     protected function validateArguments(string $parameterIn, array $parameters, array $arguments): void
     {
+        $checked = array_filter($arguments, function ($key) {
+            return !is_numeric($key);
+        }, ARRAY_FILTER_USE_KEY);
+
         foreach ($parameters as $parameter) {
             if (isset($parameter['$ref'])) {
                 $paramParts = explode("/", $parameter['$ref']);
@@ -77,11 +82,16 @@ class OpenApiSchema extends Schema
                 }
                 $parameter = $this->jsonFile[self::SWAGGER_COMPONENTS][self::SWAGGER_PARAMETERS][$paramParts[3]];
             }
-            if ($parameter['in'] === $parameterIn &&
-                $parameter['schema']['type'] === "integer"
-                && filter_var($arguments[$parameter['name']], FILTER_VALIDATE_INT) === false) {
-                throw new NotMatchedException('Path expected an integer value');
+            if ($parameter['in'] === $parameterIn) {
+                $parameterMatch = new Parameter($this, $parameter['name'], $parameter["schema"] ?? [], !($parameter["required"] ?? false));
+                $parameterMatch->match($arguments[$parameter['name']] ?? null);
             }
+
+            unset($checked[$parameter['name']]);
+        }
+
+        if (!empty($checked)) {
+            throw new NotMatchedException("There are parameters that are not defined in the schema: " . implode(", ", array_keys($checked)));
         }
     }
 
@@ -110,9 +120,9 @@ class OpenApiSchema extends Schema
      * @inheritDoc
      * @throws InvalidRequestException
      */
-    public function getRequestParameters(string $path, string $method): Body
+    public function getRequestParameters(string $path, string $method, ?string $queryString = null): Body
     {
-        $structure = $this->getPathDefinition($path, $method);
+        $structure = $this->parsePathRequest($path, $method, $queryString);
 
         if (!isset($structure['requestBody'])) {
             return new OpenApiRequestBody($this, "$method $path", []);

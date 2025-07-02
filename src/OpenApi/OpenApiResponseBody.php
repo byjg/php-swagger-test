@@ -23,7 +23,16 @@ class OpenApiResponseBody extends Body
             $definition = $this->schema->getDefinition($this->structure['$ref']);
             return $this->matchSchema($this->name, $definition, $body) ?? false;
         }
-        
-        return $this->matchSchema($this->name, $this->structure['content'][key($this->structure['content'])]['schema'], $body) ?? false;
+
+        foreach ($this->structure['content'] as $contentType => $schema) {
+            if ($contentType === 'application/json') {
+                if (!isset($schema['schema'])) {
+                    throw new NotMatchedException("Content type " . $contentType . " does not have schema");
+                }
+                return $this->matchSchema($this->name, $schema['schema'], $body) ?? false;
+            }
+        }
+
+        return true;
     }
 }

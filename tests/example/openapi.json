@@ -564,6 +564,38 @@
         }
       }
     },
+    "/store/orderhtml": {
+      "post": {
+        "tags": [
+          "store"
+        ],
+        "summary": "Place an order for a pet",
+        "description": "",
+        "operationId": "placeOrder",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Order"
+              }
+            }
+          },
+          "description": "order placed for purchasing the pet",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The object to be created",
+            "content": {
+              "text/html": {}
+            }
+          },
+          "400": {
+            "description": "Invalid Order"
+          }
+        }
+      }
+    },
     "/store/order/{orderId}": {
       "get": {
         "tags": [
