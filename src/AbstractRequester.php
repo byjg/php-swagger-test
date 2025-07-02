@@ -12,13 +12,12 @@ use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\ApiTools\Exception\PathNotFoundException;
 use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
 use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
+use ByJG\Util\Uri;
 use ByJG\WebRequest\Exception\MessageException;
 use ByJG\WebRequest\Exception\RequestException;
-use ByJG\WebRequest\Psr7\Request;
-use ByJG\Util\Uri;
 use ByJG\WebRequest\Psr7\MemoryStream;
+use ByJG\WebRequest\Psr7\Request;
 use ByJG\XmlUtil\XmlDocument;
-use ByJG\XmlUtil\XmlNode;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -233,11 +232,12 @@ abstract class AbstractRequester
 
         // Prepare Body to Match Against Specification
         $rawBody = $this->psr7Request->getBody()->getContents();
+        $isXmlBody = false;
         $requestBody = null;
         $contentType = $this->psr7Request->getHeaderLine("content-type");
         if (!empty($rawBody)) {
             if (str_contains($contentType, 'application/xml') || str_contains($contentType, 'text/xml')) {
-                new XmlDocument($rawBody);
+                $isXmlBody = new XmlDocument($rawBody);
             } elseif (empty($contentType) || str_contains($contentType, "application/json")) {
                 $requestBody = json_decode($rawBody, true);
             } elseif (str_contains($contentType, "multipart/")) {
@@ -246,11 +246,12 @@ abstract class AbstractRequester
                 throw new InvalidRequestException("Cannot handle Content Type '$contentType'");
             }
 
-            // Check if the body is the expected before request
-            if (!is_null($requestBody)) {
-                $bodyRequestDef = $this->schema->getRequestParameters($this->psr7Request->getUri()->getPath(), $this->psr7Request->getMethod());
-                $bodyRequestDef->match($requestBody);
-            }
+        }
+
+        // Check if the body is the expected before request
+        if ($isXmlBody === false) {
+            $bodyRequestDef = $this->schema->getRequestParameters($this->psr7Request->getUri()->getPath(), $this->psr7Request->getMethod());
+            $bodyRequestDef->match($requestBody);
         }
 
         // Handle Request
