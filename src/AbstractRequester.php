@@ -233,26 +233,24 @@ abstract class AbstractRequester
 
         // Prepare Body to Match Against Specification
         $rawBody = $this->psr7Request->getBody()->getContents();
+        $requestBody = null;
         $contentType = $this->psr7Request->getHeaderLine("content-type");
-
-        if (str_contains($contentType, 'application/xml') || str_contains($contentType, 'text/xml')) {
-            if (!empty($rawBody)) {
+        if (!empty($rawBody)) {
+            if (str_contains($contentType, 'application/xml') || str_contains($contentType, 'text/xml')) {
                 new XmlDocument($rawBody);
-            }
-        } else {
-            $requestBody = null;
-            if (!empty($rawBody)) {
-                if (empty($contentType) || str_contains($contentType, "application/json")) {
-                    $requestBody = json_decode($rawBody, true);
-                } elseif (str_contains($contentType, "multipart/")) {
-                    $requestBody = $this->parseMultiPartForm($contentType, $rawBody);
-                } else {
-                    throw new InvalidRequestException("Cannot handle Content Type '$contentType'");
-                }
+            } elseif (empty($contentType) || str_contains($contentType, "application/json")) {
+                $requestBody = json_decode($rawBody, true);
+            } elseif (str_contains($contentType, "multipart/")) {
+                $requestBody = $this->parseMultiPartForm($contentType, $rawBody);
+            } else {
+                throw new InvalidRequestException("Cannot handle Content Type '$contentType'");
             }
 
-            $bodyRequestDef = $this->schema->getRequestParameters($this->psr7Request->getUri()->getPath(), $this->psr7Request->getMethod());
-            $bodyRequestDef->match($requestBody);
+            // Check if the body is the expected before request
+            if (!is_null($requestBody)) {
+                $bodyRequestDef = $this->schema->getRequestParameters($this->psr7Request->getUri()->getPath(), $this->psr7Request->getMethod());
+                $bodyRequestDef->match($requestBody);
+            }
         }
 
         // Handle Request
