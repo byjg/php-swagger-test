@@ -172,6 +172,11 @@ abstract class AbstractRequester
         return $this;
     }
 
+    public function getPsr7Request(): RequestInterface
+    {
+        return $this->psr7Request;
+    }
+
     public function assertResponseCode(int $code): self
     {
         $this->statusExpected = $code;
@@ -205,7 +210,7 @@ abstract class AbstractRequester
      * @throws RequiredArgumentNotFound
      * @throws StatusCodeNotMatchedException
      */
-    public function send(): ResponseInterface
+    public function send(bool $matchQueryParams = true): ResponseInterface
     {
         // Process URI based on the OpenAPI schema
         $uriSchema = new Uri($this->schema->getServerUrl());
@@ -250,7 +255,7 @@ abstract class AbstractRequester
 
         // Check if the body is the expected before request
         if ($isXmlBody === false) {
-            $bodyRequestDef = $this->schema->getRequestParameters($this->psr7Request->getUri()->getPath(), $this->psr7Request->getMethod());
+            $bodyRequestDef = $this->schema->getRequestParameters($this->psr7Request->getUri()->getPath(), $this->psr7Request->getMethod(), $matchQueryParams ? $this->psr7Request->getUri()->getQuery() : null);
             $bodyRequestDef->match($requestBody);
         }
 

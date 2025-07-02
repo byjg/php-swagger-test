@@ -70,7 +70,7 @@ abstract class Schema
      * @throws NotMatchedException
      * @throws PathNotFoundException
      */
-    public function getPathDefinition(string $path, string $method): mixed
+    protected function parsePathRequest(string $path, string $method, ?string $queryString = null): mixed
     {
         $method = strtolower($method);
 
@@ -81,6 +81,12 @@ abstract class Schema
         // Try direct match
         if (isset($this->jsonFile[self::SWAGGER_PATHS][$uri->getPath()])) {
             if (isset($this->jsonFile[self::SWAGGER_PATHS][$uri->getPath()][$method])) {
+
+                if (!is_null($queryString)) {
+                    parse_str($queryString, $matches);
+                    $this->prepareToValidateArguments($uri->getPath(), $method, 'query', $matches);
+                }
+
                 return $this->jsonFile[self::SWAGGER_PATHS][$uri->getPath()][$method];
             }
             throw new HttpMethodNotFoundException("The http method '$method' not found in '$path'");
@@ -104,18 +110,12 @@ abstract class Schema
                     throw new HttpMethodNotFoundException("The http method '$method' not found in '$path'");
                 }
 
-                $parametersPathMethod = [];
-                $parametersPath = [];
+                $this->prepareToValidateArguments($pathItem, $method, 'path', $matches);
 
-                if (isset($pathDef[$method][self::SWAGGER_PARAMETERS])) {
-                    $parametersPathMethod = $pathDef[$method][self::SWAGGER_PARAMETERS];
+                if (!is_null($queryString)) {
+                    parse_str($queryString, $queryParsed);
+                    $this->prepareToValidateArguments($pathItem, $method, 'query', $queryParsed);
                 }
-
-                if (isset($pathDef[self::SWAGGER_PARAMETERS])) {
-                    $parametersPath = $pathDef[self::SWAGGER_PARAMETERS];
-                }
-
-                $this->validateArguments('path', array_merge($parametersPathMethod, $parametersPath), $matches);
 
                 return $pathDef[$method];
             }
@@ -124,16 +124,42 @@ abstract class Schema
         throw new PathNotFoundException('Path "' . $path . '" not found');
     }
 
+    public function getPathDefinition(string $path, string $method): mixed
+    {
+        return $this->parsePathRequest($path, $method);
+    }
+
+    /**
+     * @throws DefinitionNotFoundException
+     * @throws NotMatchedException
+     * @throws InvalidDefinitionException
+     */
+    protected function prepareToValidateArguments(string $path, string $method, string $parameterIn, $matches): void
+    {
+        $pathDef = $this->jsonFile[self::SWAGGER_PATHS][$path];
+
+        $parametersPathMethod = [];
+        $parametersPath = [];
+
+        if (isset($pathDef[$method][self::SWAGGER_PARAMETERS])) {
+            $parametersPathMethod = $pathDef[$method][self::SWAGGER_PARAMETERS];
+        }
+
+        if (isset($pathDef[self::SWAGGER_PARAMETERS])) {
+            $parametersPath = $pathDef[self::SWAGGER_PARAMETERS];
+        }
+
+        $this->validateArguments($parameterIn, array_merge($parametersPathMethod, $parametersPath), $matches);
+    }
+
     /**
      * @param string $path
      * @param string $method
      * @param int $status
      * @return Body
-     * @throws DefinitionNotFoundException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
-     * @throws NotMatchedException
      * @throws PathNotFoundException
      */
     public function getResponseParameters(string $path, string $method, int $status): Body
@@ -203,7 +229,7 @@ abstract class Schema
      * @throws NotMatchedException
      * @throws PathNotFoundException
      */
-    abstract public function getRequestParameters(string $path, string $method): Body;
+    abstract public function getRequestParameters(string $path, string $method, ?string $queryString = null): Body;
 
     /**
      * @param Schema $schema
