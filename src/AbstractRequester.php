@@ -17,6 +17,7 @@ use ByJG\WebRequest\Exception\MessageException;
 use ByJG\WebRequest\Exception\RequestException;
 use ByJG\WebRequest\Psr7\MemoryStream;
 use ByJG\WebRequest\Psr7\Request;
+use ByJG\XmlUtil\XmlDocument;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -235,21 +236,28 @@ abstract class AbstractRequester
         $this->psr7Request = $this->psr7Request->withUri($uri);
 
         // Prepare Body to Match Against Specification
-        $requestBody = $this->psr7Request->getBody()->getContents();
-        if (!empty($requestBody)) {
-            $contentType = $this->psr7Request->getHeaderLine("content-type");
-            if (empty($contentType) || str_contains($contentType, "application/json")) {
-                $requestBody = json_decode($requestBody, true);
+        $rawBody = $this->psr7Request->getBody()->getContents();
+        $isXmlBody = false;
+        $requestBody = null;
+        $contentType = $this->psr7Request->getHeaderLine("content-type");
+        if (!empty($rawBody)) {
+            if (str_contains($contentType, 'application/xml') || str_contains($contentType, 'text/xml')) {
+                $isXmlBody = new XmlDocument($rawBody);
+            } elseif (empty($contentType) || str_contains($contentType, "application/json")) {
+                $requestBody = json_decode($rawBody, true);
             } elseif (str_contains($contentType, "multipart/")) {
-                $requestBody = $this->parseMultiPartForm($contentType, $requestBody);
+                $requestBody = $this->parseMultiPartForm($contentType, $rawBody);
             } else {
                 throw new InvalidRequestException("Cannot handle Content Type '$contentType'");
             }
+
         }
 
         // Check if the body is the expected before request
-        $bodyRequestDef = $this->schema->getRequestParameters($this->psr7Request->getUri()->getPath(), $this->psr7Request->getMethod(), $matchQueryParams ? $this->psr7Request->getUri()->getQuery() : null);
-        $bodyRequestDef->match($requestBody);
+        if ($isXmlBody === false) {
+            $bodyRequestDef = $this->schema->getRequestParameters($this->psr7Request->getUri()->getPath(), $this->psr7Request->getMethod(), $matchQueryParams ? $this->psr7Request->getUri()->getQuery() : null);
+            $bodyRequestDef->match($requestBody);
+        }
 
         // Handle Request
         $response = $this->handleRequest($this->psr7Request);

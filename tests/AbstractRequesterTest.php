@@ -339,6 +339,45 @@ abstract class AbstractRequesterTest extends ApiTestCase
         $this->assertRequest($request);
     }
 
+    /**
+     * @throws DefinitionNotFoundException
+     * @throws GenericSwaggerException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
+     * @throws StatusCodeNotMatchedException
+     * @throws MessageException
+     * @throws RequestException
+     */
+    public function testPostPetWithXmlBody()
+    {
+        $xmlBody =
+            '<Pet id="99">' .
+            '<name>Garfield XML</name>' .
+            '<status>available</status>' .
+            '<photoUrls>' .
+            '<photoUrl>http://example.com/garfield.png</photoUrl>' .
+            '</photoUrls>' .
+            '<category id="1">' .
+            '<name>Cats</name>' .
+            '</category>' .
+            '</Pet>';
+
+        $expectedResponse = Response::getInstance(200);
+
+        $request = new MockRequester($expectedResponse);
+        $request
+            ->withMethod('POST')
+            ->withPath('/pet')
+            ->withRequestHeader(['Content-Type' => 'application/xml'])
+            ->withRequestBody($xmlBody);
+
+        $this->assertRequest($request);
+    }
+
     public function testMatchParameterInQueryAssert()
     {
         $expectedResponse = Response::getInstance(200)
