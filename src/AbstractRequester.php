@@ -17,6 +17,8 @@ use ByJG\WebRequest\Exception\RequestException;
 use ByJG\WebRequest\Psr7\Request;
 use ByJG\Util\Uri;
 use ByJG\WebRequest\Psr7\MemoryStream;
+use ByJG\XmlUtil\XmlDocument;
+use ByJG\XmlUtil\XmlNode;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -230,21 +232,28 @@ abstract class AbstractRequester
         $this->psr7Request = $this->psr7Request->withUri($uri);
 
         // Prepare Body to Match Against Specification
-        $requestBody = $this->psr7Request->getBody()->getContents();
-        if (!empty($requestBody)) {
-            $contentType = $this->psr7Request->getHeaderLine("content-type");
-            if (empty($contentType) || str_contains($contentType, "application/json")) {
-                $requestBody = json_decode($requestBody, true);
-            } elseif (str_contains($contentType, "multipart/")) {
-                $requestBody = $this->parseMultiPartForm($contentType, $requestBody);
-            } else {
-                throw new InvalidRequestException("Cannot handle Content Type '$contentType'");
-            }
-        }
+        $rawBody = $this->psr7Request->getBody()->getContents();
+        $contentType = $this->psr7Request->getHeaderLine("content-type");
 
-        // Check if the body is the expected before request
-        $bodyRequestDef = $this->schema->getRequestParameters($this->psr7Request->getUri()->getPath(), $this->psr7Request->getMethod());
-        $bodyRequestDef->match($requestBody);
+        if (str_contains($contentType, 'application/xml') || str_contains($contentType, 'text/xml')) {
+            if (!empty($rawBody)) {
+                new XmlDocument($rawBody);
+            }
+        } else {
+            $requestBody = null;
+            if (!empty($rawBody)) {
+                if (empty($contentType) || str_contains($contentType, "application/json")) {
+                    $requestBody = json_decode($rawBody, true);
+                } elseif (str_contains($contentType, "multipart/")) {
+                    $requestBody = $this->parseMultiPartForm($contentType, $rawBody);
+                } else {
+                    throw new InvalidRequestException("Cannot handle Content Type '$contentType'");
+                }
+            }
+
+            $bodyRequestDef = $this->schema->getRequestParameters($this->psr7Request->getUri()->getPath(), $this->psr7Request->getMethod());
+            $bodyRequestDef->match($requestBody);
+        }
 
         // Handle Request
         $response = $this->handleRequest($this->psr7Request);
