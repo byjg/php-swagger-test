@@ -10,16 +10,22 @@ on:
       - master
 
 jobs:
+  supported-versions-matrix:
+    name: Supported Versions Matrix
+    runs-on: ubuntu-latest
+    outputs:
+      extensions: ${{ steps.supported-versions-matrix.outputs.extensions }}
+      version: ${{ steps.supported-versions-matrix.outputs.version }}
+    steps:
+      - uses: actions/checkout@v3
+      - id: supported-versions-matrix
+        uses: WyriHaximus/github-action-composer-php-versions-in-range@v1
   Build:
     runs-on: 'ubuntu-latest'
     container: 'byjg/php:${{ matrix.php-version }}-cli'
     strategy:
       matrix:
-        php-version:
-          - "8.3"
-          - "8.2"
-          - "8.1"
-
+        php: ${{ fromJson(needs.supported-versions-matrix.outputs.version) }}
     steps:
       - uses: actions/checkout@v4
       - name: Setup test
