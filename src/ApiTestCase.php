@@ -80,7 +80,7 @@ abstract class ApiTestCase extends TestCase
         string $path,
         int $statusExpected = 200,
         string|array|null $query = null,
-        array|string $requestBody = null,
+        array|string|null $requestBody = null,
         array $requestHeader = []
     ): ResponseInterface {
         $this->checkSchema();
