@@ -3,7 +3,7 @@
 namespace Tests;
 
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
-use ByJG\ApiTools\Exception\GenericSwaggerException;
+use ByJG\ApiTools\Exception\GenericApiException;
 use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\InvalidRequestException;
@@ -15,13 +15,13 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
 {
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
      * @throws NotMatchedException
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
+     * @throws GenericApiException
      */
     public function testMatchResponseBody(): void
     {
@@ -67,7 +67,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -90,7 +90,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -118,7 +118,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -146,7 +146,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -175,7 +175,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -197,7 +197,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -224,7 +224,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -249,7 +249,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -267,7 +267,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -288,7 +288,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -327,7 +327,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -363,7 +363,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
     }
 
     /**
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws DefinitionNotFoundException
      * @throws PathNotFoundException
      * @throws NotMatchedException
@@ -380,7 +380,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
     }
 
     /**
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws DefinitionNotFoundException
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
@@ -401,7 +401,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      * Issue #9
      *
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -435,7 +435,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      * Issue #9
      *
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -470,7 +470,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
      *
      * @throws InvalidRequestException
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws NotMatchedException
@@ -493,7 +493,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
     }
 
     /**
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws DefinitionNotFoundException
      * @throws NotMatchedException
      * @throws RequiredArgumentNotFound
@@ -513,7 +513,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
     }
 
     /**
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws DefinitionNotFoundException
      * @throws PathNotFoundException
      * @throws NotMatchedException

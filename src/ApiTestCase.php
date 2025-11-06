@@ -4,7 +4,7 @@ namespace ByJG\ApiTools;
 
 use ByJG\ApiTools\Base\Schema;
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
-use ByJG\ApiTools\Exception\GenericSwaggerException;
+use ByJG\ApiTools\Exception\GenericApiException;
 use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\InvalidRequestException;
@@ -65,7 +65,7 @@ abstract class ApiTestCase extends TestCase
      * @param array $requestHeader
      * @return mixed
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -73,7 +73,7 @@ abstract class ApiTestCase extends TestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      * @throws StatusCodeNotMatchedException
-     * @deprecated Use assertRequest instead
+     * @deprecated Since version 6.0, use assertRequest() with ApiRequester fluent interface instead. Will be removed in version 7.0
      */
     protected function makeRequest(
         string $method,
@@ -107,7 +107,7 @@ abstract class ApiTestCase extends TestCase
      * @param AbstractRequester $request
      * @return Response
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -137,12 +137,12 @@ abstract class ApiTestCase extends TestCase
     }
 
     /**
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      */
     protected function checkSchema(): void
     {
         if (!$this->schema) {
-            throw new GenericSwaggerException('You have to configure a schema for either the request or the testcase');
+            throw new GenericApiException('You have to configure a schema for either the request or the testcase');
         }
     }
 }

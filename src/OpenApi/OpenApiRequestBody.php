@@ -27,7 +27,11 @@ class OpenApiRequestBody extends Body
         }
 
         if (!empty($body)) {
-            throw new InvalidDefinitionException('Body is passed but there is no request body definition');
+            throw new InvalidDefinitionException(
+                "Request body provided for '{$this->name}' but the OpenAPI 3.0 specification does not define a request body for this operation.\n\n" .
+                "Suggestion: Either remove the request body from your test using withRequestBody(), or add a 'requestBody' " .
+                "definition to your OpenAPI specification for this endpoint."
+            );
         }
 
         return false;

@@ -3,7 +3,7 @@
 namespace ByJG\ApiTools\Base;
 
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
-use ByJG\ApiTools\Exception\GenericSwaggerException;
+use ByJG\ApiTools\Exception\GenericApiException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\InvalidRequestException;
 use ByJG\ApiTools\Exception\NotMatchedException;
@@ -56,13 +56,13 @@ abstract class Body
 
     /**
      * @param mixed $body
-     * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @return bool
+     *@throws GenericApiException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
      * @throws NotMatchedException
      * @throws RequiredArgumentNotFound
-     * @return bool
+     * @throws DefinitionNotFoundException
      */
     abstract public function match(mixed $body): bool;
 
@@ -178,7 +178,7 @@ abstract class Body
      * @param mixed $type
      * @return ?bool
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
      * @throws NotMatchedException
@@ -261,7 +261,7 @@ abstract class Body
      * @param mixed $body
      * @return bool|null
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
      * @throws NotMatchedException
@@ -337,7 +337,7 @@ abstract class Body
      * @return ?bool
      * @throws DefinitionNotFoundException
      * @throws InvalidDefinitionException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws InvalidRequestException
      * @throws NotMatchedException
      */
@@ -407,7 +407,7 @@ abstract class Body
             return true;
         }
 
-        throw new GenericSwaggerException("Not all cases are defined. Please open an issue about this. Schema: $name");
+        throw new GenericApiException("Not all cases are defined. Please open an issue about this. Schema: $name");
     }
 
     /**

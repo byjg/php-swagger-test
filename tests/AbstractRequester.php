@@ -4,7 +4,7 @@ namespace Tests;
 
 use ByJG\ApiTools\ApiTestCase;
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
-use ByJG\ApiTools\Exception\GenericSwaggerException;
+use ByJG\ApiTools\Exception\GenericApiException;
 use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\InvalidRequestException;
@@ -23,17 +23,17 @@ use ByJG\WebRequest\Psr7\Response;
 abstract class AbstractRequester extends ApiTestCase
 {
     /**
-     * @throws GenericSwaggerException
      * @throws DefinitionNotFoundException
-     * @throws NotMatchedException
-     * @throws RequiredArgumentNotFound
      * @throws HttpMethodNotFoundException
-     * @throws PathNotFoundException
-     * @throws StatusCodeNotMatchedException
-     * @throws RequestException
+     * @throws InvalidDefinitionException
      * @throws InvalidRequestException
      * @throws MessageException
-     * @throws InvalidDefinitionException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequestException
+     * @throws RequiredArgumentNotFound
+     * @throws StatusCodeNotMatchedException
+     * @throws GenericApiException
      */
     public function testExpectOK(): void
     {
@@ -64,7 +64,7 @@ abstract class AbstractRequester extends ApiTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -96,7 +96,7 @@ abstract class AbstractRequester extends ApiTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -127,7 +127,7 @@ abstract class AbstractRequester extends ApiTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -153,7 +153,7 @@ abstract class AbstractRequester extends ApiTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -183,7 +183,7 @@ abstract class AbstractRequester extends ApiTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -212,7 +212,7 @@ abstract class AbstractRequester extends ApiTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -245,7 +245,7 @@ abstract class AbstractRequester extends ApiTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -281,7 +281,7 @@ abstract class AbstractRequester extends ApiTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -316,7 +316,7 @@ abstract class AbstractRequester extends ApiTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -348,16 +348,16 @@ abstract class AbstractRequester extends ApiTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
+     * @throws MessageException
      * @throws NotMatchedException
      * @throws PathNotFoundException
+     * @throws RequestException
      * @throws RequiredArgumentNotFound
      * @throws StatusCodeNotMatchedException
-     * @throws MessageException
-     * @throws RequestException
      */
     public function testValidateAssertBodyNotContains(): void
     {

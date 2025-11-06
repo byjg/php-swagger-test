@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use ByJG\ApiTools\Exception\GenericSwaggerException;
+use ByJG\ApiTools\Exception\GenericApiException;
 use PHPUnit\Framework\TestCase;
 
 class BaseExceptionTest extends TestCase
@@ -10,7 +10,7 @@ class BaseExceptionTest extends TestCase
 
     public function testGetBody(): void
     {
-        $exception = new GenericSwaggerException("message", ["a" => 10]);
+        $exception = new GenericApiException("message", ["a" => 10]);
 
         $this->assertEquals("message ->\n{\n    \"a\": 10\n}\n", $exception->getMessage());
         $this->assertEquals(["a" => 10], $exception->getBody());

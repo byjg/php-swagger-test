@@ -5,7 +5,7 @@ namespace Tests;
 use ByJG\ApiTools\ApiRequester;
 use ByJG\ApiTools\ApiTestCase;
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
-use ByJG\ApiTools\Exception\GenericSwaggerException;
+use ByJG\ApiTools\Exception\GenericApiException;
 use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\InvalidRequestException;
@@ -36,15 +36,15 @@ abstract class TestingTestCase extends ApiTestCase
 {
 
     /**
-     * @throws GenericSwaggerException
      * @throws DefinitionNotFoundException
-     * @throws PathNotFoundException
-     * @throws StatusCodeNotMatchedException
-     * @throws NotMatchedException
-     * @throws InvalidRequestException
-     * @throws RequiredArgumentNotFound
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
+     * @throws StatusCodeNotMatchedException
+     * @throws GenericApiException
      */
     public function testGet(): void
     {
@@ -57,7 +57,7 @@ abstract class TestingTestCase extends ApiTestCase
     }
 
     /**
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws DefinitionNotFoundException
      * @throws NotMatchedException
      * @throws RequiredArgumentNotFound
@@ -104,7 +104,7 @@ abstract class TestingTestCase extends ApiTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -135,7 +135,7 @@ abstract class TestingTestCase extends ApiTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -166,7 +166,7 @@ abstract class TestingTestCase extends ApiTestCase
     }
 
     /**
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws PathNotFoundException
      * @throws DefinitionNotFoundException
      * @throws StatusCodeNotMatchedException
