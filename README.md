@@ -28,18 +28,18 @@ REST API.
 
 The ApiTestCase's assertion process is based on throwing exceptions if some validation or test failed.
 
-## Use cases for PHP Swagger test
+## Documentation
 
-You can use the Swagger Test library as:
-
-- [Functional test cases](docs/functional-tests.md)
-- [Contract test cases](docs/contract-tests.md)
-- [Runtime parameters validator](docs/runtime-parameters-validator.md)
-- [Mocking Requests](docs/mock-requests.md)
-- [Schema classes](docs/schema-classes.md)
-- [Using the OpenApiValidation trait](docs/trait-usage.md)
-- [Migration guide](docs/migration-guide.md)
-- [Troubleshooting](docs/troubleshooting.md)
+- [Functional test cases](docs/functional-tests.md) - Testing your API with HTTP requests
+- [Contract test cases](docs/contract-tests.md) - Testing without HTTP using custom requesters
+- [Runtime parameters validator](docs/runtime-parameters-validator.md) - Validating requests in production
+- [Mocking Requests](docs/mock-requests.md) - Testing with mocked responses
+- [Schema classes](docs/schema-classes.md) - Working with OpenAPI 2.0 and 3.0 schemas
+- [Using the OpenApiValidation trait](docs/trait-usage.md) - Flexible validation without extending ApiTestCase
+- [Advanced usage](docs/advanced-usage.md) - File uploads, custom clients, authentication, and more
+- [Exception handling](docs/exceptions.md) - Understanding and handling validation exceptions
+- [Migration guide](docs/migration-guide.md) - Upgrading from older versions
+- [Troubleshooting](docs/troubleshooting.md) - Common issues and solutions
 
 ## Who is using this library?
 
