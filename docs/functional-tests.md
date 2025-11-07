@@ -148,6 +148,46 @@ public function testNestedJsonValidation()
 }
 ```
 
+### expectHeaderContains()
+
+Expect a specific header to contain a value:
+
+```php
+public function testResponseHeaders()
+{
+    $request = new \ByJG\ApiTools\ApiRequester();
+    $request
+        ->withMethod('GET')
+        ->withPath("/pet/1")
+        ->expectStatus(200)
+        ->expectHeaderContains('Content-Type', 'application/json')
+        ->expectHeaderContains('X-RateLimit-Limit', '1000');
+
+    $this->sendRequest($request);
+}
+```
+
+### expectBodyContains()
+
+Expect the response body to contain a specific string:
+
+```php
+public function testBodyContains()
+{
+    $request = new \ByJG\ApiTools\ApiRequester();
+    $request
+        ->withMethod('GET')
+        ->withPath("/pet/1")
+        ->expectStatus(200)
+        ->expectBodyContains('Fluffy')
+        ->expectBodyContains('"status":"available"');
+
+    $this->sendRequest($request);
+}
+```
+
+**Note:** This does a simple string contains check on the raw response body. For structured JSON validation, use `expectJsonContains()` or `expectJsonPath()` instead.
+
 ## Implicit Status Code Validation
 
 **Important:** `sendRequest()` automatically validates that the response status code matches the expected status (

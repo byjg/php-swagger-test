@@ -1,10 +1,12 @@
 ---
-sidebar_position: 7
+sidebar_position: 10
 ---
 
 # Troubleshooting Guide
 
 This guide helps you resolve common issues when using PHP Swagger Test.
+
+For detailed information about exceptions and how to handle them, see [Exception Handling](exceptions.md).
 
 ## Common Errors
 
