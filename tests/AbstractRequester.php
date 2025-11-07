@@ -50,7 +50,7 @@ abstract class AbstractRequester extends ApiTestCase
             ->withMethod('GET')
             ->withPath("/pet/1");
 
-        $this->assertRequest($request);
+        $this->sendRequest($request);
 
         // PSR7 Request
         $psr7Request = Request::getInstance(new Uri("/pet/1"))
@@ -59,7 +59,7 @@ abstract class AbstractRequester extends ApiTestCase
         $request = new MockRequester($expectedResponse);
         $request->withPsr7Request($psr7Request);
 
-        $this->assertRequest($request);
+        $this->sendRequest($request);
     }
 
     /**
@@ -91,7 +91,7 @@ abstract class AbstractRequester extends ApiTestCase
             ->withMethod('GET')
             ->withPath("/pet/1");
 
-        $this->assertRequest($request);
+        $this->sendRequest($request);
     }
 
     /**
@@ -120,9 +120,9 @@ abstract class AbstractRequester extends ApiTestCase
         $request
             ->withMethod('GET')
             ->withPath("/pet/1")
-            ->assertResponseCode(200);
+            ->expectStatus(200);
 
-        $this->assertRequest($request);
+        $this->sendRequest($request);
     }
 
     /**
@@ -146,9 +146,9 @@ abstract class AbstractRequester extends ApiTestCase
         $request
             ->withMethod('GET')
             ->withPath("/pet/1")
-            ->assertResponseCode(404);
+            ->expectStatus(404);
 
-        $this->assertRequest($request);
+        $this->sendRequest($request);
     }
 
     /**
@@ -176,9 +176,9 @@ abstract class AbstractRequester extends ApiTestCase
         $request
             ->withMethod('GET')
             ->withPath("/pet/1")
-            ->assertResponseCode(404);
+            ->expectStatus(404);
 
-        $this->assertRequest($request);
+        $this->sendRequest($request);
     }
 
     /**
@@ -205,9 +205,9 @@ abstract class AbstractRequester extends ApiTestCase
         $request
             ->withMethod('GET')
             ->withPath("/pet/1")
-            ->assertResponseCode(404);
+            ->expectStatus(404);
 
-        $this->assertRequest($request);
+        $this->sendRequest($request);
     }
 
     /**
@@ -237,10 +237,10 @@ abstract class AbstractRequester extends ApiTestCase
         $request
             ->withMethod('GET')
             ->withPath("/pet/1")
-            ->assertResponseCode(200)
-            ->assertHeaderContains("X-Test", "Value");
+            ->expectStatus(200)
+            ->expectHeaderContains("X-Test", "Value");
 
-        $this->assertRequest($request);
+        $this->sendRequest($request);
     }
 
     /**
@@ -273,10 +273,10 @@ abstract class AbstractRequester extends ApiTestCase
         $request
             ->withMethod('GET')
             ->withPath("/pet/1")
-            ->assertResponseCode(200)
-            ->assertHeaderContains("X-Test", "Different");
+            ->expectStatus(200)
+            ->expectHeaderContains("X-Test", "Different");
 
-        $this->assertRequest($request);
+        $this->sendRequest($request);
     }
 
     /**
@@ -308,10 +308,10 @@ abstract class AbstractRequester extends ApiTestCase
         $request
             ->withMethod('GET')
             ->withPath("/pet/1")
-            ->assertResponseCode(200)
-            ->assertHeaderContains("X-Test", "Different");
+            ->expectStatus(200)
+            ->expectHeaderContains("X-Test", "Different");
 
-        $this->assertRequest($request);
+        $this->sendRequest($request);
     }
 
     /**
@@ -340,10 +340,10 @@ abstract class AbstractRequester extends ApiTestCase
         $request
             ->withMethod('GET')
             ->withPath("/pet/1")
-            ->assertResponseCode(200)
-            ->assertBodyContains("Spike");
+            ->expectStatus(200)
+            ->expectBodyContains("Spike");
 
-        $this->assertRequest($request);
+        $this->sendRequest($request);
     }
 
     /**
@@ -375,9 +375,9 @@ abstract class AbstractRequester extends ApiTestCase
         $request
             ->withMethod('GET')
             ->withPath("/pet/1")
-            ->assertResponseCode(200)
-            ->assertBodyContains("Doris");
+            ->expectStatus(200)
+            ->expectBodyContains("Doris");
 
-        $this->assertRequest($request);
+        $this->sendRequest($request);
     }
 }

@@ -17,7 +17,7 @@ class MyTestCase extends \ByJG\ApiTools\ApiTestCase
 {
     public function setUp(): void
     {
-        $schema = \ByJG\ApiTools\Base\Schema::getInstance(file_get_contents('/path/to/json/definition'));
+        $schema = \ByJG\ApiTools\Base\Schema::fromFile('/path/to/json/definition');
         $this->setSchema($schema);
     }
 
@@ -32,7 +32,7 @@ class MyTestCase extends \ByJG\ApiTools\ApiTestCase
             ->withMethod('GET')
             ->withPath("/path/for/get/1");
 
-        $this->assertRequest($request);
+        $this->sendRequest($request);
     }
 
     /**
@@ -44,9 +44,9 @@ class MyTestCase extends \ByJG\ApiTools\ApiTestCase
         $request
             ->withMethod('GET')
             ->withPath("/path/for/get/NOTFOUND")
-            ->assertResponseCode(404);
+            ->expectStatus(404);
 
-        $this->assertRequest($request);
+        $this->sendRequest($request);
     }
 
     /**
@@ -62,7 +62,7 @@ class MyTestCase extends \ByJG\ApiTools\ApiTestCase
             ->withPath("/path/for/post/2")
             ->withRequestBody(['name'=>'new name', 'field' => 'value']);
 
-        $this->assertRequest($request);
+        $this->sendRequest($request);
     }
 
     /**
@@ -79,8 +79,105 @@ class MyTestCase extends \ByJG\ApiTools\ApiTestCase
             ->withQuery(['id'=>10])
             ->withRequestBody(['name'=>'new name', 'field' => 'value']);
 
-        $this->assertRequest($request);
+        $this->sendRequest($request);
     }
 
+}
+```
+
+## Convenience Expectation Methods
+
+In addition to OpenAPI schema validation, you can set expectations that will be validated when the request is sent:
+
+### expectStatus()
+
+Expect a specific HTTP status code:
+
+```php
+public function testGetWithStatus()
+{
+    $request = new \ByJG\ApiTools\ApiRequester();
+    $request
+        ->withMethod('GET')
+        ->withPath("/pet/1")
+        ->expectStatus(200);  // Validates AND adds PHPUnit assertion
+
+    $this->sendRequest($request);
+}
+```
+
+### expectJsonContains()
+
+Expect the JSON response to contain specific key-value pairs (subset matching):
+
+```php
+public function testPostWithJsonValidation()
+{
+    $request = new \ByJG\ApiTools\ApiRequester();
+    $request
+        ->withMethod('POST')
+        ->withPath("/pet")
+        ->withRequestBody(['name' => 'Fluffy', 'status' => 'available'])
+        ->expectStatus(200)
+        ->expectJsonContains([
+            'name' => 'Fluffy',
+            'status' => 'available'
+        ]);
+
+    $this->sendRequest($request);
+}
+```
+
+### expectJsonPath()
+
+Expect a specific value at a JSONPath expression (dot notation):
+
+```php
+public function testNestedJsonValidation()
+{
+    $request = new \ByJG\ApiTools\ApiRequester();
+    $request
+        ->withMethod('GET')
+        ->withPath("/user/1")
+        ->expectStatus(200)
+        ->expectJsonPath('user.name', 'John')
+        ->expectJsonPath('user.address.city', 'New York')
+        ->expectJsonPath('orders.0.id', 123);  // First order ID
+
+    $this->sendRequest($request);
+}
+```
+
+## Implicit Status Code Validation
+
+**Important:** `sendRequest()` automatically validates that the response status code matches the expected status (
+default 200). This means:
+
+- You don't need to add explicit `expectStatus()` calls unless you want a different status code
+- PHPUnit will not report "risky test" warnings - every test has at least one assertion
+- If the status code doesn't match, the test will fail with a clear error message
+
+```php
+public function testGetWithDefaultStatus()
+{
+    // This expects status 200 by default and validates it automatically
+    $request = new \ByJG\ApiTools\ApiRequester();
+    $request
+        ->withMethod('GET')
+        ->withPath("/pet/1");
+
+    $this->sendRequest($request);  // Validates status code 200
+}
+
+public function testGetNotFound()
+{
+    // Explicitly set expected status to 404
+    $request = new \ByJG\ApiTools\ApiRequester();
+    $request
+        ->withMethod('GET')
+        ->withPath("/pet/notfound")
+        ->expectStatus(404);
+
+    $this->sendRequest($request);  // Validates status code 404
 }
 ```

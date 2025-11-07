@@ -83,9 +83,7 @@ class MyTestCase extends \ByJG\ApiTools\ApiTestCase
 {
     public function setUp(): void
     {
-        $schema = \ByJG\ApiTools\Base\Schema::getInstance(
-            file_get_contents('/path/to/openapi.json')
-        );
+        $schema = \ByJG\ApiTools\Base\Schema::fromFile('/path/to/openapi.json');
         $this->setSchema($schema);
     }
     
@@ -103,7 +101,7 @@ $request
     ->withMethod('GET')
     ->withPath('/pet/1');
 
-$this->assertRequest($request);
+$this->sendRequest($request);
 ```
 
 ---
@@ -126,7 +124,7 @@ $request
         'status' => 'available'
     ]);
 
-$this->assertRequest($request);
+$this->sendRequest($request);
 ```
 
 ---
@@ -220,7 +218,7 @@ The API returned a different status code than expected.
    $request
        ->withMethod('POST')
        ->withPath('/pet')
-       ->assertResponseCode(201);  // ← Adjust this
+       ->expectStatus(201);  // ← Adjust this
    ```
 
 2. **Fix your API** if it's returning the wrong status code.
@@ -357,7 +355,7 @@ Ensure PHPUnit is configured to show detailed errors in your `phpunit.xml.dist`:
         displayDetailsOnTestsThatTriggerWarnings="true"
         displayDetailsOnTestsThatTriggerNotices="true"
         displayDetailsOnTestsThatTriggerDeprecations="true"
->
+/>
 ```
 
 ### 2. Inspect the Response
@@ -370,7 +368,7 @@ $request
     ->withMethod('GET')
     ->withPath('/pet/1');
 
-$response = $this->assertRequest($request);
+$response = $this->sendRequest($request);
 
 // Debug: print the response
 echo "Status: " . $response->getStatusCode() . "\n";
@@ -416,7 +414,7 @@ $request
     ->withPath('/pet/1');
 
 // This validates against the spec without HTTP
-$this->assertRequest($request);
+$this->sendRequest($request);
 ```
 
 ---
@@ -449,16 +447,16 @@ $request = new \ByJG\ApiTools\ApiRequester();
 $request
     ->withMethod('GET')
     ->withPath('/pet/1')
-    ->assertResponseCode(200);
-$this->assertRequest($request);
+    ->expectStatus(200);
+$this->sendRequest($request);
 
 // Test not found case
 $request = new \ByJG\ApiTools\ApiRequester();
 $request
     ->withMethod('GET')
     ->withPath('/pet/99999')
-    ->assertResponseCode(404);
-$this->assertRequest($request);
+    ->expectStatus(404);
+$this->sendRequest($request);
 ```
 
 ### Testing with Authentication
@@ -471,7 +469,7 @@ $request
     ->withRequestHeader([
         'Authorization' => 'Bearer ' . $this->getAuthToken()
     ]);
-$this->assertRequest($request);
+$this->sendRequest($request);
 ```
 
 ### Testing File Uploads
@@ -485,5 +483,5 @@ $request
         'file' => base64_encode(file_get_contents('/path/to/image.jpg')),
         'filename' => 'image.jpg'
     ]);
-$this->assertRequest($request);
+$this->sendRequest($request);
 ```

@@ -3,7 +3,6 @@
 namespace Tests;
 
 use ByJG\ApiTools\ApiRequester;
-use ByJG\ApiTools\ApiTestCase;
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
 use ByJG\ApiTools\Exception\GenericApiException;
 use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
@@ -14,6 +13,7 @@ use ByJG\ApiTools\Exception\PathNotFoundException;
 use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
 use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
 use ByJG\ApiTools\MockRequester;
+use ByJG\ApiTools\OpenApiValidation;
 use ByJG\Util\Uri;
 use ByJG\WebRequest\Exception\MessageException;
 use ByJG\WebRequest\Exception\RequestException;
@@ -22,6 +22,7 @@ use ByJG\WebRequest\MultiPartItem;
 use ByJG\WebRequest\Psr7\MemoryStream;
 use ByJG\WebRequest\Psr7\Request;
 use ByJG\WebRequest\Psr7\Response;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class TestingTestCase
@@ -32,8 +33,9 @@ use ByJG\WebRequest\Psr7\Response;
  * @see OpenApiTestCaseTest
  * @see SwaggerTestCaseTest
  */
-abstract class TestingTestCase extends ApiTestCase
+abstract class TestingTestCase extends TestCase
 {
+    use OpenApiValidation;
 
     /**
      * @throws DefinitionNotFoundException
@@ -48,12 +50,14 @@ abstract class TestingTestCase extends ApiTestCase
      */
     public function testGet(): void
     {
+        // sendRequest() implicitly asserts status code (200 is default)
+        // The expectStatus(200) is optional here since 200 is the default
         $request = new ApiRequester();
         $request
             ->withMethod('GET')
             ->withPath("/pet/1");
 
-        $this->assertRequest($request);
+        $this->sendRequest($request);
     }
 
     /**
@@ -80,14 +84,19 @@ abstract class TestingTestCase extends ApiTestCase
             'status' => 'available'
         ];
 
-        // Basic Request
+        // Basic Request with status expectation
         $request = new ApiRequester();
         $request
             ->withMethod('POST')
             ->withPath("/pet")
-            ->withRequestBody($body);
+            ->withRequestBody($body)
+            ->expectStatus(200);
 
-        $this->assertRequest($request);
+        $response = $this->sendRequest($request);
+
+        // Additional validation of response structure
+        $responseBody = json_decode((string)$response->getBody(), true);
+        $this->assertIsArray($responseBody, 'Response should be a valid JSON array');
 
 
         // PSR7 Request
@@ -99,7 +108,7 @@ abstract class TestingTestCase extends ApiTestCase
         $request = new MockRequester($expectedResponse);
         $request->withPsr7Request($psr7Request);
 
-        $this->assertRequest($request);
+        $this->sendRequest($request);
     }
 
     /**
@@ -130,7 +139,7 @@ abstract class TestingTestCase extends ApiTestCase
                 'status' => 'available'
             ]);
 
-        $this->assertRequest($request);
+        $this->sendRequest($request);
     }
 
     /**
@@ -162,7 +171,7 @@ abstract class TestingTestCase extends ApiTestCase
                 'status' => 'available'
             ]);
 
-        $this->assertRequest($request);
+        $this->sendRequest($request);
     }
 
     /**
@@ -189,11 +198,11 @@ abstract class TestingTestCase extends ApiTestCase
         $request = new ApiRequester();
         $request
             ->withPsr7Request($psr7Requester)
-            ->assertResponseCode(200)
-            ->assertBodyContains("smile")
-            ->assertBodyContains("somenote");
+            ->expectStatus(200)
+            ->expectBodyContains("smile")
+            ->expectBodyContains("somenote");
 
-        $this->assertRequest($request);
+        $this->sendRequest($request);
     }
 
 }

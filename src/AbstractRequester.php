@@ -42,6 +42,11 @@ abstract class AbstractRequester
     protected array $assertBody = [];
 
     /**
+     * @var array<callable> PHPUnit assertions to execute after response is received
+     */
+    protected array $phpunitAssertions = [];
+
+    /**
      * @var RequestInterface
      */
     protected RequestInterface $psr7Request;
@@ -171,25 +176,157 @@ abstract class AbstractRequester
         return $this;
     }
 
-    public function assertResponseCode(int $code): self
+    /**
+     * Expect a specific HTTP status code.
+     *
+     * @param int $expectedStatus Expected HTTP status code
+     * @return $this
+     */
+    public function expectStatus(int $expectedStatus): self
     {
-        $this->statusExpected = $code;
+        $this->statusExpected = $expectedStatus;
+
+        // Add PHPUnit assertion to be executed after response is received
+        $this->phpunitAssertions[] = function ($testCase, $response) use ($expectedStatus) {
+            $testCase->assertEquals(
+                $expectedStatus,
+                $response->getStatusCode(),
+                "Expected HTTP status code $expectedStatus"
+            );
+        };
 
         return $this;
     }
 
-    public function assertHeaderContains(string $header, string $contains): self
+    /**
+     * Expect a specific header to contain a value.
+     *
+     * @param string $header Header name
+     * @param string $contains Expected value to be contained in the header
+     * @return $this
+     */
+    public function expectHeaderContains(string $header, string $contains): self
     {
         $this->assertHeader[$header] = $contains;
 
         return $this;
     }
 
-    public function assertBodyContains(string $contains): self
+    /**
+     * Expect the response body to contain a string.
+     *
+     * @param string $contains Expected string to be contained in the body
+     * @return $this
+     */
+    public function expectBodyContains(string $contains): self
     {
         $this->assertBody[] = $contains;
 
         return $this;
+    }
+
+    /**
+     * Expect the JSON response to contain specific key-value pairs.
+     *
+     * This performs a subset match - the response can contain additional fields.
+     *
+     * @param array $expected Expected key-value pairs (supports nested arrays)
+     * @return $this
+     */
+    public function expectJsonContains(array $expected): self
+    {
+        $this->phpunitAssertions[] = function ($testCase, $response) use ($expected) {
+            $body = json_decode((string)$response->getBody(), true);
+
+            if ($body === null) {
+                $testCase->fail('Response body is not valid JSON');
+            }
+
+            foreach ($expected as $key => $value) {
+                $testCase->assertArrayHasKey(
+                    $key,
+                    $body,
+                    "Expected JSON response to contain key '$key'"
+                );
+
+                if (is_array($value)) {
+                    $testCase->assertEquals(
+                        $value,
+                        $body[$key],
+                        "Expected JSON key '$key' to match nested array"
+                    );
+                } else {
+                    $testCase->assertEquals(
+                        $value,
+                        $body[$key],
+                        "Expected JSON key '$key' to equal " . json_encode($value)
+                    );
+                }
+            }
+        };
+
+        return $this;
+    }
+
+    /**
+     * Expect a specific value at a JSONPath expression.
+     *
+     * Supports simple dot notation like 'user.name' or 'items.0.id'.
+     *
+     * @param string $path JSONPath expression (dot notation)
+     * @param mixed $expectedValue Expected value at that path
+     * @return $this
+     */
+    public function expectJsonPath(string $path, mixed $expectedValue): self
+    {
+        $this->phpunitAssertions[] = function ($testCase, $response) use ($path, $expectedValue) {
+            $body = json_decode((string)$response->getBody(), true);
+
+            if ($body === null) {
+                $testCase->fail('Response body is not valid JSON');
+            }
+
+            // Simple JSONPath implementation using dot notation
+            $keys = explode('.', $path);
+            $current = $body;
+
+            foreach ($keys as $key) {
+                if (is_array($current) && array_key_exists($key, $current)) {
+                    $current = $current[$key];
+                } else {
+                    $testCase->fail("JSONPath '$path' not found in response (failed at key '$key')");
+                    return;
+                }
+            }
+
+            $testCase->assertEquals(
+                $expectedValue,
+                $current,
+                "Expected value at JSONPath '$path' to equal " . json_encode($expectedValue)
+            );
+        };
+
+        return $this;
+    }
+
+    /**
+     * Get the expected status code.
+     *
+     * @return int
+     */
+    public function getExpectedStatus(): int
+    {
+        return $this->statusExpected;
+    }
+
+    /**
+     * Get the registered PHPUnit assertions.
+     *
+     * @return array<callable>
+     */
+    public function getPhpunitAssertions(): array
+    {
+        return $this->phpunitAssertions;
     }
 
     /**

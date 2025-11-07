@@ -29,7 +29,7 @@ class MyTest extends ApiTestCase
             ->withMethod('GET')
             ->withPath("/pet/1");
 
-        $this->assertRequest($request); // That should be "True" based on the specification
+        $this->sendRequest($request); // That should be "True" based on the specification
     }
 }
 ```

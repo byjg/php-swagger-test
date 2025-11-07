@@ -14,19 +14,25 @@ versions.
 
 ## Creating Schema Instances
 
-You can create a schema instance using the static `getInstance` method, which automatically determines the schema type
-based on the provided data:
+You can create a schema instance using factory methods, which automatically determine the schema type based on the
+provided data:
 
 ```php
 <?php
+// From a file (recommended)
+$schema = \ByJG\ApiTools\Base\Schema::fromFile('/path/to/specification.json');
+
 // From a JSON string
 $jsonString = file_get_contents('/path/to/specification.json');
-$schema = \ByJG\ApiTools\Base\Schema::getInstance($jsonString);
+$schema = \ByJG\ApiTools\Base\Schema::fromJson($jsonString);
 
 // From an array
 $schemaArray = json_decode(file_get_contents('/path/to/specification.json'), true);
-$schema = \ByJG\ApiTools\Base\Schema::getInstance($schemaArray);
+$schema = \ByJG\ApiTools\Base\Schema::fromArray($schemaArray);
 ```
+
+**Note:** The `getInstance()` method is deprecated since version 6.0. Use `fromFile()`, `fromJson()`, or `fromArray()`
+instead.
 
 ## SwaggerSchema Specific Features
 

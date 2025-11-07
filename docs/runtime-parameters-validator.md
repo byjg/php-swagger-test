@@ -11,7 +11,7 @@ So, before your API Code you can validate the request body using:
 
 ```php
 <?php
-$schema = \ByJG\ApiTools\Base\Schema::getInstance($contentsOfSchemaJson);
+$schema = \ByJG\ApiTools\Base\Schema::fromJson($contentsOfSchemaJson);
 $bodyRequestDef = $schema->getRequestParameters($path, $method);
 $bodyRequestDef->match($requestBody);
 ```

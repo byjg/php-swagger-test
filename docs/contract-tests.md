@@ -67,7 +67,9 @@ receiving you have to:
 
 ```php
 <?php
-$schema = \ByJG\ApiTools\Base\Schema::getInstance($contentsOfSchemaJson);
+$schema = \ByJG\ApiTools\Base\Schema::fromJson($contentsOfSchemaJson);
+// Or load directly from a file
+$schema = \ByJG\ApiTools\Base\Schema::fromFile('/path/to/specification.json');
 ```
 
 ### 2. Get the definitions for your path

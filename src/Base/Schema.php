@@ -33,6 +33,64 @@ abstract class Schema
     }
 
     /**
+     * Create schema from JSON string.
+     *
+     * @param string $jsonString JSON-encoded OpenAPI/Swagger specification
+     * @param bool $allowNullValues Whether to allow null values (Swagger 2.0 only)
+     * @return SwaggerSchema|OpenApiSchema
+     * @throws InvalidArgumentException
+     */
+    public static function fromJson(string $jsonString, bool $allowNullValues = false): SwaggerSchema|OpenApiSchema
+    {
+        $data = json_decode($jsonString, true);
+        if ($data === null) {
+            throw new InvalidArgumentException('Invalid JSON provided to fromJson()');
+        }
+        return self::fromArray($data, $allowNullValues);
+    }
+
+    /**
+     * Create schema from file path.
+     *
+     * @param string $filePath Path to JSON file containing OpenAPI/Swagger specification
+     * @param bool $allowNullValues Whether to allow null values (Swagger 2.0 only)
+     * @return SwaggerSchema|OpenApiSchema
+     * @throws InvalidArgumentException
+     */
+    public static function fromFile(string $filePath, bool $allowNullValues = false): SwaggerSchema|OpenApiSchema
+    {
+        if (!file_exists($filePath)) {
+            throw new InvalidArgumentException("File not found: $filePath");
+        }
+        $jsonString = file_get_contents($filePath);
+        if ($jsonString === false) {
+            throw new InvalidArgumentException("Failed to read file: $filePath");
+        }
+        return self::fromJson($jsonString, $allowNullValues);
+    }
+
+    /**
+     * Create schema from array.
+     *
+     * @param array $data PHP array containing OpenAPI/Swagger specification
+     * @param bool $allowNullValues Whether to allow null values (Swagger 2.0 only)
+     * @return SwaggerSchema|OpenApiSchema
+     * @throws InvalidArgumentException
+     */
+    public static function fromArray(array $data, bool $allowNullValues = false): SwaggerSchema|OpenApiSchema
+    {
+        // check which type of schema we have and dispatch to derived class constructor
+        if (isset($data['swagger'])) {
+            return new SwaggerSchema($data, $allowNullValues);
+        }
+        if (isset($data['openapi'])) {
+            return new OpenApiSchema($data);
+        }
+
+        throw new InvalidArgumentException('Failed to determine schema type from data. Expected "swagger" or "openapi" property.');
+    }
+
+    /**
      * Factory function for schemata.
      *
      * Initialize with schema data, which can be a PHP array or encoded as JSON.
@@ -41,22 +99,15 @@ abstract class Schema
      * @param array|string $data
      * @param bool $extraArgs
      * @return SwaggerSchema|OpenApiSchema
+     * @deprecated Since version 6.0, use fromJson(), fromArray(), or fromFile() instead. Will be removed in version 7.0
      */
     public static function getInstance(array|string $data, bool $extraArgs = false): SwaggerSchema|OpenApiSchema
     {
         // when given a string, decode from JSON
         if (is_string($data)) {
-            $data = json_decode($data, true);
+            return self::fromJson($data, $extraArgs);
         }
-        // check which type of file we got and dispatch to derived class constructor
-        if (isset($data['swagger'])) {
-            return new SwaggerSchema($data, $extraArgs);
-        }
-        if (isset($data['openapi'])) {
-            return new OpenApiSchema($data);
-        }
-
-        throw new InvalidArgumentException('failed to determine schema type from data');
+        return self::fromArray($data, $extraArgs);
     }
 
     /**
