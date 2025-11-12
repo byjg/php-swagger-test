@@ -387,14 +387,20 @@ abstract class AbstractRequester
         $response = $this->handleRequest($this->psr7Request);
         $responseHeader = $response->getHeaders();
         $responseBodyStr = (string) $response->getBody();
-        $responseBody = json_decode($responseBodyStr, true);
+        if ($response->getHeader('content-type') === 'application/json') {
+            $responseBodyParsed = json_decode($responseBodyStr, true);
+        } elseif ($response->getHeader('content-type') === 'text/xml') {
+            $responseBodyParsed = simplexml_load_string($responseBodyStr);
+        } else {
+            $responseBodyParsed = $responseBodyStr;
+        }
         $statusReturned = $response->getStatusCode();
 
         // Assert results
         if ($this->statusExpected != $statusReturned) {
             throw new StatusCodeNotMatchedException(
                 "Status code not matched: Expected $this->statusExpected, got $statusReturned",
-                $responseBody
+                $responseBodyStr
             );
         }
 
@@ -403,7 +409,7 @@ abstract class AbstractRequester
             $this->psr7Request->getMethod(),
             $this->statusExpected
         );
-        $bodyResponseDef->match($responseBody);
+        $bodyResponseDef->match($responseBodyParsed);
 
         foreach ($this->assertHeader as $key => $value) {
             if (!isset($responseHeader[$key]) || !str_contains($responseHeader[$key][0], $value)) {
