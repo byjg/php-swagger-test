@@ -386,10 +386,23 @@ abstract class AbstractRequester
         // Handle Request
         $response = $this->handleRequest($this->psr7Request);
         $responseHeader = $response->getHeaders();
+        $contentType = "";
+        foreach ($responseHeader as $headerName => $headerValue) {
+            if (is_numeric($headerName)) {
+                $header = explode(":", $headerValue[0]);
+                $headerName = trim($header[0]);
+                $headerValue = trim($header[1] ?? "");
+            }
+            $headerName = strtolower($headerName);
+            if ($headerName == 'content-type') {
+                $contentType = $headerValue;
+                break;
+            }
+        }
         $responseBodyStr = (string) $response->getBody();
-        if ($response->getHeader('content-type') === 'application/json') {
+        if ($contentType === 'application/json') {
             $responseBodyParsed = json_decode($responseBodyStr, true);
-        } elseif ($response->getHeader('content-type') === 'text/xml') {
+        } elseif ($contentType === 'text/xml') {
             $responseBodyParsed = simplexml_load_string($responseBodyStr);
         } else {
             $responseBodyParsed = $responseBodyStr;
