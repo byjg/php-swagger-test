@@ -392,6 +392,9 @@ abstract class AbstractRequester
                 $header = explode(":", $headerValue[0]);
                 $headerName = trim($header[0]);
                 $headerValue = trim($header[1] ?? "");
+            } else {
+                // Normal case: headerValue is an array, get the first element
+                $headerValue = is_array($headerValue) ? ($headerValue[0] ?? "") : $headerValue;
             }
             $headerName = strtolower($headerName);
             if ($headerName == 'content-type') {
@@ -400,12 +403,20 @@ abstract class AbstractRequester
             }
         }
         $responseBodyStr = (string) $response->getBody();
-        if ($contentType === 'application/json') {
-            $responseBodyParsed = json_decode($responseBodyStr, true);
-        } elseif ($contentType === 'text/xml') {
+        // Extract the main content type (before semicolon) to handle "application/json; charset=utf-8"
+        $mainContentType = explode(';', $contentType)[0];
+        $mainContentType = trim($mainContentType);
+
+        // Parse response based on content type, defaulting to JSON for backwards compatibility
+        if ($mainContentType === 'text/xml' || $mainContentType === 'application/xml') {
             $responseBodyParsed = simplexml_load_string($responseBodyStr);
         } else {
-            $responseBodyParsed = $responseBodyStr;
+            // Default to JSON parsing (for backwards compatibility and when content-type is not set)
+            $responseBodyParsed = json_decode($responseBodyStr, true);
+            // If JSON parsing fails and content-type is explicitly not JSON, use raw string
+            if ($responseBodyParsed === null && $mainContentType !== '' && $mainContentType !== 'application/json') {
+                $responseBodyParsed = $responseBodyStr;
+            }
         }
         $statusReturned = $response->getStatusCode();
 
