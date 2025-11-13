@@ -513,6 +513,38 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
     }
 
     /**
+     * @throws DefinitionNotFoundException
+     * @throws GenericApiException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
+     */
+    public function testMatchResponseBodyWithSimpleXMLElement(): void
+    {
+        // Create an XML response that matches the Order schema
+        // Note: XML boolean values should use 1/0 or true/false, but they're treated as strings
+        // So we omit optional boolean field to avoid type mismatch
+        $xmlString = '<?xml version="1.0" encoding="UTF-8"?>
+<Order>
+    <id>10</id>
+    <petId>50</petId>
+    <quantity>1</quantity>
+    <shipDate>2010-10-20</shipDate>
+    <status>placed</status>
+</Order>';
+
+        // Parse XML string to SimpleXMLElement (simulating what AbstractRequester does)
+        $body = simplexml_load_string($xmlString);
+
+        // This should properly handle the SimpleXMLElement object
+        $responseParameter = self::openApiSchema()->getResponseParameters('/v2/store/order', 'post', 200);
+        $this->assertTrue($responseParameter->match($body));
+    }
+
+    /**
      * @throws GenericApiException
      * @throws DefinitionNotFoundException
      * @throws PathNotFoundException

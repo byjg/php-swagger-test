@@ -343,6 +343,11 @@ abstract class Body
      */
     protected function matchSchema(string $name, mixed $schemaArray, mixed $body): ?bool
     {
+        // Convert SimpleXMLElement to array for validation
+        if ($body instanceof \SimpleXMLElement) {
+            $body = json_decode(json_encode($body), true);
+        }
+
         // Match Single Types
         if ($this->matchTypes($name, $schemaArray, $body)) {
             return true;
