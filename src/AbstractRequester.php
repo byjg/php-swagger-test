@@ -259,7 +259,7 @@ abstract class AbstractRequester
                     $testCase->assertEquals(
                         $value,
                         $body[$key],
-                        "Expected JSON key '$key' to equal " . json_encode($value)
+                        "Expected JSON key '$key' to be equal " . json_encode($value)
                     );
                 }
             }
@@ -302,7 +302,7 @@ abstract class AbstractRequester
             $testCase->assertEquals(
                 $expectedValue,
                 $current,
-                "Expected value at JSONPath '$path' to equal " . json_encode($expectedValue)
+                "Expected value at JSONPath '$path' to be equal " . json_encode($expectedValue)
             );
         };
 
@@ -402,7 +402,7 @@ abstract class AbstractRequester
                 break;
             }
         }
-        $responseBodyStr = (string) $response->getBody();
+        $responseBodyStr = $response->getBody()->getContents();
         // Extract the main content type (before semicolon) to handle "application/json; charset=utf-8"
         $mainContentType = explode(';', $contentType)[0];
         $mainContentType = trim($mainContentType);

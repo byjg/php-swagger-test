@@ -61,6 +61,25 @@
         }
       }
     },
+    "/anyvalue2": {
+      "get": {
+        "tags": [
+          "general"
+        ],
+        "summary": "Get a response that could be any value",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns any value",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
     "/accounts/create": {
       "post": {
         "tags": [
