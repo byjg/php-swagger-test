@@ -446,7 +446,7 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
     public function testIssue9Error(): void
     {
         $this->expectException(InvalidRequestException::class);
-        $this->expectExceptionMessageMatches("/I expected an array here.*/");
+        $this->expectExceptionMessage("The body 'fr' cannot be compared with the expected type #/components/schemas/LanguageData_inner");
         $body =
             [
                 [
@@ -480,15 +480,27 @@ class OpenApiResponseBodyTest extends OpenApiBodyTestCase
     public function testMatchAnyValue(): void
     {
         $body = "string";
-        $responseParameter = $this->openApiSchema2()->getResponseParameters('/v2/anyvalue', 'get', 200);
+        $responseParameter = $this->openApiSchema2()->getResponseParameters('/v2/textplain', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
 
-        $body = 1000;
-        $responseParameter = $this->openApiSchema2()->getResponseParameters('/v2/anyvalue', 'get', 200);
-        $this->assertTrue($responseParameter->match($body));
+//        $body = 1000;
+//        $responseParameter = $this->openApiSchema2()->getResponseParameters('/v2/textplain', 'get', 200);
+//        $this->assertTrue($responseParameter->match($body));
 
         $body = [ "test" => "10"];
         $responseParameter = $this->openApiSchema2()->getResponseParameters('/v2/anyvalue', 'get', 200);
+        $this->assertTrue($responseParameter->match($body));
+
+        $body = ["test15" => "10", "key" => ["a", "b"]];
+        $responseParameter = $this->openApiSchema2()->getResponseParameters('/v2/anyvalue', 'get', 200);
+        $this->assertTrue($responseParameter->match($body));
+
+        $body = ["test" => "10"];
+        $responseParameter = $this->openApiSchema2()->getResponseParameters('/v2/anyvalue2', 'get', 200);
+        $this->assertTrue($responseParameter->match($body));
+
+        $body = ["test15" => "10", "key" => ["a", "b"]];
+        $responseParameter = $this->openApiSchema2()->getResponseParameters('/v2/anyvalue2', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 

@@ -11,9 +11,11 @@ use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
 
 abstract class Body
 {
-    const SWAGGER_PROPERTIES="properties";
-    const SWAGGER_ADDITIONAL_PROPERTIES="additionalProperties";
-    const SWAGGER_REQUIRED="required";
+    const SWAGGER_OBJECT = "object";
+    const SWAGGER_ARRAY = "array";
+    const SWAGGER_PROPERTIES = "properties";
+    const SWAGGER_ADDITIONAL_PROPERTIES = "additionalProperties";
+    const SWAGGER_REQUIRED = "required";
 
     /**
      * @var Schema
@@ -185,7 +187,7 @@ abstract class Body
      */
     protected function matchArray(string $name, array $schemaArray, mixed $body, mixed $type): ?bool
     {
-        if ($type !== 'array') {
+        if ($type !== self::SWAGGER_ARRAY) {
             return null;
         }
 
@@ -268,17 +270,29 @@ abstract class Body
      */
     public function matchObjectProperties(string $name, mixed $schemaArray, mixed $body): ?bool
     {
-        if (isset($schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES]) && !isset($schemaArray[self::SWAGGER_PROPERTIES])) {
-            $schemaArray[self::SWAGGER_PROPERTIES] = [];
-        }
+//        if (!in_array($schemaArray["type"] ?? '',  [self::SWAGGER_OBJECT, self::SWAGGER_ARRAY])) {
+//            return null;
+//        }
 
         if (!isset($schemaArray[self::SWAGGER_PROPERTIES])) {
-            return null;
+            if (in_array($schemaArray["type"] ?? '', [self::SWAGGER_OBJECT, self::SWAGGER_ARRAY])) {
+                $schemaArray[self::SWAGGER_PROPERTIES] = [];
+            } else {
+                return null;
+            }
+        }
+
+        if (empty($schemaArray[self::SWAGGER_PROPERTIES]) && !isset($schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES])) {
+            $schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES] = true;
+        }
+
+        if ($body instanceof \SimpleXMLElement) {
+            $body = json_decode(json_encode($body), true);
         }
 
         if (!is_array($body)) {
             throw new InvalidRequestException(
-                "I expected an array here, but I got an string. Maybe you did wrong request?",
+                "The body '" . $body . "' cannot be compared with the expected type " . $name,
                 $body
             );
         }
@@ -323,9 +337,14 @@ abstract class Body
             );
         }
 
+        $def = $schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES]["type"] ?? '';
+        $allowAnyProperty = ($schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES] ?? false) === true;
+        if ($allowAnyProperty || empty($def)) {
+            return true;
+        }
+
         foreach ($body as $name => $prop) {
-            $def = $schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES];
-            $this->matchSchema($name, $def, $prop);
+            $this->matchSchema($name, $schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES], $prop);
         }
         return true;
     }
@@ -343,11 +362,6 @@ abstract class Body
      */
     protected function matchSchema(string $name, mixed $schemaArray, mixed $body): ?bool
     {
-        // Convert SimpleXMLElement to array for validation
-        if ($body instanceof \SimpleXMLElement) {
-            $body = json_decode(json_encode($body), true);
-        }
-
         // Match Single Types
         if ($this->matchTypes($name, $schemaArray, $body)) {
             return true;
@@ -408,7 +422,7 @@ abstract class Body
         }
 
         // Match any object
-        if (count($schemaArray) === 1 && isset($schemaArray['type']) && $schemaArray['type'] === 'object') {
+        if (count($schemaArray) === 1 && isset($schemaArray['type']) && $schemaArray['type'] === self::SWAGGER_OBJECT) {
             return true;
         }
 

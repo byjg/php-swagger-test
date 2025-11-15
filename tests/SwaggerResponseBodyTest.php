@@ -493,7 +493,7 @@ EOL
     public function testIssue9Error(): void
     {
         $this->expectException(InvalidRequestException::class);
-        $this->expectExceptionMessageMatches("/I expected an array here.*/");
+        $this->expectExceptionMessage("The body 'fr' cannot be compared with the expected type #/definitions/LanguageData_inner");
 
         $body =
             [
@@ -536,6 +536,10 @@ EOL
 
         $body = [ "test" => "10"];
         $responseParameter = $this->swaggerSchema2()->getResponseParameters('/v2/anyvalue', 'get', 200);
+        $this->assertTrue($responseParameter->match($body));
+
+        $body = ["test" => "10"];
+        $responseParameter = $this->swaggerSchema2()->getResponseParameters('/v2/anyvalue2', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
     }
 

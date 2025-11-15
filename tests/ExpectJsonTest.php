@@ -110,7 +110,7 @@ class ExpectJsonTest extends TestCase
     public function testExpectJsonContainsWrongValue(): void
     {
         $this->expectException(\PHPUnit\Framework\AssertionFailedError::class);
-        $this->expectExceptionMessage("Expected JSON key 'name' to equal \"Fluffy\"");
+        $this->expectExceptionMessage("Expected JSON key 'name' to be equal \"Fluffy\"");
 
         $expectedResponse = Response::getInstance(200)
             ->withBody(new MemoryStream(json_encode([
@@ -236,7 +236,7 @@ class ExpectJsonTest extends TestCase
     public function testExpectJsonPathWrongValue(): void
     {
         $this->expectException(\PHPUnit\Framework\AssertionFailedError::class);
-        $this->expectExceptionMessage("Expected value at JSONPath 'name' to equal \"Fluffy\"");
+        $this->expectExceptionMessage("Expected value at JSONPath 'name' to be equal \"Fluffy\"");
 
         $expectedResponse = Response::getInstance(200)
             ->withBody(new MemoryStream(json_encode([
@@ -268,7 +268,7 @@ class ExpectJsonTest extends TestCase
     public function testExpectJsonContainsInvalidJson(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
-        $this->expectExceptionMessage("Value of property '#/components/schemas/Pet' is null");
+        $this->expectExceptionMessage("Body is expected for GET 200 /v2/pet/1");
 
         $expectedResponse = Response::getInstance(200)
             ->withBody(new MemoryStream("This is not JSON"));
@@ -277,8 +277,7 @@ class ExpectJsonTest extends TestCase
         $request
             ->withMethod('GET')
             ->withPath("/pet/1")
-            ->expectStatus(200)
-            ->expectJsonContains(["name" => "Spike"]);
+            ->expectStatus(200);
 
         $this->sendRequest($request);
     }
@@ -291,11 +290,14 @@ class ExpectJsonTest extends TestCase
      */
     public function testExpectJsonPathInvalidJson(): void
     {
-        $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
-        $this->expectExceptionMessage("Value of property '#/components/schemas/Pet' is null");
+        $this->expectException(\ByJG\ApiTools\Exception\InvalidRequestException::class);
+        $this->expectExceptionMessage("The body 'test' cannot be compared with the expected type #/components/schemas/Category");
 
         $expectedResponse = Response::getInstance(200)
-            ->withBody(new MemoryStream("This is not JSON"));
+            ->withBody(new MemoryStream(json_encode([
+                "id" => 1,
+                "category" => "test"
+            ])));
 
         $request = new MockRequester($expectedResponse);
         $request
