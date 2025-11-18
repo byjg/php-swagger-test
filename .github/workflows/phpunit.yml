@@ -12,7 +12,9 @@ on:
 jobs:
   Build:
     runs-on: 'ubuntu-latest'
-    container: 'byjg/php:${{ matrix.php-version }}-cli'
+    container:
+      image: 'byjg/php:${{ matrix.php-version }}-cli'
+      options: --user root --privileged
     strategy:
       matrix:
         php-version:
@@ -22,7 +24,7 @@ jobs:
           - "8.1"
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Setup test
         run: |
           composer install
