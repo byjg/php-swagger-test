@@ -287,7 +287,8 @@ abstract class Body
         }
 
         if ($body instanceof \SimpleXMLElement) {
-            $body = json_decode(json_encode($body), true);
+            $encoded = json_encode($body);
+            $body = json_decode($encoded !== false ? $encoded : '{}', true);
         }
 
         if (!is_array($body)) {
@@ -337,14 +338,17 @@ abstract class Body
             );
         }
 
-        $def = $schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES]["type"] ?? '';
-        $allowAnyProperty = ($schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES] ?? false) === true;
+        $additionalProperties = $schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES] ?? false;
+        $allowAnyProperty = $additionalProperties === true;
+        $def = is_array($additionalProperties) ? ($additionalProperties["type"] ?? '') : '';
         if ($allowAnyProperty || empty($def)) {
             return true;
         }
 
         foreach ($body as $name => $prop) {
-            $this->matchSchema($name, $schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES], $prop);
+            if (is_array($additionalProperties)) {
+                $this->matchSchema($name, $additionalProperties, $prop);
+            }
         }
         return true;
     }
@@ -367,8 +371,11 @@ abstract class Body
             return true;
         }
 
-        if(!isset($schemaArray['$ref']) && isset($schemaArray['content'])) {
-            $schemaArray = $schemaArray['content'][key($schemaArray['content'])]['schema'];
+        if (!isset($schemaArray['$ref']) && isset($schemaArray['content']) && is_array($schemaArray['content'])) {
+            $contentKey = key($schemaArray['content']);
+            if ($contentKey !== null && isset($schemaArray['content'][$contentKey]['schema'])) {
+                $schemaArray = $schemaArray['content'][$contentKey]['schema'];
+            }
         }
 
         // Get References and try to match it again

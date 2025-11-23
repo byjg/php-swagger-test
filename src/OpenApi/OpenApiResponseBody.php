@@ -31,10 +31,12 @@ class OpenApiResponseBody extends Body
             if ($body instanceof \SimpleXMLElement) {
                 if (isset($this->structure['content']["application/xml"])) {
                     $contentType = "application/xml";
-                    $body = json_decode(json_encode($body), true);
+                    $encoded = json_encode($body);
+                    $body = json_decode($encoded !== false ? $encoded : '{}', true);
                 } elseif (isset($this->structure['content']["text/xml"])) {
                     $contentType = "text/xml";
-                    $body = json_decode(json_encode($body), true);
+                    $encoded = json_encode($body);
+                    $body = json_decode($encoded !== false ? $encoded : '{}', true);
                 }
             } elseif (is_array($body)) {
                 $contentType = "application/json";

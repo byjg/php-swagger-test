@@ -172,10 +172,11 @@ trait OpenApiValidation
      * Check that a schema has been configured.
      *
      * @throws GenericApiException
+     * @psalm-assert !null $this->schema
      */
     protected function checkSchema(): void
     {
-        if (!$this->schema) {
+        if (is_null($this->schema)) {
             throw new GenericApiException('You have to configure a schema for either the request or the testcase');
         }
     }

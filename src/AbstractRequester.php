@@ -259,7 +259,7 @@ abstract class AbstractRequester
                     $testCase->assertEquals(
                         $value,
                         $body[$key],
-                        "Expected JSON key '$key' to be equal " . json_encode($value)
+                        "Expected JSON key '$key' to be equal " . (json_encode($value) ?: 'null')
                     );
                 }
             }
@@ -302,7 +302,7 @@ abstract class AbstractRequester
             $testCase->assertEquals(
                 $expectedValue,
                 $current,
-                "Expected value at JSONPath '$path' to be equal " . json_encode($expectedValue)
+                "Expected value at JSONPath '$path' to be equal " . (json_encode($expectedValue) ?: 'null')
             );
         };
 
@@ -344,7 +344,7 @@ abstract class AbstractRequester
     public function send(): ResponseInterface
     {
         // Process URI based on the OpenAPI schema
-        $uriSchema = new Uri($this->schema->getServerUrl());
+        $uriSchema = new Uri($this->schema?->getServerUrl() ?? '');
 
         if (empty($uriSchema->getScheme())) {
             $uriSchema = $uriSchema->withScheme($this->psr7Request->getUri()->getScheme());
@@ -360,7 +360,7 @@ abstract class AbstractRequester
             ->withPort($uriSchema->getPort())
             ->withPath($uriSchema->getPath() . $this->psr7Request->getUri()->getPath());
 
-        if (!preg_match("~^{$this->schema->getBasePath()}~",  $uri->getPath())) {
+        if ($this->schema !== null && !preg_match("~^{$this->schema->getBasePath()}~", $uri->getPath())) {
             $uri = $uri->withPath($this->schema->getBasePath() . $uri->getPath());
         }
 
@@ -380,8 +380,10 @@ abstract class AbstractRequester
         }
 
         // Check if the body is the expected before request
-        $bodyRequestDef = $this->schema->getRequestParameters($this->psr7Request->getUri()->getPath(), $this->psr7Request->getMethod());
-        $bodyRequestDef->match($requestBody);
+        if ($this->schema !== null) {
+            $bodyRequestDef = $this->schema->getRequestParameters($this->psr7Request->getUri()->getPath(), $this->psr7Request->getMethod());
+            $bodyRequestDef->match($requestBody);
+        }
 
         // Handle Request
         $response = $this->handleRequest($this->psr7Request);
@@ -428,12 +430,14 @@ abstract class AbstractRequester
             );
         }
 
-        $bodyResponseDef = $this->schema->getResponseParameters(
-            $this->psr7Request->getUri()->getPath(),
-            $this->psr7Request->getMethod(),
-            $this->statusExpected
-        );
-        $bodyResponseDef->match($responseBodyParsed);
+        if ($this->schema !== null) {
+            $bodyResponseDef = $this->schema->getResponseParameters(
+                $this->psr7Request->getUri()->getPath(),
+                $this->psr7Request->getMethod(),
+                $this->statusExpected
+            );
+            $bodyResponseDef->match($responseBodyParsed);
+        }
 
         foreach ($this->assertHeader as $key => $value) {
             if (!isset($responseHeader[$key]) || !str_contains($responseHeader[$key][0], $value)) {
@@ -465,11 +469,14 @@ abstract class AbstractRequester
 
         $matches = [];
 
-        preg_match('/boundary=(.*)$/', $contentType, $matches);
+        preg_match('/boundary=(.*)$/', $contentType ?? '', $matches);
         $boundary = $matches[1];
 
         // split content by boundary and get rid of last -- element
         $blocks = preg_split("/-+$boundary/", $body);
+        if ($blocks === false) {
+            return null;
+        }
         array_pop($blocks);
 
         // loop data blocks

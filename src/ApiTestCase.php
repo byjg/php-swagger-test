@@ -59,11 +59,24 @@ abstract class ApiTestCase extends TestCase
         array $requestHeader = []
     ): ResponseInterface {
         $this->checkSchema();
-        return $this->getRequester()
+        assert($this->schema !== null);
+
+        // Convert string query to array if needed
+        $queryArray = null;
+        if (is_string($query)) {
+            parse_str($query, $queryArray);
+        } elseif (is_array($query)) {
+            $queryArray = $query;
+        }
+
+        $requester = $this->getRequester();
+        assert($requester !== null);
+
+        return $requester
             ->withSchema($this->schema)
             ->withMethod($method)
             ->withPath($path)
-            ->withQuery($query)
+            ->withQuery($queryArray)
             ->withRequestBody($requestBody)
             ->withRequestHeader($requestHeader)
             ->expectStatus($statusExpected)

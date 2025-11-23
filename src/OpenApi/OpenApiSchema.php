@@ -46,7 +46,8 @@ class OpenApiSchema extends Schema
         }
 
         foreach ($this->serverVariables as $var => $value) {
-            $serverUrl = (string)preg_replace("/\{$var}/", $value, $serverUrl);
+            $replaced = preg_replace("/\{$var}/", $value, $serverUrl);
+            $serverUrl = is_string($replaced) ? $replaced : $serverUrl;
         }
 
         return $serverUrl;

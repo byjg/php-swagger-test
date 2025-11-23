@@ -138,12 +138,16 @@ abstract class Schema
         }
 
         // Try inline parameter
+        /**
+         * @var string $pathItem
+         */
         foreach (array_keys($this->jsonFile[self::SWAGGER_PATHS]) as $pathItem) {
             if (!str_contains($pathItem, '{')) {
                 continue;
             }
 
-            $pathItemPattern = '~^' . preg_replace('~{(.*?)}~', '(?<\1>[^/]+)', $pathItem) . '$~';
+            $pathItemReplaced = preg_replace('~{(.*?)}~', '(?<\1>[^/]+)', $pathItem);
+            $pathItemPattern = '~^' . (is_string($pathItemReplaced) ? $pathItemReplaced : $pathItem) . '$~';
 
             $matches = [];
             if (empty($uri->getPath())) {

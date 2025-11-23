@@ -23,7 +23,11 @@ class OpenApiRequestBody extends Body
                 return $this->matchSchema($this->name, $this->structure, $body) ?? false;
             }
 
-            return $this->matchSchema($this->name, $this->structure['content'][key($this->structure['content'])]['schema'], $body) ?? false;
+            $contentKey = is_array($this->structure['content']) ? key($this->structure['content']) : null;
+            if ($contentKey !== null && isset($this->structure['content'][$contentKey]['schema'])) {
+                return $this->matchSchema($this->name, $this->structure['content'][$contentKey]['schema'], $body) ?? false;
+            }
+            return false;
         }
 
         if (!empty($body)) {
