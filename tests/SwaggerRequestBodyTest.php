@@ -3,25 +3,27 @@
 namespace Tests;
 
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
+use ByJG\ApiTools\Exception\GenericApiException;
 use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\InvalidRequestException;
 use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\ApiTools\Exception\PathNotFoundException;
+use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
 
 class SwaggerRequestBodyTest extends SwaggerBodyTestCase
 {
     /**
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\InvalidRequestException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
-     * @throws \ByJG\ApiTools\Exception\RequiredArgumentNotFound
+     * @throws DefinitionNotFoundException
+     * @throws GenericApiException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      */
-    public function testMatchRequestBody()
+    public function testMatchRequestBody(): void
     {
         $body = [
             "id" => "10",
@@ -36,16 +38,16 @@ class SwaggerRequestBodyTest extends SwaggerBodyTestCase
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\InvalidRequestException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
-     * @throws \ByJG\ApiTools\Exception\RequiredArgumentNotFound
+     * @throws DefinitionNotFoundException
+     * @throws GenericApiException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      */
-    public function testMatchRequiredRequestBodyEmpty()
+    public function testMatchRequiredRequestBodyEmpty(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\RequiredArgumentNotFound::class);
         $this->expectExceptionMessage("The body is required");
@@ -55,21 +57,20 @@ class SwaggerRequestBodyTest extends SwaggerBodyTestCase
     }
 
     /**
-     *
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\InvalidRequestException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
-     * @throws \ByJG\ApiTools\Exception\RequiredArgumentNotFound
+     * @throws DefinitionNotFoundException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws GenericApiException
+     * @throws RequiredArgumentNotFound
      */
-    public function testMatchInexistantBodyDefinition()
+    public function testMatchInexistantBodyDefinition(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\InvalidDefinitionException::class);
-        $this->expectExceptionMessage("Body is passed but there is no request body definition");
-        
+        $this->expectExceptionMessage("Request body provided for 'get /v2/pet/1' but the Swagger/OpenAPI 2.0 specification does not define a request body for this operation");
+
         $requestParameter = self::swaggerSchema()->getRequestParameters('/v2/pet/1', 'get');
         $body = [
             "id" => "10",
@@ -83,7 +84,6 @@ class SwaggerRequestBodyTest extends SwaggerBodyTestCase
     }
 
     /**
-     *
      * @throws DefinitionNotFoundException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
@@ -91,7 +91,7 @@ class SwaggerRequestBodyTest extends SwaggerBodyTestCase
      * @throws PathNotFoundException
      * @throws InvalidRequestException
      */
-    public function testMatchDataType()
+    public function testMatchDataType(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
         $this->expectExceptionMessage("Path expected an integer value");
@@ -101,17 +101,16 @@ class SwaggerRequestBodyTest extends SwaggerBodyTestCase
     }
 
     /**
-     *
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\InvalidRequestException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
-     * @throws \ByJG\ApiTools\Exception\RequiredArgumentNotFound
+     * @throws DefinitionNotFoundException
+     * @throws GenericApiException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      */
-    public function testMatchRequestBodyRequired1()
+    public function testMatchRequestBodyRequired1(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
         $this->expectExceptionMessage("Required property");
@@ -128,16 +127,16 @@ class SwaggerRequestBodyTest extends SwaggerBodyTestCase
      * It is not OK when allowNullValues is false (as by default) { name: null }
      * https://stackoverflow.com/questions/45575493/what-does-required-in-openapi-really-mean
      *
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\InvalidRequestException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
-     * @throws \ByJG\ApiTools\Exception\RequiredArgumentNotFound
+     * @throws DefinitionNotFoundException
+     * @throws GenericApiException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      */
-    public function testMatchRequestBodyRequiredNullsNotAllowed()
+    public function testMatchRequestBodyRequiredNullsNotAllowed(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
         $this->expectExceptionMessage("Value of property 'name' is null, but should be of type 'string'");
@@ -153,16 +152,16 @@ class SwaggerRequestBodyTest extends SwaggerBodyTestCase
     }
 
     /**
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\InvalidRequestException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
-     * @throws \ByJG\ApiTools\Exception\RequiredArgumentNotFound
+     * @throws DefinitionNotFoundException
+     * @throws GenericApiException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      */
-    public function testMatchRequestBodyRequiredNullsAllowed()
+    public function testMatchRequestBodyRequiredNullsAllowed(): void
     {
         $allowNullValues = true;
         $body = [
@@ -179,16 +178,16 @@ class SwaggerRequestBodyTest extends SwaggerBodyTestCase
      * It is OK: { name: ""}
      * https://stackoverflow.com/questions/45575493/what-does-required-in-openapi-really-mean
      *
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\InvalidRequestException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
-     * @throws \ByJG\ApiTools\Exception\RequiredArgumentNotFound
+     * @throws DefinitionNotFoundException
+     * @throws GenericApiException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      */
-    public function testMatchRequestBodyRequired3()
+    public function testMatchRequestBodyRequired3(): void
     {
         $body = [
             "id" => "10",
@@ -203,16 +202,16 @@ class SwaggerRequestBodyTest extends SwaggerBodyTestCase
     /**
      * issue #21
      *
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\InvalidRequestException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
-     * @throws \ByJG\ApiTools\Exception\RequiredArgumentNotFound
+     * @throws DefinitionNotFoundException
+     * @throws GenericApiException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      */
-    public function testMatchRequestBodyRequired_Issue21()
+    public function testMatchRequestBodyRequired_Issue21(): void
     {
         // Full Request
         $body = [
@@ -226,16 +225,16 @@ class SwaggerRequestBodyTest extends SwaggerBodyTestCase
     /**
      * Issue #21
      *
-     * @throws \ByJG\ApiTools\Exception\DefinitionNotFoundException
-     * @throws \ByJG\ApiTools\Exception\GenericSwaggerException
-     * @throws \ByJG\ApiTools\Exception\HttpMethodNotFoundException
-     * @throws \ByJG\ApiTools\Exception\InvalidDefinitionException
-     * @throws \ByJG\ApiTools\Exception\InvalidRequestException
-     * @throws \ByJG\ApiTools\Exception\NotMatchedException
-     * @throws \ByJG\ApiTools\Exception\PathNotFoundException
-     * @throws \ByJG\ApiTools\Exception\RequiredArgumentNotFound
+     * @throws DefinitionNotFoundException
+     * @throws GenericApiException
+     * @throws HttpMethodNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
      */
-    public function testMatchRequestBodyRequired_Issue21_Required()
+    public function testMatchRequestBodyRequired_Issue21_Required(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
         $this->expectExceptionMessage("Required property 'user_uuid'");

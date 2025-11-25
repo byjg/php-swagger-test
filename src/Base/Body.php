@@ -3,7 +3,7 @@
 namespace ByJG\ApiTools\Base;
 
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
-use ByJG\ApiTools\Exception\GenericSwaggerException;
+use ByJG\ApiTools\Exception\GenericApiException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\InvalidRequestException;
 use ByJG\ApiTools\Exception\NotMatchedException;
@@ -11,9 +11,11 @@ use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
 
 abstract class Body
 {
-    const SWAGGER_PROPERTIES="properties";
-    const SWAGGER_ADDITIONAL_PROPERTIES="additionalProperties";
-    const SWAGGER_REQUIRED="required";
+    const SWAGGER_OBJECT = "object";
+    const SWAGGER_ARRAY = "array";
+    const SWAGGER_PROPERTIES = "properties";
+    const SWAGGER_ADDITIONAL_PROPERTIES = "additionalProperties";
+    const SWAGGER_REQUIRED = "required";
 
     /**
      * @var Schema
@@ -56,13 +58,13 @@ abstract class Body
 
     /**
      * @param mixed $body
-     * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @return bool
+     *@throws GenericApiException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
      * @throws NotMatchedException
      * @throws RequiredArgumentNotFound
-     * @return bool
+     * @throws DefinitionNotFoundException
      */
     abstract public function match(mixed $body): bool;
 
@@ -96,12 +98,14 @@ abstract class Body
     }
 
     /**
-     * @throws NotMatchedException
+     * @param numeric $body
+     *@throws NotMatchedException
+     *
      */
     private function checkPattern(string $name, mixed $body, string $pattern): void
     {
         $pattern = '/' . rtrim(ltrim($pattern, '/'), '/') . '/';
-        $isSuccess = (bool) preg_match($pattern, $body);
+        $isSuccess = (bool)preg_match($pattern, (string)$body);
 
         if (!$isSuccess) {
             throw new NotMatchedException("Value '$body' in '$name' not matched in pattern. ", $this->structure);
@@ -176,14 +180,14 @@ abstract class Body
      * @param mixed $type
      * @return ?bool
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
      * @throws NotMatchedException
      */
     protected function matchArray(string $name, array $schemaArray, mixed $body, mixed $type): ?bool
     {
-        if ($type !== 'array') {
+        if ($type !== self::SWAGGER_ARRAY) {
             return null;
         }
 
@@ -212,32 +216,32 @@ abstract class Body
         $nullable = isset($schemaArray['nullable']) ? (bool)$schemaArray['nullable'] : $this->schema->isAllowNullValues();
 
         $validators = [
-            function () use ($name, $body, $type, $nullable)
+            function () use ($name, $body, $type, $nullable): bool|null
             {
                 return $this->matchNull($name, $body, $type, $nullable);
             },
 
-            function () use ($name, $schemaArray, $body, $type)
+            function () use ($name, $schemaArray, $body, $type): bool|null
             {
                 return $this->matchString($name, $schemaArray, $body, $type);
             },
 
-            function () use ($name, $schemaArray, $body, $type)
+            function () use ($name, $schemaArray, $body, $type): bool|null
             {
                 return $this->matchNumber($name, $schemaArray, $body, $type);
             },
 
-            function () use ($name, $body, $type)
+            function () use ($name, $body, $type): bool|null
             {
                 return $this->matchBool($name, $body, $type);
             },
 
-            function () use ($name, $schemaArray, $body, $type)
+            function () use ($name, $schemaArray, $body, $type): bool|null
             {
                 return $this->matchArray($name, $schemaArray, $body, $type);
             },
 
-            function () use ($name, $schemaArray, $body, $type)
+            function () use ($name, $schemaArray, $body, $type): bool|null
             {
                 return $this->matchFile($name, $schemaArray, $body, $type);
             },
@@ -259,24 +263,37 @@ abstract class Body
      * @param mixed $body
      * @return bool|null
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
      * @throws NotMatchedException
      */
     public function matchObjectProperties(string $name, mixed $schemaArray, mixed $body): ?bool
     {
-        if (isset($schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES]) && !isset($schemaArray[self::SWAGGER_PROPERTIES])) {
-            $schemaArray[self::SWAGGER_PROPERTIES] = [];
-        }
+//        if (!in_array($schemaArray["type"] ?? '',  [self::SWAGGER_OBJECT, self::SWAGGER_ARRAY])) {
+//            return null;
+//        }
 
         if (!isset($schemaArray[self::SWAGGER_PROPERTIES])) {
-            return null;
+            if (in_array($schemaArray["type"] ?? '', [self::SWAGGER_OBJECT, self::SWAGGER_ARRAY])) {
+                $schemaArray[self::SWAGGER_PROPERTIES] = [];
+            } else {
+                return null;
+            }
+        }
+
+        if (empty($schemaArray[self::SWAGGER_PROPERTIES]) && !isset($schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES])) {
+            $schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES] = true;
+        }
+
+        if ($body instanceof \SimpleXMLElement) {
+            $encoded = json_encode($body);
+            $body = json_decode($encoded !== false ? $encoded : '{}', true);
         }
 
         if (!is_array($body)) {
             throw new InvalidRequestException(
-                "I expected an array here, but I got an string. Maybe you did wrong request?",
+                "The body '" . $body . "' cannot be compared with the expected type " . $name,
                 $body
             );
         }
@@ -321,21 +338,29 @@ abstract class Body
             );
         }
 
+        $additionalProperties = $schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES] ?? false;
+        $allowAnyProperty = $additionalProperties === true;
+        $def = is_array($additionalProperties) ? ($additionalProperties["type"] ?? '') : '';
+        if ($allowAnyProperty || empty($def)) {
+            return true;
+        }
+
         foreach ($body as $name => $prop) {
-            $def = $schemaArray[self::SWAGGER_ADDITIONAL_PROPERTIES];
-            $this->matchSchema($name, $def, $prop);
+            if (is_array($additionalProperties)) {
+                $this->matchSchema($name, $additionalProperties, $prop);
+            }
         }
         return true;
     }
 
     /**
      * @param string $name
-     * @param array $schemaArray
-     * @param array $body
+     * @param mixed $schemaArray
+     * @param mixed $body
      * @return ?bool
      * @throws DefinitionNotFoundException
      * @throws InvalidDefinitionException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws InvalidRequestException
      * @throws NotMatchedException
      */
@@ -346,8 +371,11 @@ abstract class Body
             return true;
         }
 
-        if(!isset($schemaArray['$ref']) && isset($schemaArray['content'])) {
-            $schemaArray = $schemaArray['content'][key($schemaArray['content'])]['schema'];
+        if (!isset($schemaArray['$ref']) && isset($schemaArray['content']) && is_array($schemaArray['content'])) {
+            $contentKey = key($schemaArray['content']);
+            if ($contentKey !== null && isset($schemaArray['content'][$contentKey]['schema'])) {
+                $schemaArray = $schemaArray['content'][$contentKey]['schema'];
+            }
         }
 
         // Get References and try to match it again
@@ -401,11 +429,11 @@ abstract class Body
         }
 
         // Match any object
-        if (count($schemaArray) === 1 && isset($schemaArray['type']) && $schemaArray['type'] === 'object') {
+        if (count($schemaArray) === 1 && isset($schemaArray['type']) && $schemaArray['type'] === self::SWAGGER_OBJECT) {
             return true;
         }
 
-        throw new GenericSwaggerException("Not all cases are defined. Please open an issue about this. Schema: $name");
+        throw new GenericApiException("Not all cases are defined. Please open an issue about this. Schema: $name");
     }
 
     /**

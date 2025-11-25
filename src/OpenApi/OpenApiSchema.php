@@ -29,6 +29,7 @@ class OpenApiSchema extends Schema
         $this->jsonFile = $data;
     }
 
+    #[\Override]
     public function getServerUrl(): string
     {
         if (!isset($this->jsonFile['servers'])) {
@@ -45,12 +46,14 @@ class OpenApiSchema extends Schema
         }
 
         foreach ($this->serverVariables as $var => $value) {
-            $serverUrl = (string)preg_replace("/\{$var}/", $value, $serverUrl);
+            $replaced = preg_replace("/\{$var}/", $value, $serverUrl);
+            $serverUrl = is_string($replaced) ? $replaced : $serverUrl;
         }
 
         return $serverUrl;
     }
 
+    #[\Override]
     public function getBasePath(): string
     {
         $uriServer = new Uri($this->getServerUrl());
@@ -60,6 +63,7 @@ class OpenApiSchema extends Schema
     /**
      * @inheritDoc
      */
+    #[\Override]
     protected function validateArguments(string $parameterIn, array $parameters, array $arguments): void
     {
         foreach ($parameters as $parameter) {
@@ -86,12 +90,13 @@ class OpenApiSchema extends Schema
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @return mixed
      * @throws DefinitionNotFoundException
      * @throws InvalidDefinitionException
      */
-    public function getDefinition($name): mixed
+    #[\Override]
+    public function getDefinition(string $name): mixed
     {
         $nameParts = explode('/', $name);
 
@@ -110,6 +115,7 @@ class OpenApiSchema extends Schema
      * @inheritDoc
      * @throws InvalidRequestException
      */
+    #[\Override]
     public function getRequestParameters(string $path, string $method): Body
     {
         $structure = $this->getPathDefinition($path, $method);
@@ -128,6 +134,7 @@ class OpenApiSchema extends Schema
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getResponseBody(Schema $schema, string $name, array $structure, bool $allowNullValues = false): Body
     {
         return new OpenApiResponseBody($schema, $name, $structure, $allowNullValues);

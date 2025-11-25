@@ -11,6 +11,7 @@ class OpenApiRequestBody extends Body
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function match(mixed $body): bool
     {
         if (isset($this->structure['content']) || isset($this->structure['$ref'])) {
@@ -22,11 +23,19 @@ class OpenApiRequestBody extends Body
                 return $this->matchSchema($this->name, $this->structure, $body) ?? false;
             }
 
-            return $this->matchSchema($this->name, $this->structure['content'][key($this->structure['content'])]['schema'], $body) ?? false;
+            $contentKey = is_array($this->structure['content']) ? key($this->structure['content']) : null;
+            if ($contentKey !== null && isset($this->structure['content'][$contentKey]['schema'])) {
+                return $this->matchSchema($this->name, $this->structure['content'][$contentKey]['schema'], $body) ?? false;
+            }
+            return false;
         }
 
         if (!empty($body)) {
-            throw new InvalidDefinitionException('Body is passed but there is no request body definition');
+            throw new InvalidDefinitionException(
+                "Request body provided for '{$this->name}' but the OpenAPI 3.0 specification does not define a request body for this operation.\n\n" .
+                "Suggestion: Either remove the request body from your test using withRequestBody(), or add a 'requestBody' " .
+                "definition to your OpenAPI specification for this endpoint."
+            );
         }
 
         return false;

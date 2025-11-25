@@ -1,3 +1,7 @@
+---
+sidebar_position: 4
+---
+
 # Mock Requests
 
 PHP Swagger has the class `MockRequester` with exact the same functionalities of `ApiRequester` class. The only
@@ -25,7 +29,7 @@ class MyTest extends ApiTestCase
             ->withMethod('GET')
             ->withPath("/pet/1");
 
-        $this->assertRequest($request); // That should be "True" based on the specification
+        $this->sendRequest($request); // That should be "True" based on the specification
     }
 }
 ```

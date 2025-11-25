@@ -2,7 +2,9 @@
 
 namespace Tests;
 
+use ByJG\ApiTools\Base\Schema;
 use ByJG\ApiTools\OpenApi\OpenApiSchema;
+use ByJG\ApiTools\Swagger\SwaggerSchema;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -15,11 +17,11 @@ class OpenApiBodyTestCase extends TestCase
 {
     /**
      * @param bool $allowNullValues
-     * @return OpenApiSchema
+     * @return OpenApiSchema|SwaggerSchema
      */
-    protected static function openApiSchema(bool $allowNullValues = false): OpenApiSchema
+    protected static function openApiSchema(bool $allowNullValues = false): OpenApiSchema|SwaggerSchema
     {
-        return \ByJG\ApiTools\Base\Schema::getInstance(
+        return Schema::getInstance(
             self::getOpenApiJsonContent(),
             $allowNullValues
         );
@@ -27,11 +29,11 @@ class OpenApiBodyTestCase extends TestCase
 
     /**
      * @param bool $allowNullValues
-     * @return OpenApiSchema
+     * @return OpenApiSchema|SwaggerSchema
      */
-    protected static function openApiSchema2(bool $allowNullValues = false): OpenApiSchema
+    protected static function openApiSchema2(bool $allowNullValues = false): OpenApiSchema|SwaggerSchema
     {
-        return \ByJG\ApiTools\Base\Schema::getInstance(
+        return Schema::getInstance(
             self::getOpenApiJsonContent_No2(),
             $allowNullValues
         );
@@ -39,11 +41,11 @@ class OpenApiBodyTestCase extends TestCase
 
     /**
      * @param bool $allowNullValues
-     * @return OpenApiSchema
+     * @return OpenApiSchema|SwaggerSchema
      */
-    protected static function openApiSchema3(bool $allowNullValues = false): OpenApiSchema
+    protected static function openApiSchema3(bool $allowNullValues = false): OpenApiSchema|SwaggerSchema
     {
-        return \ByJG\ApiTools\Base\Schema::getInstance(
+        return Schema::getInstance(
             self::getOpenApiJsonContent_No3(),
             $allowNullValues
         );
@@ -51,44 +53,44 @@ class OpenApiBodyTestCase extends TestCase
 
     /**
      * @param bool $allowNullValues
-     * @return OpenApiSchema
+     * @return OpenApiSchema|SwaggerSchema
      */
-    protected static function openApiSchema5(bool $allowNullValues = false): OpenApiSchema
+    protected static function openApiSchema5(bool $allowNullValues = false): OpenApiSchema|SwaggerSchema
     {
-        return \ByJG\ApiTools\Base\Schema::getInstance(
+        return Schema::getInstance(
             self::getOpenApiJsonContent_No5(),
             $allowNullValues
         );
     }
 
     /**
-     * @return string
+     * @return false|string
      */
-    protected static function getOpenApiJsonContent(): string
+    protected static function getOpenApiJsonContent(): string|false
     {
         return file_get_contents(__DIR__ . '/example/openapi.json');
     }
 
     /**
-     * @return string
+     * @return false|string
      */
-    protected static function getOpenApiJsonContent_No2(): string
+    protected static function getOpenApiJsonContent_No2(): string|false
     {
         return file_get_contents(__DIR__ . '/example/openapi2.json');
     }
 
     /**
-     * @return string
+     * @return false|string
      */
-    protected static function getOpenApiJsonContent_No3(): string
+    protected static function getOpenApiJsonContent_No3(): string|false
     {
         return file_get_contents(__DIR__ . '/example/openapi3.json');
     }
 
     /**
-     * @return string
+     * @return false|string
      */
-    protected static function getOpenApiJsonContent_No5(): string
+    protected static function getOpenApiJsonContent_No5(): string|false
     {
         return file_get_contents(__DIR__ . '/example/openapi5.json');
     }

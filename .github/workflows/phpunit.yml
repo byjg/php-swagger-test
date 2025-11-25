@@ -12,23 +12,54 @@ on:
 jobs:
   Build:
     runs-on: 'ubuntu-latest'
-    container: 'byjg/php:${{ matrix.php-version }}-cli'
+    container:
+      image: 'byjg/php:${{ matrix.php-version }}-cli'
+      options: --user root --privileged
     strategy:
       matrix:
         php-version:
+          - "8.5"
+          - "8.4"
           - "8.3"
-          - "8.2"
-          - "8.1"
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Setup test
         run: |
           composer install
           SPEC=swagger php -S 127.0.0.1:8080 tests/rest/app.php &
           SPEC=openapi php -S 127.0.0.1:8081 tests/rest/app.php &
-      - run: ./vendor/bin/phpunit
-      - run: ./vendor/bin/psalm
+      - run: composer test
+
+  Psalm:
+    name: Psalm Static Analyzer
+    runs-on: ubuntu-latest
+    permissions:
+      # for github/codeql-action/upload-sarif to upload SARIF results
+      security-events: write
+    container:
+      image: byjg/php:8.4-cli
+      options: --user root --privileged
+
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v4
+
+      - name: Composer
+        run: composer install
+
+      - name: Psalm
+        # Note: Ignoring error code 2, which just signals that some
+        # flaws were found, not that Psalm itself failed to run.
+        run: ./vendor/bin/psalm
+          --show-info=true
+          --report=psalm-results.sarif || [ $? = 2 ]
+
+      - name: Upload Analysis results to GitHub
+        uses: github/codeql-action/upload-sarif@v4
+        if: github.ref == 'refs/heads/master'
+        with:
+          sarif_file: psalm-results.sarif
 
   Documentation:
     if: github.ref == 'refs/heads/master'
@@ -37,5 +68,6 @@ jobs:
     with:
       folder: php
       project: ${{ github.event.repository.name }}
-    secrets: inherit
+    secrets:
+      DOC_TOKEN: ${{ secrets.DOC_TOKEN }}
 

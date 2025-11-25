@@ -32,6 +32,7 @@ class MockRequester extends AbstractRequester
      * @return ResponseInterface
      * @throws RequestException
      */
+    #[\Override]
     protected function handleRequest(RequestInterface $request): ResponseInterface
     {
         $request = $request->withHeader("User-Agent", "ByJG Swagger Test");

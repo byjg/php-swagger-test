@@ -4,13 +4,12 @@
 namespace Tests;
 
 use ByJG\ApiTools\Base\Schema;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 
-require_once "AbstractRequesterTest.php";
+require_once "AbstractRequester.php";
 
-class OpenApiTest extends AbstractRequesterTest
+class OpenApi extends AbstractRequester
 {
+    #[\Override]
     public function setUp(): void
     {
         $schema = Schema::getInstance(file_get_contents(__DIR__ . '/rest/openapi.json'));

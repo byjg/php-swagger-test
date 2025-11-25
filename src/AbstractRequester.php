@@ -4,7 +4,7 @@ namespace ByJG\ApiTools;
 
 use ByJG\ApiTools\Base\Schema;
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
-use ByJG\ApiTools\Exception\GenericSwaggerException;
+use ByJG\ApiTools\Exception\GenericApiException;
 use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\InvalidRequestException;
@@ -12,11 +12,11 @@ use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\ApiTools\Exception\PathNotFoundException;
 use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
 use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
+use ByJG\Util\Uri;
 use ByJG\WebRequest\Exception\MessageException;
 use ByJG\WebRequest\Exception\RequestException;
-use ByJG\WebRequest\Psr7\Request;
-use ByJG\Util\Uri;
 use ByJG\WebRequest\Psr7\MemoryStream;
+use ByJG\WebRequest\Psr7\Request;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -40,6 +40,11 @@ abstract class AbstractRequester
     protected int $statusExpected = 200;
     protected array $assertHeader = [];
     protected array $assertBody = [];
+
+    /**
+     * @var array<callable> PHPUnit assertions to execute after response is received
+     */
+    protected array $phpunitAssertions = [];
 
     /**
      * @var RequestInterface
@@ -126,7 +131,7 @@ abstract class AbstractRequester
      * @param array|null $query
      * @return $this
      */
-    public function withQuery(array $query = null): self
+    public function withQuery(?array $query = null): self
     {
         $uri = $this->psr7Request->getUri();
 
@@ -171,21 +176,49 @@ abstract class AbstractRequester
         return $this;
     }
 
-    public function assertResponseCode(int $code): self
+    /**
+     * Expect a specific HTTP status code.
+     *
+     * @param int $expectedStatus Expected HTTP status code
+     * @return $this
+     */
+    public function expectStatus(int $expectedStatus): self
     {
-        $this->statusExpected = $code;
+        $this->statusExpected = $expectedStatus;
+
+        // Add PHPUnit assertion to be executed after response is received
+        $this->phpunitAssertions[] = function ($testCase, $response) use ($expectedStatus) {
+            $testCase->assertEquals(
+                $expectedStatus,
+                $response->getStatusCode(),
+                "Expected HTTP status code $expectedStatus"
+            );
+        };
 
         return $this;
     }
 
-    public function assertHeaderContains(string $header, string $contains): self
+    /**
+     * Expect a specific header to contain a value.
+     *
+     * @param string $header Header name
+     * @param string $contains Expected value to be contained in the header
+     * @return $this
+     */
+    public function expectHeaderContains(string $header, string $contains): self
     {
         $this->assertHeader[$header] = $contains;
 
         return $this;
     }
 
-    public function assertBodyContains(string $contains): self
+    /**
+     * Expect the response body to contain a string.
+     *
+     * @param string $contains Expected string to be contained in the body
+     * @return $this
+     */
+    public function expectBodyContains(string $contains): self
     {
         $this->assertBody[] = $contains;
 
@@ -193,9 +226,113 @@ abstract class AbstractRequester
     }
 
     /**
+     * Expect the JSON response to contain specific key-value pairs.
+     *
+     * This performs a subset match - the response can contain additional fields.
+     *
+     * @param array $expected Expected key-value pairs (supports nested arrays)
+     * @return $this
+     */
+    public function expectJsonContains(array $expected): self
+    {
+        $this->phpunitAssertions[] = function ($testCase, $response) use ($expected) {
+            $body = json_decode((string)$response->getBody(), true);
+
+            if ($body === null) {
+                $testCase->fail('Response body is not valid JSON');
+            }
+
+            foreach ($expected as $key => $value) {
+                $testCase->assertArrayHasKey(
+                    $key,
+                    $body,
+                    "Expected JSON response to contain key '$key'"
+                );
+
+                if (is_array($value)) {
+                    $testCase->assertEquals(
+                        $value,
+                        $body[$key],
+                        "Expected JSON key '$key' to match nested array"
+                    );
+                } else {
+                    $testCase->assertEquals(
+                        $value,
+                        $body[$key],
+                        "Expected JSON key '$key' to be equal " . (json_encode($value) ?: 'null')
+                    );
+                }
+            }
+        };
+
+        return $this;
+    }
+
+    /**
+     * Expect a specific value at a JSONPath expression.
+     *
+     * Supports simple dot notation like 'user.name' or 'items.0.id'.
+     *
+     * @param string $path JSONPath expression (dot notation)
+     * @param mixed $expectedValue Expected value at that path
+     * @return $this
+     */
+    public function expectJsonPath(string $path, mixed $expectedValue): self
+    {
+        $this->phpunitAssertions[] = function ($testCase, $response) use ($path, $expectedValue) {
+            $body = json_decode((string)$response->getBody(), true);
+
+            if ($body === null) {
+                $testCase->fail('Response body is not valid JSON');
+            }
+
+            // Simple JSONPath implementation using dot notation
+            $keys = explode('.', $path);
+            $current = $body;
+
+            foreach ($keys as $key) {
+                if (is_array($current) && array_key_exists($key, $current)) {
+                    $current = $current[$key];
+                } else {
+                    $testCase->fail("JSONPath '$path' not found in response (failed at key '$key')");
+                    return;
+                }
+            }
+
+            $testCase->assertEquals(
+                $expectedValue,
+                $current,
+                "Expected value at JSONPath '$path' to be equal " . (json_encode($expectedValue) ?: 'null')
+            );
+        };
+
+        return $this;
+    }
+
+    /**
+     * Get the expected status code.
+     *
+     * @return int
+     */
+    public function getExpectedStatus(): int
+    {
+        return $this->statusExpected;
+    }
+
+    /**
+     * Get the registered PHPUnit assertions.
+     *
+     * @return array<callable>
+     */
+    public function getPhpunitAssertions(): array
+    {
+        return $this->phpunitAssertions;
+    }
+
+    /**
      * @return ResponseInterface
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -207,7 +344,7 @@ abstract class AbstractRequester
     public function send(): ResponseInterface
     {
         // Process URI based on the OpenAPI schema
-        $uriSchema = new Uri($this->schema->getServerUrl());
+        $uriSchema = new Uri($this->schema?->getServerUrl() ?? '');
 
         if (empty($uriSchema->getScheme())) {
             $uriSchema = $uriSchema->withScheme($this->psr7Request->getUri()->getScheme());
@@ -223,7 +360,7 @@ abstract class AbstractRequester
             ->withPort($uriSchema->getPort())
             ->withPath($uriSchema->getPath() . $this->psr7Request->getUri()->getPath());
 
-        if (!preg_match("~^{$this->schema->getBasePath()}~",  $uri->getPath())) {
+        if ($this->schema !== null && !preg_match("~^{$this->schema->getBasePath()}~", $uri->getPath())) {
             $uri = $uri->withPath($this->schema->getBasePath() . $uri->getPath());
         }
 
@@ -243,30 +380,64 @@ abstract class AbstractRequester
         }
 
         // Check if the body is the expected before request
-        $bodyRequestDef = $this->schema->getRequestParameters($this->psr7Request->getUri()->getPath(), $this->psr7Request->getMethod());
-        $bodyRequestDef->match($requestBody);
+        if ($this->schema !== null) {
+            $bodyRequestDef = $this->schema->getRequestParameters($this->psr7Request->getUri()->getPath(), $this->psr7Request->getMethod());
+            $bodyRequestDef->match($requestBody);
+        }
 
         // Handle Request
         $response = $this->handleRequest($this->psr7Request);
         $responseHeader = $response->getHeaders();
-        $responseBodyStr = (string) $response->getBody();
-        $responseBody = json_decode($responseBodyStr, true);
+        $contentType = "";
+        foreach ($responseHeader as $headerName => $headerValue) {
+            if (is_numeric($headerName)) {
+                $header = explode(":", $headerValue[0]);
+                $headerName = trim($header[0]);
+                $headerValue = trim($header[1] ?? "");
+            } else {
+                // Normal case: headerValue is an array, get the first element
+                $headerValue = is_array($headerValue) ? ($headerValue[0] ?? "") : $headerValue;
+            }
+            $headerName = strtolower($headerName);
+            if ($headerName == 'content-type') {
+                $contentType = $headerValue;
+                break;
+            }
+        }
+        $responseBodyStr = $response->getBody()->getContents();
+        // Extract the main content type (before semicolon) to handle "application/json; charset=utf-8"
+        $mainContentType = explode(';', $contentType)[0];
+        $mainContentType = trim($mainContentType);
+
+        // Parse response based on content type, defaulting to JSON for backwards compatibility
+        if ($mainContentType === 'text/xml' || $mainContentType === 'application/xml') {
+            $responseBodyParsed = simplexml_load_string($responseBodyStr);
+        } else {
+            // Default to JSON parsing (for backwards compatibility and when content-type is not set)
+            $responseBodyParsed = json_decode($responseBodyStr, true);
+            // If JSON parsing fails and content-type is explicitly not JSON, use raw string
+            if ($responseBodyParsed === null && $mainContentType !== '' && $mainContentType !== 'application/json') {
+                $responseBodyParsed = $responseBodyStr;
+            }
+        }
         $statusReturned = $response->getStatusCode();
 
         // Assert results
         if ($this->statusExpected != $statusReturned) {
             throw new StatusCodeNotMatchedException(
                 "Status code not matched: Expected $this->statusExpected, got $statusReturned",
-                $responseBody
+                $responseBodyStr
             );
         }
 
-        $bodyResponseDef = $this->schema->getResponseParameters(
-            $this->psr7Request->getUri()->getPath(),
-            $this->psr7Request->getMethod(),
-            $this->statusExpected
-        );
-        $bodyResponseDef->match($responseBody);
+        if ($this->schema !== null) {
+            $bodyResponseDef = $this->schema->getResponseParameters(
+                $this->psr7Request->getUri()->getPath(),
+                $this->psr7Request->getMethod(),
+                $this->statusExpected
+            );
+            $bodyResponseDef->match($responseBodyParsed);
+        }
 
         foreach ($this->assertHeader as $key => $value) {
             if (!isset($responseHeader[$key]) || !str_contains($responseHeader[$key][0], $value)) {
@@ -298,11 +469,14 @@ abstract class AbstractRequester
 
         $matches = [];
 
-        preg_match('/boundary=(.*)$/', $contentType, $matches);
+        preg_match('/boundary=(.*)$/', $contentType ?? '', $matches);
         $boundary = $matches[1];
 
         // split content by boundary and get rid of last -- element
         $blocks = preg_split("/-+$boundary/", $body);
+        if ($blocks === false) {
+            return null;
+        }
         array_pop($blocks);
 
         // loop data blocks

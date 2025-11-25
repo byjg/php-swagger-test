@@ -3,9 +3,8 @@
 namespace Tests;
 
 use ByJG\ApiTools\ApiRequester;
-use ByJG\ApiTools\ApiTestCase;
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
-use ByJG\ApiTools\Exception\GenericSwaggerException;
+use ByJG\ApiTools\Exception\GenericApiException;
 use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\InvalidRequestException;
@@ -14,14 +13,16 @@ use ByJG\ApiTools\Exception\PathNotFoundException;
 use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
 use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
 use ByJG\ApiTools\MockRequester;
+use ByJG\ApiTools\OpenApiValidation;
+use ByJG\Util\Uri;
 use ByJG\WebRequest\Exception\MessageException;
 use ByJG\WebRequest\Exception\RequestException;
 use ByJG\WebRequest\Helper\RequestMultiPart;
 use ByJG\WebRequest\MultiPartItem;
+use ByJG\WebRequest\Psr7\MemoryStream;
 use ByJG\WebRequest\Psr7\Request;
 use ByJG\WebRequest\Psr7\Response;
-use ByJG\Util\Uri;
-use ByJG\WebRequest\Psr7\MemoryStream;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class TestingTestCase
@@ -32,32 +33,35 @@ use ByJG\WebRequest\Psr7\MemoryStream;
  * @see OpenApiTestCaseTest
  * @see SwaggerTestCaseTest
  */
-abstract class TestingTestCase extends ApiTestCase
+abstract class TestingTestCase extends TestCase
 {
+    use OpenApiValidation;
 
     /**
-     * @throws GenericSwaggerException
      * @throws DefinitionNotFoundException
-     * @throws PathNotFoundException
-     * @throws StatusCodeNotMatchedException
-     * @throws NotMatchedException
-     * @throws InvalidRequestException
-     * @throws RequiredArgumentNotFound
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
+     * @throws InvalidRequestException
+     * @throws NotMatchedException
+     * @throws PathNotFoundException
+     * @throws RequiredArgumentNotFound
+     * @throws StatusCodeNotMatchedException
+     * @throws GenericApiException
      */
-    public function testGet()
+    public function testGet(): void
     {
+        // sendRequest() implicitly asserts status code (200 is default)
+        // The expectStatus(200) is optional here since 200 is the default
         $request = new ApiRequester();
         $request
             ->withMethod('GET')
             ->withPath("/pet/1");
 
-        $this->assertRequest($request);
+        $this->sendRequest($request);
     }
 
     /**
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws DefinitionNotFoundException
      * @throws NotMatchedException
      * @throws RequiredArgumentNotFound
@@ -69,7 +73,7 @@ abstract class TestingTestCase extends ApiTestCase
      * @throws MessageException
      * @throws InvalidDefinitionException
      */
-    public function testPost()
+    public function testPost(): void
     {
         $body = [
             'id' => 1,
@@ -80,14 +84,19 @@ abstract class TestingTestCase extends ApiTestCase
             'status' => 'available'
         ];
 
-        // Basic Request
+        // Basic Request with status expectation
         $request = new ApiRequester();
         $request
             ->withMethod('POST')
             ->withPath("/pet")
-            ->withRequestBody($body);
+            ->withRequestBody($body)
+            ->expectStatus(200);
 
-        $this->assertRequest($request);
+        $response = $this->sendRequest($request);
+
+        // Additional validation of response structure
+        $responseBody = json_decode((string)$response->getBody(), true);
+        $this->assertIsArray($responseBody, 'Response should be a valid JSON array');
 
 
         // PSR7 Request
@@ -99,12 +108,12 @@ abstract class TestingTestCase extends ApiTestCase
         $request = new MockRequester($expectedResponse);
         $request->withPsr7Request($psr7Request);
 
-        $this->assertRequest($request);
+        $this->sendRequest($request);
     }
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -113,7 +122,7 @@ abstract class TestingTestCase extends ApiTestCase
      * @throws RequiredArgumentNotFound
      * @throws StatusCodeNotMatchedException
      */
-    public function testAddError()
+    public function testAddError(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
         $this->expectExceptionMessage("Required property 'name'");
@@ -130,12 +139,12 @@ abstract class TestingTestCase extends ApiTestCase
                 'status' => 'available'
             ]);
 
-        $this->assertRequest($request);
+        $this->sendRequest($request);
     }
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -144,7 +153,7 @@ abstract class TestingTestCase extends ApiTestCase
      * @throws RequiredArgumentNotFound
      * @throws StatusCodeNotMatchedException
      */
-    public function testPostError()
+    public function testPostError(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
         $this->expectExceptionMessage("Expected empty body");
@@ -162,11 +171,11 @@ abstract class TestingTestCase extends ApiTestCase
                 'status' => 'available'
             ]);
 
-        $this->assertRequest($request);
+        $this->sendRequest($request);
     }
 
     /**
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws PathNotFoundException
      * @throws DefinitionNotFoundException
      * @throws StatusCodeNotMatchedException
@@ -178,7 +187,7 @@ abstract class TestingTestCase extends ApiTestCase
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      */
-    public function testMultipart()
+    public function testMultipart(): void
     {
         $multipart = [
             new MultiPartItem("note", "somenote"),
@@ -189,11 +198,11 @@ abstract class TestingTestCase extends ApiTestCase
         $request = new ApiRequester();
         $request
             ->withPsr7Request($psr7Requester)
-            ->assertResponseCode(200)
-            ->assertBodyContains("smile")
-            ->assertBodyContains("somenote");
+            ->expectStatus(200)
+            ->expectBodyContains("smile")
+            ->expectBodyContains("somenote");
 
-        $this->assertRequest($request);
+        $this->sendRequest($request);
     }
 
 }

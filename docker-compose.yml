@@ -1,0 +1,25 @@
+services:
+  swagger-test:
+    image: byjg/php:8.4-fpm-nginx
+    working_dir: /srv
+    ports:
+      - "8080:80"
+    environment:
+      - SPEC=swagger
+      - PHP_CONTROLLER=/tests/rest/app.php
+      - NGINX_ROOT=/srv
+    volumes:
+      - ${PWD}:/srv
+
+  openapi-test:
+    image: byjg/php:8.4-fpm-nginx
+    working_dir: /srv
+    ports:
+      - "8081:80"
+    environment:
+      - SPEC=openapi
+      - PHP_CONTROLLER=/tests/rest/app.php
+      - NGINX_ROOT=/srv
+    volumes:
+      - ${PWD}:/srv
+

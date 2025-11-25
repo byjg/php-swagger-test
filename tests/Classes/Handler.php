@@ -12,7 +12,7 @@ class Handler
      * @param HttpResponse $response
      * @param HttpRequest $request
      */
-    public function getPetById($response, $request)
+    public function getPetById($response, $request): void
     {
         $pet = new Pet(
             $request->param("petId"),
@@ -29,7 +29,7 @@ class Handler
      * @param HttpResponse $response
      * @param HttpRequest $request
      */
-    public function addPet($response, $request)
+    public function addPet($response, $request): void
     {
         $pet = new Pet();
         ObjectCopy::copy(json_decode($request->payload()), $pet);
@@ -46,7 +46,7 @@ class Handler
      * @param HttpResponse $response
      * @param HttpRequest $request
      */
-    public function processUpload($response, $request)
+    public function processUpload($response, $request): void
     {
         $pet = new Pet(
             200,

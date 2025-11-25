@@ -3,7 +3,7 @@
 namespace Tests;
 
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
-use ByJG\ApiTools\Exception\GenericSwaggerException;
+use ByJG\ApiTools\Exception\GenericApiException;
 use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\InvalidRequestException;
@@ -15,15 +15,15 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
 {
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
      * @throws NotMatchedException
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
+     * @throws GenericApiException
      */
-    public function testMatchResponseBody()
+    public function testMatchResponseBody(): void
     {
         $schema = self::swaggerSchema();
 
@@ -63,9 +63,8 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     }
 
     /**
-     *
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -73,7 +72,7 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchResponseBodyEnumError()
+    public function testMatchResponseBodyEnumError(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
         $this->expectExceptionMessage("Value 'notfound' in 'status' not matched in ENUM");
@@ -91,9 +90,8 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     }
 
     /**
-     *
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -101,7 +99,7 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchResponseBodyWrongNumber()
+    public function testMatchResponseBodyWrongNumber(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
         $this->expectExceptionMessage("Expected 'id' to be numeric, but found 'ABC'");
@@ -119,9 +117,8 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     }
 
     /**
-     *
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -129,7 +126,7 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchResponseBodyMoreThanExpected()
+    public function testMatchResponseBodyMoreThanExpected(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
         $this->expectExceptionMessage("The property(ies) 'more' has not defined in '#/definitions/Order'");
@@ -149,7 +146,7 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -157,7 +154,7 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchResponseBodyLessFields()
+    public function testMatchResponseBodyLessFields(): void
     {
         $body = [
             "id"       => 10,
@@ -170,7 +167,7 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -178,7 +175,7 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchResponseBodyAllowNullValues()
+    public function testMatchResponseBodyAllowNullValues(): void
     {
         $allowNullValues = true;
         $body = [
@@ -195,9 +192,8 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     }
 
     /**
-     *
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -205,7 +201,7 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchResponseBodyNotAllowNullValues()
+    public function testMatchResponseBodyNotAllowNullValues(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
         $this->expectExceptionMessage("Value of property 'complete' is null, but should be of type 'boolean'");
@@ -221,7 +217,7 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -229,7 +225,7 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchResponseBodyEmpty()
+    public function testMatchResponseBodyEmpty(): void
     {
         $body = null;
         $responseParameter = self::swaggerSchema()->getResponseParameters('/v2/pet/10', 'get', 400);
@@ -237,9 +233,8 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
     }
 
     /**
-     *
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -247,7 +242,7 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchResponseBodyNotEmpty()
+    public function testMatchResponseBodyNotEmpty(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
         $this->expectExceptionMessage("Expected empty body for");
@@ -259,7 +254,7 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -267,7 +262,7 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchResponseBodyComplex()
+    public function testMatchResponseBodyComplex(): void
     {
         $body = [
             "id" => 10,
@@ -297,7 +292,7 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -305,7 +300,7 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchResponseBodyWhenValueWithNestedPropertiesIsNullAndNullsAreAllowed()
+    public function testMatchResponseBodyWhenValueWithNestedPropertiesIsNullAndNullsAreAllowed(): void
     {
         $allowNullValues = true;
         $body = [
@@ -333,7 +328,7 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -341,7 +336,7 @@ class SwaggerResponseBodyTest extends SwaggerBodyTestCase
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testNotMatchResponseBodyWhenValueWithPatterns()
+    public function testNotMatchResponseBodyWhenValueWithPatterns(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
         $this->expectExceptionMessage(<<<'EOL'
@@ -365,7 +360,7 @@ EOL
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -373,7 +368,7 @@ EOL
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchResponseBodyWhenValueWithPatterns()
+    public function testMatchResponseBodyWhenValueWithPatterns(): void
     {
         $allowNullValues = false;
         $body = [
@@ -386,7 +381,7 @@ EOL
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -394,7 +389,7 @@ EOL
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchResponseBodyWhenValueWithStringPatternError()
+    public function testMatchResponseBodyWhenValueWithStringPatternError(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
         $this->expectExceptionMessage(<<<'EOL'
@@ -419,7 +414,7 @@ EOL
 
     /**
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -427,7 +422,7 @@ EOL
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchResponseBodyWhenValueWithNumberPatternError()
+    public function testMatchResponseBodyWhenValueWithNumberPatternError(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\NotMatchedException::class);
         $this->expectExceptionMessage(<<<'EOL'
@@ -454,7 +449,7 @@ EOL
      * Issue #9
      *
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -462,7 +457,7 @@ EOL
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testIssue9()
+    public function testIssue9(): void
     {
         $body =
         [
@@ -487,7 +482,7 @@ EOL
      * Issue #9
      *
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws InvalidRequestException
@@ -495,10 +490,10 @@ EOL
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testIssue9Error()
+    public function testIssue9Error(): void
     {
         $this->expectException(InvalidRequestException::class);
-        $this->expectExceptionMessageMatches("/I expected an array here.*/");
+        $this->expectExceptionMessage("The body 'fr' cannot be compared with the expected type #/definitions/LanguageData_inner");
 
         $body =
             [
@@ -522,14 +517,14 @@ EOL
      *
      * @throws InvalidRequestException
      * @throws DefinitionNotFoundException
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      * @throws NotMatchedException
      * @throws PathNotFoundException
      * @throws RequiredArgumentNotFound
      */
-    public function testMatchAnyValue()
+    public function testMatchAnyValue(): void
     {
         $body = "string";
         $responseParameter = $this->swaggerSchema2()->getResponseParameters('/v2/anyvalue', 'get', 200);
@@ -542,10 +537,14 @@ EOL
         $body = [ "test" => "10"];
         $responseParameter = $this->swaggerSchema2()->getResponseParameters('/v2/anyvalue', 'get', 200);
         $this->assertTrue($responseParameter->match($body));
+
+        $body = ["test" => "10"];
+        $responseParameter = $this->swaggerSchema2()->getResponseParameters('/v2/anyvalue2', 'get', 200);
+        $this->assertTrue($responseParameter->match($body));
     }
 
     /**
-     * @throws GenericSwaggerException
+     * @throws GenericApiException
      * @throws DefinitionNotFoundException
      * @throws PathNotFoundException
      * @throws NotMatchedException
@@ -554,7 +553,7 @@ EOL
      * @throws HttpMethodNotFoundException
      * @throws InvalidDefinitionException
      */
-    public function testResponseDefault()
+    public function testResponseDefault(): void
     {
         $body = [];
         $responseParameter = $this->swaggerSchema()->getResponseParameters('/v2/user', 'post', 503);
@@ -568,7 +567,7 @@ EOL
      * @throws InvalidRequestException
      * @throws HttpMethodNotFoundException
      */
-    public function testResponseWithNoDefault()
+    public function testResponseWithNoDefault(): void
     {
         $this->expectException(\ByJG\ApiTools\Exception\InvalidDefinitionException::class);
         $this->expectExceptionMessage("Could not found status code '503'");
