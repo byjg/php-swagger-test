@@ -1,4 +1,12 @@
+---
+sidebar_key: swagger-test
+tags: [php, http, testing]
+---
+
 # Swagger Test
+
+A set of tools for testing your REST calls based on the OpenApi specification using PHPUnit.
+Currently, this library supports the OpenApi specifications `2.0` (formerly swagger), `3.0.x`, and **`3.1.x`**.
 
 [![Sponsor](https://img.shields.io/badge/Sponsor-%23ea4aaa?logo=githubsponsors&logoColor=white&labelColor=0d1117)](https://github.com/sponsors/byjg)
 [![Build Status](https://github.com/byjg/php-swagger-test/actions/workflows/phpunit.yml/badge.svg?branch=master)](https://github.com/byjg/php-swagger-test/actions/workflows/phpunit.yml)
@@ -6,9 +14,6 @@
 [![GitHub source](https://img.shields.io/badge/Github-source-informational?logo=github)](https://github.com/byjg/php-swagger-test/)
 [![GitHub license](https://img.shields.io/github/license/byjg/php-swagger-test.svg)](https://opensource.byjg.com/opensource/licensing.html)
 [![GitHub release](https://img.shields.io/github/release/byjg/php-swagger-test.svg)](https://github.com/byjg/php-swagger-test/releases/)
-
-A set of tools for testing your REST calls based on the OpenApi specification using PHPUnit.
-Currently, this library supports the OpenApi specifications `2.0` (formerly swagger), `3.0.x`, and **`3.1.x`**.
 
 ## OpenAPI Version Support
 
@@ -66,7 +71,8 @@ The ApiTestCase's assertion process is based on throwing exceptions if some vali
 
 ## Who is using this library?
 
-- [ByJG PHP Rest Reference Architecture](https://github.com/byjg/php-rest-reference-architecture)
+- [ByJG Gluo — PHP REST API starter](https://github.com/byjg/php-gluo)
+- [ByJG Gluo for Laravel — contract testing and runtime validation inside a Laravel app](https://github.com/byjg/php-gluo-laravel)
 - [Laravel Swagger Test](https://github.com/pionl/laravel-swagger-test)
 
 ## Install
