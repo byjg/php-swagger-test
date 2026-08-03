@@ -46,7 +46,7 @@ server.
 
 ```php
 <?php
-use ByJG\RestServer\HttpRequestHandler;
+use ByJG\RestServer\Server;
 use ByJG\RestServer\Route\OpenApiRouteList;
 
 // Load the OpenAPI/Swagger specification
@@ -56,9 +56,14 @@ $specification = '/path/to/specification.json';
 $routeDefinition = new OpenApiRouteList($specification);
 
 // Create a request handler and handle the routes
-$restServer = new HttpRequestHandler();
+$restServer = new Server();
 $restServer->handle($routeDefinition);
 ```
+
+:::note
+On `byjg/restserver` 6.x this class was named `HttpRequestHandler`. It was renamed to `Server` in
+7.0; the `handle()` signature is unchanged.
+:::
 
 This code will create a server that handles requests according to the routes defined in your OpenAPI/Swagger
 specification.
