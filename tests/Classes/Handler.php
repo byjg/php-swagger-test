@@ -15,7 +15,7 @@ class Handler
     public function getPetById($response, $request): void
     {
         $pet = new Pet(
-            $request->param("petId"),
+            $request->attribute("petId"),
             new Category(101, "cat"),
             'Doris',
             [],
@@ -53,7 +53,7 @@ class Handler
             new Category(101, "cat"),
             'Doris',
             [$request->uploadedFiles()->getFileName("upfile")],
-            [new Tag(1, $request->post("note"))],
+            [new Tag(1, $request->body("note"))],
             'sold'
         );
         $response->write($pet);

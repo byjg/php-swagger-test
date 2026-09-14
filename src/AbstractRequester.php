@@ -374,6 +374,12 @@ abstract class AbstractRequester
                 $requestBody = json_decode($requestBody, true);
             } elseif (str_contains($contentType, "multipart/")) {
                 $requestBody = $this->parseMultiPartForm($contentType, $requestBody);
+            } elseif (str_contains($contentType, "application/x-www-form-urlencoded")) {
+                // Values arrive as strings, which is what the matcher already
+                // expects from multipart bodies; numeric types are checked with
+                // is_numeric(), so a form field still matches an integer schema.
+                parse_str($requestBody, $parsedForm);
+                $requestBody = $parsedForm;
             } else {
                 throw new InvalidRequestException("Cannot handle Content Type '$contentType'");
             }

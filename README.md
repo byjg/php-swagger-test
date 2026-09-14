@@ -12,7 +12,7 @@ Currently, this library supports the OpenApi specifications `2.0` (formerly swag
 [![Build Status](https://github.com/byjg/php-swagger-test/actions/workflows/phpunit.yml/badge.svg?branch=master)](https://github.com/byjg/php-swagger-test/actions/workflows/phpunit.yml)
 [![Opensource ByJG](https://img.shields.io/badge/opensource-byjg-success.svg)](http://opensource.byjg.com)
 [![GitHub source](https://img.shields.io/badge/Github-source-informational?logo=github)](https://github.com/byjg/php-swagger-test/)
-[![GitHub license](https://img.shields.io/github/license/byjg/php-swagger-test.svg)](https://opensource.byjg.com/opensource/licensing.html)
+[![GitHub license](https://img.shields.io/github/license/byjg/php-swagger-test.svg)](https://opensource.byjg.com/license/)
 [![GitHub release](https://img.shields.io/github/release/byjg/php-swagger-test.svg)](https://github.com/byjg/php-swagger-test/releases/)
 
 ## OpenAPI Version Support
@@ -98,13 +98,6 @@ Check it out to get more information.
 ## Questions?
 
 Please raise your issue on [Github issue](https://github.com/byjg/php-swagger-test/issues).
-
-## Dependencies
-
-```mermaid
-flowchart TD
-    byjg/swagger-test --> byjg/webrequest
-```
 
 ----
 [Open source ByJG](http://opensource.byjg.com)
