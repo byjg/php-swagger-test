@@ -6,6 +6,70 @@ sidebar_position: 8
 
 This guide covers advanced features and use cases for PHP Swagger Test.
 
+## Supported Request Content Types
+
+The request body is parsed before being matched against the specification. Three content types are
+recognised:
+
+| Content-Type                        | Parsed with           |
+|-------------------------------------|-----------------------|
+| `application/json` *(or none)*      | `json_decode()`       |
+| `multipart/*`                       | multipart form parser |
+| `application/x-www-form-urlencoded` | `parse_str()`         |
+
+Anything else raises `InvalidRequestException` — see [Exception handling](exceptions.md).
+
+## Form URL Encoded Requests
+
+Endpoints consuming `application/x-www-form-urlencoded` are matched like any other:
+
+```php
+<?php
+use ByJG\ApiTools\ApiRequester;
+
+$request = new ApiRequester();
+$request
+    ->withMethod('POST')
+    ->withPath('/subscribe')
+    ->withRequestHeader(['Content-Type' => 'application/x-www-form-urlencoded'])
+    ->withRequestBody(http_build_query([
+        'name' => 'John Doe',
+        'email' => 'john@example.com',
+        'age' => 42,
+    ]))
+    ->expectStatus(200);
+
+$this->sendRequest($request);
+```
+
+:::note
+A urlencoded body carries only strings. Numeric properties are validated with `is_numeric()`, so
+`age=42` still matches a schema declaring `type: integer` — the same way multipart form fields have
+always behaved.
+:::
+
+**OpenAPI 3.0:**
+
+```yaml
+paths:
+  /subscribe:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [name, email]
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                age:
+                  type: integer
+```
+
 ## Multipart Form Data and File Uploads
 
 PHP Swagger Test supports testing endpoints that accept `multipart/form-data` requests, commonly used for file uploads.
