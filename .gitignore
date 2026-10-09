@@ -19,3 +19,4 @@ composer.lock
 *.bak
 
 .do-not-commit
+.vscode
