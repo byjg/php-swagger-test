@@ -95,7 +95,35 @@ abstract class Body
             throw new NotMatchedException("Value '" . var_export($body, true) . "' in '$name' is not string. ", $this->structure);
         }
 
+        $this->checkLength($name, $body, $schemaArray);
+
         return true;
+    }
+
+    /**
+     * Enforce minLength/maxLength. Length is counted in characters, not bytes.
+     *
+     * @throws NotMatchedException
+     */
+    private function checkLength(string $name, string $body, array $schemaArray): void
+    {
+        if (!isset($schemaArray['minLength']) && !isset($schemaArray['maxLength'])) {
+            return;
+        }
+
+        // PCRE counts code points without requiring ext-mbstring; invalid UTF-8 falls back to bytes.
+        $length = preg_match_all('/./su', $body);
+        if ($length === false) {
+            $length = strlen($body);
+        }
+
+        if (isset($schemaArray['minLength']) && $length < $schemaArray['minLength']) {
+            throw new NotMatchedException("Value '$body' in '$name' is shorter than minLength {$schemaArray['minLength']}. ", $this->structure);
+        }
+
+        if (isset($schemaArray['maxLength']) && $length > $schemaArray['maxLength']) {
+            throw new NotMatchedException("Value '$body' in '$name' is longer than maxLength {$schemaArray['maxLength']}. ", $this->structure);
+        }
     }
 
     /**
@@ -149,6 +177,14 @@ abstract class Body
 
         if (isset($schemaArray['pattern'])) {
             $this->checkPattern($name, $body, $schemaArray['pattern']);
+        }
+
+        if (isset($schemaArray['minimum']) && $body < $schemaArray['minimum']) {
+            throw new NotMatchedException("Value '$body' in '$name' is less than minimum {$schemaArray['minimum']}. ", $this->structure);
+        }
+
+        if (isset($schemaArray['maximum']) && $body > $schemaArray['maximum']) {
+            throw new NotMatchedException("Value '$body' in '$name' is greater than maximum {$schemaArray['maximum']}. ", $this->structure);
         }
 
         return true;

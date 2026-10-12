@@ -7,6 +7,22 @@
 
 - None.
 
+## Validation
+
+- `minLength` and `maxLength` are now enforced on string values, and `minimum` and
+  `maximum` on numeric values, for both request and response bodies. Before, these
+  keywords were read from the specification but never checked, so a value outside the
+  declared limits was accepted.
+
+  Length is counted in characters, not bytes. A violation throws
+  `NotMatchedException`, for example
+  `Value 'abcdef' in 'name' is longer than maxLength 5`.
+
+  A request or response that was passing only because the limit was ignored now fails;
+  the fix is in the data or in the specification.
+
+  `exclusiveMinimum`, `exclusiveMaximum` and `multipleOf` are still not checked.
+
 ## Requirements
 
 - PHP 8.3, 8.4, 8.5 and 8.6 are now supported: `"php": ">=8.3 <8.7"`.

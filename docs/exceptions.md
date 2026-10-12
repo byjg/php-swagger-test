@@ -235,6 +235,30 @@ try {
 }
 ```
 
+#### Constraint Mismatch
+
+```php
+// Spec has name: { type: string, maxLength: 5 } and price: { type: number, minimum: 0 }
+$request = new ApiRequester();
+$request
+    ->withMethod('POST')
+    ->withPath('/pet')
+    ->withRequestBody([
+        'name' => 'Fluffy',  // ❌ 6 characters
+        'price' => 10
+    ]);
+
+try {
+    $this->sendRequest($request);
+} catch (\ByJG\ApiTools\Exception\NotMatchedException $e) {
+    // Value 'Fluffy' in 'name' is longer than maxLength 5
+    echo $e->getMessage();
+}
+```
+
+`minLength` and `maxLength` count characters; `minimum` and `maximum` are inclusive.
+A negative `price` would fail with `Value '-1' in 'price' is less than minimum 0`.
+
 #### Enum Mismatch
 
 ```php
