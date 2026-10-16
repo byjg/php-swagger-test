@@ -48,6 +48,15 @@
   `Content-Type` (`withRequestBody()` sends arrays as JSON and sets none), `application/json` is
   used, then `application/xml`, `text/xml`, then the first documented type, on both versions.
 
+- The `multipart/form-data` parser only read a text field written with a `;` after its name, as
+  byjg/webrequest writes it. A field as a browser or curl sends it
+  (`Content-Disposition: form-data; name="title"`) was not read: it raised "Undefined array key"
+  warnings and was stored under a `null` key, so a required field was reported missing. A file part
+  of any type other than `application/octet-stream` kept its own `Content-Type` header lines in its
+  value. The boundary was also used as a regular expression and a quoted boundary
+  (`boundary="..."`) was not recognised. The parser now splits the body on the boundary and reads
+  each part's name and value, with CRLF or LF line endings.
+
 ## Requirements
 
 - PHP 8.3, 8.4, 8.5 and 8.6 are now supported: `"php": ">=8.3 <8.7"`.

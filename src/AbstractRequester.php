@@ -468,37 +468,40 @@ abstract class AbstractRequester
         return $response;
     }
 
+    /**
+     * The fields of a multipart body, name => value (a file part's value is its content).
+     *
+     * Each part is "--boundary", its headers, a blank line and its value (RFC 7578). Lines end in
+     * CRLF, or in LF as byjg/webrequest's MultiPartItem writes them.
+     */
     protected function parseMultiPartForm(?string $contentType, string $body): array|null
     {
+        if ($contentType === null) {
+            return null;
+        }
+        if (!str_contains($contentType, "multipart/")) {
+            return null;
+        }
+
+        if (!preg_match('/\bboundary="?([^";]+)"?/i', $contentType, $matches)) {
+            return null;
+        }
+        $boundary = trim($matches[1]);
+
         $matchRequest = [];
-
-        if (empty($contentType) || !str_contains($contentType, "multipart/")) {
-            return null;
-        }
-
-        $matches = [];
-
-        preg_match('/boundary=(.*)$/', $contentType ?? '', $matches);
-        $boundary = $matches[1];
-
-        // split content by boundary and get rid of last -- element
-        $blocks = preg_split("/-+$boundary/", $body);
-        if ($blocks === false) {
-            return null;
-        }
-        array_pop($blocks);
-
-        // loop data blocks
-        foreach ($blocks as $block) {
-            if (empty($block))
+        foreach (explode("--$boundary", $body) as $part) {
+            // The preamble, the closing "--" and anything without headers is not a part
+            $headersAndValue = preg_split('/\r?\n\r?\n/', $part, 2);
+            if ($headersAndValue === false || count($headersAndValue) < 2) {
                 continue;
-
-            if (str_contains($block, 'application/octet-stream')) {
-                preg_match("/name=\"([^\"]*)\".*stream[\n|\r]+([^\n\r].*)?$/s", $block, $matches);
-            } else {
-                preg_match('/\bname=\"([^\"]*)\"\s*;.*?[\n|\r]+([^\n\r].*)?[\r|\n]$/s', $block, $matches);
             }
-            $matchRequest[$matches[1]] = $matches[2];
+            [$headers, $value] = $headersAndValue;
+
+            if (!preg_match('/\bname="([^"]*)"/i', $headers, $name)) {
+                continue;
+            }
+            // The line break before the next boundary belongs to the delimiter, not to the value
+            $matchRequest[$name[1]] = (string)preg_replace('/\r?\n$/', '', $value);
         }
 
         return $matchRequest;
