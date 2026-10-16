@@ -23,6 +23,10 @@
   A request sent with a type the operation does not document now fails. On OpenAPI 3.0 a request
   with no `Content-Type` is validated against `application/json` when the operation documents it,
   like on 3.1, instead of against the first documented type.
+- `InvalidRequestException: Cannot handle Content Type '…'` is no longer thrown: every request body
+  is parsed now (see Validation). A request whose type the operation does not document throws
+  `NotMatchedException: Content type '…' not found for <METHOD> <path>` instead. Code that caught
+  `InvalidRequestException` for this case has to catch `NotMatchedException`.
 
 ## Validation
 
