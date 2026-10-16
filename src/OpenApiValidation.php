@@ -148,27 +148,6 @@ trait OpenApiValidation
     }
 
     /**
-     * Send a request and validate it against the OpenAPI/Swagger schema.
-     *
-     * @param AbstractRequester $request
-     * @return ResponseInterface
-     * @throws DefinitionNotFoundException
-     * @throws GenericApiException
-     * @throws HttpMethodNotFoundException
-     * @throws InvalidDefinitionException
-     * @throws InvalidRequestException
-     * @throws NotMatchedException
-     * @throws PathNotFoundException
-     * @throws RequiredArgumentNotFound
-     * @throws StatusCodeNotMatchedException
-     * @deprecated Since version 6.0, use sendRequest() instead. Will be removed in version 7.0
-     */
-    public function assertRequest(AbstractRequester $request): ResponseInterface
-    {
-        return $this->sendRequest($request);
-    }
-
-    /**
      * Check that a schema has been configured.
      *
      * @throws GenericApiException

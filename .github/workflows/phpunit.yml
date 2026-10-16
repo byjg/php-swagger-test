@@ -8,7 +8,6 @@ on:
   pull_request:
     branches:
       - master
-  workflow_dispatch:
 
 jobs:
   Build:
@@ -19,12 +18,13 @@ jobs:
     strategy:
       matrix:
         php-version:
+          - "8.6"
           - "8.5"
           - "8.4"
           - "8.3"
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Setup test
         run: |
           composer install
@@ -39,12 +39,12 @@ jobs:
       # for github/codeql-action/upload-sarif to upload SARIF results
       security-events: write
     container:
-      image: byjg/php:8.4-cli
+      image: byjg/php:8.5-cli
       options: --user root --privileged
 
     steps:
       - name: Git checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Composer
         run: composer install
@@ -52,7 +52,7 @@ jobs:
       - name: Psalm
         # Note: Ignoring error code 2, which just signals that some
         # flaws were found, not that Psalm itself failed to run.
-        run: ./vendor/bin/psalm
+        run: ./vendor/bin/psalm.phar
           --show-info=true
           --report=psalm-results.sarif || [ $? = 2 ]
 

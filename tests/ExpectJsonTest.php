@@ -270,8 +270,10 @@ class ExpectJsonTest extends TestCase
      */
     public function testExpectJsonContainsInvalidJson(): void
     {
+        // Without a Content-Type, a body that is not JSON is kept as text/plain, which this
+        // operation does not document
         $this->expectException(NotMatchedException::class);
-        $this->expectExceptionMessage("Body is expected for GET 200 /v2/pet/1");
+        $this->expectExceptionMessage("Content type 'text/plain' not found for GET 200 /v2/pet/1");
 
         $expectedResponse = Response::getInstance(200)
             ->withBody(new MemoryStream("This is not JSON"));

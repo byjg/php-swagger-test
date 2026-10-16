@@ -10,7 +10,7 @@ class OpenApiTestCaseTest extends TestingTestCase
     #[\Override]
     public function setUp(): void
     {
-        $schema = Schema::getInstance(file_get_contents(__DIR__ . '/rest/openapi.json'));
+        $schema = Schema::fromFile(__DIR__ . '/rest/openapi.json');
         $this->setSchema($schema);
     }
 

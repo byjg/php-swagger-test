@@ -6,6 +6,99 @@ sidebar_position: 8
 
 This guide covers advanced features and use cases for PHP Swagger Test.
 
+## Supported Content Types
+
+Request and response bodies are parsed by their `Content-Type` before being matched against the
+specification:
+
+| Content-Type                                         | Parsed into                                          |
+|------------------------------------------------------|------------------------------------------------------|
+| `application/json`, any `*/json` or `*+json` type    | the decoded JSON (`json_decode()`)                   |
+| `application/xml`, `text/xml`, any `*+xml` type      | the XML (`simplexml_load_string()`), matched as an array |
+| `multipart/*` *(requests)*                           | the form fields, a file part's value being its content |
+| `application/x-www-form-urlencoded` *(requests)*     | the form fields (`parse_str()`)                      |
+| *none*                                               | the decoded JSON, or the raw string when it is not JSON |
+| anything else (`text/html`, `image/png`, ...)        | the raw string                                       |
+
+`+json` and `+xml` are the structured syntax suffixes of RFC 6839, e.g. `application/problem+json` or
+`application/merge-patch+json`. An XML body that is not well-formed is kept as a string, so it fails the
+match. A string body matches a `type: string` schema, or a media type documented without a schema.
+
+A parsed request body is then validated against the schema of the media type that covers its `Content-Type`,
+looked up as for [responses](#response-content-types): the type itself, its range (`multipart/*`), then
+`*/*`. An operation that documents both `application/json` and `multipart/form-data` validates each
+request against its own schema. A request sent with a type the operation does not document fails with
+`NotMatchedException: Content type 'application/x-www-form-urlencoded' not found for POST /pet`.
+
+`withRequestBody()` sends an array as JSON without setting a `Content-Type`. Such a request is
+validated against `application/json` when the operation documents it, then `application/xml`,
+`text/xml`, and otherwise the first documented type.
+
+## Response Content Types
+
+The response is validated against the media type of its `Content-Type` header, looked up in the
+operation's `content` in this order: the type itself (`text/html`), its range (`text/*`), then any type
+(`*/*`). Parameters such as `charset` are ignored.
+
+- A media type documented **without a schema** accepts any body, so an HTML page documented as
+  `content: {"text/html": {}}` passes.
+- A media type the operation does not document fails with
+  `NotMatchedException: Content type 'text/html' not found for GET 200 /`.
+- An XML response (`application/xml`, `text/xml`, any `+xml` type) is validated against its schema as the array it converts to.
+- Without a `Content-Type` header, the type is guessed from the body: JSON is `application/json`, any
+  other string `text/plain`.
+
+## Form URL Encoded Requests
+
+Endpoints consuming `application/x-www-form-urlencoded` are matched like any other:
+
+```php
+<?php
+use ByJG\ApiTools\ApiRequester;
+
+$request = new ApiRequester();
+$request
+    ->withMethod('POST')
+    ->withPath('/subscribe')
+    ->withRequestHeader(['Content-Type' => 'application/x-www-form-urlencoded'])
+    ->withRequestBody(http_build_query([
+        'name' => 'John Doe',
+        'email' => 'john@example.com',
+        'age' => 42,
+    ]))
+    ->expectStatus(200);
+
+$this->sendRequest($request);
+```
+
+:::note
+A urlencoded body carries only strings. Numeric properties are validated with `is_numeric()`, so
+`age=42` still matches a schema declaring `type: integer` — the same way multipart form fields have
+always behaved.
+:::
+
+**OpenAPI 3.0:**
+
+```yaml
+paths:
+  /subscribe:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [name, email]
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                age:
+                  type: integer
+```
+
 ## Multipart Form Data and File Uploads
 
 PHP Swagger Test supports testing endpoints that accept `multipart/form-data` requests, commonly used for file uploads.

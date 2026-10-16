@@ -20,9 +20,9 @@ abstract class Schema
     protected bool $allowNullValues = false;
     protected string $specificationVersion;
 
-    const SWAGGER_PATHS = "paths";
-    const SWAGGER_PARAMETERS = "parameters";
-    const SWAGGER_COMPONENTS = "components";
+    const string SWAGGER_PATHS = "paths";
+    const string SWAGGER_PARAMETERS = "parameters";
+    const string SWAGGER_COMPONENTS = "components";
 
     /**
      * Returns the major specification version
@@ -95,26 +95,6 @@ abstract class Schema
         }
 
         throw new InvalidArgumentException('Failed to determine schema type from data. Expected "swagger" or "openapi" property.');
-    }
-
-    /**
-     * Factory function for schemata.
-     *
-     * Initialize with schema data, which can be a PHP array or encoded as JSON.
-     * This determines the type of the schema from the given data.
-     *
-     * @param array|string $data
-     * @param bool $extraArgs
-     * @return SwaggerSchema|OpenApiSchema|OpenApi31Schema
-     * @deprecated Since version 6.0, use fromJson(), fromArray(), or fromFile() instead. Will be removed in version 7.0
-     */
-    public static function getInstance(array|string $data, bool $extraArgs = false): SwaggerSchema|OpenApiSchema|OpenApi31Schema
-    {
-        // when given a string, decode from JSON
-        if (is_string($data)) {
-            return self::fromJson($data, $extraArgs);
-        }
-        return self::fromArray($data, $extraArgs);
     }
 
     /**

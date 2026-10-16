@@ -10,7 +10,7 @@ class OpenApi31RequestBody extends Body
      * @inheritDoc
      */
     #[\Override]
-    public function match(mixed $body): bool
+    public function match(mixed $body, ?string $contentType = null): bool
     {
         if (empty($this->structure)) {
             return true;
@@ -20,24 +20,11 @@ class OpenApi31RequestBody extends Body
             return true;
         }
 
-        $content = null;
-        if (isset($this->structure['content']['application/json'])) {
-            $content = $this->structure['content']['application/json'];
-        } elseif (isset($this->structure['content']['application/xml'])) {
-            $content = $this->structure['content']['application/xml'];
-        } elseif (isset($this->structure['content']['text/xml'])) {
-            $content = $this->structure['content']['text/xml'];
-        } else {
-            $contentKey = key($this->structure['content']);
-            if ($contentKey !== null) {
-                $content = $this->structure['content'][$contentKey];
-            }
-        }
-
-        if ($content === null || !isset($content['schema'])) {
+        // A media type documented without a schema accepts any body
+        $schema = $this->getRequestSchema($contentType);
+        if ($schema === null) {
             return true;
         }
-
-        return $this->matchSchema($this->name, $content['schema'], $body) ?? false;
+        return $this->matchSchema($this->name, $schema, $body) ?? false;
     }
 }

@@ -235,6 +235,30 @@ try {
 }
 ```
 
+#### Constraint Mismatch
+
+```php
+// Spec has name: { type: string, maxLength: 5 } and price: { type: number, minimum: 0 }
+$request = new ApiRequester();
+$request
+    ->withMethod('POST')
+    ->withPath('/pet')
+    ->withRequestBody([
+        'name' => 'Fluffy',  // ❌ 6 characters
+        'price' => 10
+    ]);
+
+try {
+    $this->sendRequest($request);
+} catch (\ByJG\ApiTools\Exception\NotMatchedException $e) {
+    // Value 'Fluffy' in 'name' is longer than maxLength 5
+    echo $e->getMessage();
+}
+```
+
+`minLength` and `maxLength` count characters; `minimum` and `maximum` are inclusive.
+A negative `price` would fail with `Value '-1' in 'price' is less than minimum 0`.
+
 #### Enum Mismatch
 
 ```php
@@ -363,24 +387,22 @@ try {
 
 **Common causes:**
 - Empty path
-- Invalid Content-Type
 - Malformed request structure
 - Invalid path parameters
+
+A request body of an unexpected Content-Type is not an `InvalidRequestException`: it is parsed (or kept as a
+string) and matched, so it fails with `NotMatchedException` — see
+[Supported Content Types](advanced-usage.md#supported-content-types).
 
 **Example:**
 
 ```php
-$request = new ApiRequester();
-$request
-    ->withMethod('POST')
-    ->withPath('/pet')
-    ->withRequestBody('invalid data')
-    ->withRequestHeader(['Content-Type' => 'application/xml']);  // ❌ Unsupported
+$schema = \ByJG\ApiTools\Base\Schema::fromFile('openapi.json');
 
 try {
-    $this->sendRequest($request);
+    $schema->getPathDefinition('', 'get');
 } catch (\ByJG\ApiTools\Exception\InvalidRequestException $e) {
-    // Cannot handle Content Type 'application/xml'
+    // The path is empty
     echo $e->getMessage();
 }
 ```

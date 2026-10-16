@@ -1,6 +1,6 @@
 <?php
 
-use ByJG\RestServer\HttpRequestHandler;
+use ByJG\RestServer\Server;
 use ByJG\RestServer\Route\OpenApiRouteList;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
@@ -13,6 +13,6 @@ if (!file_exists($specification)) {
 
 $routeDefinition = new OpenApiRouteList($specification);
 
-$restServer = new HttpRequestHandler();
+$restServer = new Server();
 $restServer->handle($routeDefinition);
 
