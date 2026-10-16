@@ -19,6 +19,16 @@ recognised:
 
 Anything else raises `InvalidRequestException` — see [Exception handling](exceptions.md).
 
+The parsed body is then validated against the schema of the media type that covers its `Content-Type`,
+looked up as for [responses](#response-content-types): the type itself, its range (`multipart/*`), then
+`*/*`. An operation that documents both `application/json` and `multipart/form-data` validates each
+request against its own schema. A request sent with a type the operation does not document fails with
+`NotMatchedException: Content type 'application/x-www-form-urlencoded' not found for POST /pet`.
+
+`withRequestBody()` sends an array as JSON without setting a `Content-Type`. Such a request is
+validated against `application/json` when the operation documents it, then `application/xml`,
+`text/xml`, and otherwise the first documented type.
+
 ## Response Content Types
 
 The response is validated against the media type of its `Content-Type` header, looked up in the

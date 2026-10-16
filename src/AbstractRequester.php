@@ -368,8 +368,11 @@ abstract class AbstractRequester
 
         // Prepare Body to Match Against Specification
         $requestBody = $this->psr7Request->getBody()->getContents();
+        $requestContentType = null;
         if (!empty($requestBody)) {
             $contentType = $this->psr7Request->getHeaderLine("content-type");
+            // The media type the body is matched against, without parameters such as charset or boundary
+            $requestContentType = trim(explode(';', $contentType)[0]) ?: null;
             if (empty($contentType) || str_contains($contentType, "application/json")) {
                 $requestBody = json_decode($requestBody, true);
             } elseif (str_contains($contentType, "multipart/")) {
@@ -388,7 +391,7 @@ abstract class AbstractRequester
         // Check if the body is the expected before request
         if ($this->schema !== null) {
             $bodyRequestDef = $this->schema->getRequestParameters($this->psr7Request->getUri()->getPath(), $this->psr7Request->getMethod());
-            $bodyRequestDef->match($requestBody);
+            $bodyRequestDef->match($requestBody, $requestContentType);
         }
 
         // Handle Request

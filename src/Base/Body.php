@@ -72,6 +72,54 @@ abstract class Body
     abstract public function match(mixed $body, ?string $contentType = null): bool;
 
     /**
+     * The documented media type that covers $contentType: the type itself, then its range
+     * ("text/*"), then any type ("*\/*"), as OpenAPI defines it.
+     */
+    protected function findMediaType(string $contentType): ?string
+    {
+        $contentType = strtolower($contentType);
+        foreach ([$contentType, explode('/', $contentType)[0] . '/*', '*/*'] as $mediaType) {
+            if (isset($this->structure['content'][$mediaType])) {
+                return $mediaType;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * The schema an OpenAPI 3 request body is validated against, from the media type that covers the
+     * request's $contentType (see findMediaType()). Without a content type the body was sent as JSON
+     * (withRequestBody() sets no header), so JSON, then XML, then the first documented type.
+     *
+     * @return array|null null when the media type is documented without a schema: any body matches
+     * @throws NotMatchedException when the operation does not document $contentType
+     */
+    protected function getRequestSchema(?string $contentType): ?array
+    {
+        $content = $this->structure['content'] ?? [];
+        if (!is_array($content) || empty($content)) {
+            return null;
+        }
+
+        if (!empty($contentType)) {
+            $mediaType = $this->findMediaType($contentType);
+            if ($mediaType === null) {
+                throw new NotMatchedException("Content type '$contentType' not found for " . $this->name);
+            }
+        } else {
+            $mediaType = (string)key($content);
+            foreach (['application/json', 'application/xml', 'text/xml'] as $preferred) {
+                if (isset($content[$preferred])) {
+                    $mediaType = $preferred;
+                    break;
+                }
+            }
+        }
+
+        return $content[$mediaType]['schema'] ?? null;
+    }
+
+    /**
      * @param string $name
      * @param array $schemaArray
      * @param mixed $body

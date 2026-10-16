@@ -10,6 +10,10 @@
 - A response is validated against the media type of its `Content-Type` header (see Validation).
   A response whose header names a type the operation does not document now fails, also when its
   body would have matched the type guessed before.
+- A request body is validated against the media type of its `Content-Type` header (see Validation).
+  A request sent with a type the operation does not document now fails. On OpenAPI 3.0 a request
+  with no `Content-Type` is validated against `application/json` when the operation documents it,
+  like on 3.1, instead of against the first documented type.
 
 ## Validation
 
@@ -35,6 +39,14 @@
   The documented type is looked up as OpenAPI defines it: the type itself, then its range
   (`text/*`), then `*/*`. A media type documented without a schema accepts any body. Without a
   `Content-Type` header the type is still guessed from the body.
+
+- The request body is matched the same way, against the media type of the request's
+  `Content-Type`. OpenAPI 3.0 used the first documented media type and 3.1 preferred JSON, whatever
+  the request was sent as, so an operation documenting `application/json` and
+  `multipart/form-data` validated a multipart upload against the JSON schema (or the reverse), and a
+  request with an undocumented type was checked against another type's schema. Without a
+  `Content-Type` (`withRequestBody()` sends arrays as JSON and sets none), `application/json` is
+  used, then `application/xml`, `text/xml`, then the first documented type, on both versions.
 
 ## Requirements
 

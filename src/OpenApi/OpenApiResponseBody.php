@@ -65,19 +65,4 @@ class OpenApiResponseBody extends Body
 
         return $this->matchSchema($this->name, $this->structure['content'][$mediaType]['schema'], $body) ?? false;
     }
-
-    /**
-     * The documented media type that covers $contentType: the type itself, then its range
-     * ("text/*"), then any type ("*\/*"), as OpenAPI defines it.
-     */
-    protected function findMediaType(string $contentType): ?string
-    {
-        $contentType = strtolower($contentType);
-        foreach ([$contentType, explode('/', $contentType)[0] . '/*', '*/*'] as $mediaType) {
-            if (isset($this->structure['content'][$mediaType])) {
-                return $mediaType;
-            }
-        }
-        return null;
-    }
 }
