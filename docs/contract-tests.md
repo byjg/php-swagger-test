@@ -104,8 +104,12 @@ $bodyResponseDef = $schema->getResponseParameters($path, $method, $statusExpecte
 if (!empty($requestBody)) {
     $bodyRequestDef->match($requestBody);
 }
-$bodyResponseDef->match($responseBody);
+$bodyResponseDef->match($responseBody, $responseContentType);
 ```
+
+`$responseContentType` is the media type of the response's `Content-Type` header, without parameters
+(`text/html`, not `text/html; charset=utf-8`). Pass `null` when there is none: the type is then guessed from
+the body (an array is `application/json`, a string `text/plain`).
 
 If the request or response body does not match with the definition an exception NotMatchException will
 be thrown.

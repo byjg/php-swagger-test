@@ -19,6 +19,20 @@ recognised:
 
 Anything else raises `InvalidRequestException` — see [Exception handling](exceptions.md).
 
+## Response Content Types
+
+The response is validated against the media type of its `Content-Type` header, looked up in the
+operation's `content` in this order: the type itself (`text/html`), its range (`text/*`), then any type
+(`*/*`). Parameters such as `charset` are ignored.
+
+- A media type documented **without a schema** accepts any body, so an HTML page documented as
+  `content: {"text/html": {}}` passes.
+- A media type the operation does not document fails with
+  `NotMatchedException: Content type 'text/html' not found for GET 200 /`.
+- An XML response (`application/xml`, `text/xml`) is validated against its schema as the array it converts to.
+- Without a `Content-Type` header, the type is guessed from the body: JSON is `application/json`, any
+  other string `text/plain`.
+
 ## Form URL Encoded Requests
 
 Endpoints consuming `application/x-www-form-urlencoded` are matched like any other:

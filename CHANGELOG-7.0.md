@@ -5,7 +5,11 @@
 
 ## Breaking Changes
 
-- None.
+- `Body::match()` takes an optional second argument, `?string $contentType = null`. A class that
+  extends `Body` (or one of its subclasses) and overrides `match()` has to add it to its signature.
+- A response is validated against the media type of its `Content-Type` header (see Validation).
+  A response whose header names a type the operation does not document now fails, also when its
+  body would have matched the type guessed before.
 
 ## Validation
 
@@ -22,6 +26,15 @@
   the fix is in the data or in the specification.
 
   `exclusiveMinimum`, `exclusiveMaximum` and `multipleOf` are still not checked.
+
+- The response body is matched against the media type of the response's `Content-Type`
+  header. The requester read the header but did not pass it on, so the type was guessed from
+  the body (a string became `text/plain`), and a response documented as `text/html` (or any
+  non-JSON, non-XML type) could never be validated: `Content type not found`.
+
+  The documented type is looked up as OpenAPI defines it: the type itself, then its range
+  (`text/*`), then `*/*`. A media type documented without a schema accepts any body. Without a
+  `Content-Type` header the type is still guessed from the body.
 
 ## Requirements
 

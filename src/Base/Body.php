@@ -59,6 +59,8 @@ abstract class Body
 
     /**
      * @param mixed $body
+     * @param string|null $contentType The media type the body was sent with (without parameters such
+     *                                 as charset), when it is known
      * @return bool
      *@throws GenericApiException
      * @throws InvalidDefinitionException
@@ -67,7 +69,7 @@ abstract class Body
      * @throws RequiredArgumentNotFound
      * @throws DefinitionNotFoundException
      */
-    abstract public function match(mixed $body): bool;
+    abstract public function match(mixed $body, ?string $contentType = null): bool;
 
     /**
      * @param string $name

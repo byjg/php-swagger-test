@@ -10,7 +10,7 @@ class OpenApi31RequestBody extends Body
      * @inheritDoc
      */
     #[\Override]
-    public function match(mixed $body): bool
+    public function match(mixed $body, ?string $contentType = null): bool
     {
         if (empty($this->structure)) {
             return true;

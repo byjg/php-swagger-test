@@ -28,16 +28,13 @@ class OpenApiResponseBody extends Body
             return $this->matchSchema($this->name, $definition, $body) ?? false;
         }
 
+        // Without the content type the body was sent with, guess it from what the body was parsed into
         if (empty($contentType)) {
             if ($body instanceof SimpleXMLElement) {
                 if (isset($this->structure['content']["application/xml"])) {
                     $contentType = "application/xml";
-                    $encoded = json_encode($body);
-                    $body = json_decode($encoded !== false ? $encoded : '{}', true);
                 } elseif (isset($this->structure['content']["text/xml"])) {
                     $contentType = "text/xml";
-                    $encoded = json_encode($body);
-                    $body = json_decode($encoded !== false ? $encoded : '{}', true);
                 }
             } elseif (is_array($body)) {
                 $contentType = "application/json";
@@ -50,10 +47,37 @@ class OpenApiResponseBody extends Body
             throw new NotMatchedException("Could not find body content type for " . $this->name);
         }
 
-        if (!isset($this->structure['content'][$contentType])) {
-            throw new NotMatchedException("Content type not found for " . $this->name);
+        $mediaType = $this->findMediaType($contentType);
+        if ($mediaType === null) {
+            throw new NotMatchedException("Content type '$contentType' not found for " . $this->name);
         }
 
-        return $this->matchSchema($this->name, $this->structure['content'][$contentType]['schema'], $body) ?? false;
+        // A media type documented without a schema accepts any body
+        if (!isset($this->structure['content'][$mediaType]['schema'])) {
+            return true;
+        }
+
+        // An XML body is validated as the array it converts to
+        if ($body instanceof SimpleXMLElement) {
+            $encoded = json_encode($body);
+            $body = json_decode($encoded !== false ? $encoded : '{}', true);
+        }
+
+        return $this->matchSchema($this->name, $this->structure['content'][$mediaType]['schema'], $body) ?? false;
+    }
+
+    /**
+     * The documented media type that covers $contentType: the type itself, then its range
+     * ("text/*"), then any type ("*\/*"), as OpenAPI defines it.
+     */
+    protected function findMediaType(string $contentType): ?string
+    {
+        $contentType = strtolower($contentType);
+        foreach ([$contentType, explode('/', $contentType)[0] . '/*', '*/*'] as $mediaType) {
+            if (isset($this->structure['content'][$mediaType])) {
+                return $mediaType;
+            }
+        }
+        return null;
     }
 }

@@ -442,7 +442,7 @@ abstract class AbstractRequester
                 $this->psr7Request->getMethod(),
                 $this->statusExpected
             );
-            $bodyResponseDef->match($responseBodyParsed);
+            $bodyResponseDef->match($responseBodyParsed, $mainContentType !== '' ? $mainContentType : null);
         }
 
         foreach ($this->assertHeader as $key => $value) {

@@ -13,7 +13,7 @@ class SwaggerRequestBody extends Body
      * @inheritDoc
      */
     #[\Override]
-    public function match(mixed $body): bool
+    public function match(mixed $body, ?string $contentType = null): bool
     {
         $hasFormData = false;
         foreach ($this->structure as $parameter) {
