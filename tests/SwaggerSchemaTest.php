@@ -21,7 +21,7 @@ class SwaggerSchemaTest extends TestCase
     #[\Override]
     public function setUp(): void
     {
-        $this->object = \ByJG\ApiTools\Base\Schema::getInstance(file_get_contents(__DIR__ . '/example/swagger.json'));
+        $this->object = \ByJG\ApiTools\Base\Schema::fromFile(__DIR__ . '/example/swagger.json');
     }
 
     #[\Override]
@@ -544,14 +544,14 @@ class SwaggerSchemaTest extends TestCase
 
     public function testItNotAllowsNullValuesByDefault(): void
     {
-        $schema = \ByJG\ApiTools\Base\Schema::getInstance('{"swagger": "2.0"}');
+        $schema = \ByJG\ApiTools\Base\Schema::fromJson('{"swagger": "2.0"}');
         $this->assertFalse($schema->isAllowNullValues());
     }
 
     public function testItAllowsNullValues(): void
     {
         $allowNullValues = true;
-        $schema = \ByJG\ApiTools\Base\Schema::getInstance('{"swagger": "2.0"}', $allowNullValues);
+        $schema = \ByJG\ApiTools\Base\Schema::fromJson('{"swagger": "2.0"}', $allowNullValues);
         $this->assertTrue($schema->isAllowNullValues());
     }
 }

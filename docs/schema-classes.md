@@ -32,8 +32,8 @@ $schemaArray = json_decode(file_get_contents('/path/to/specification.json'), tru
 $schema = \ByJG\ApiTools\Base\Schema::fromArray($schemaArray);
 ```
 
-**Note:** The `getInstance()` method is deprecated since version 6.0. Use `fromFile()`, `fromJson()`, or `fromArray()`
-instead.
+**Note:** The `getInstance()` method, deprecated since version 6.0, is removed in version 7.0. Use `fromFile()`,
+`fromJson()`, or `fromArray()` instead.
 
 ## SwaggerSchema Specific Features
 

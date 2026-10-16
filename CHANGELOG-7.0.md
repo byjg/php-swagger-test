@@ -5,6 +5,15 @@
 
 ## Breaking Changes
 
+- `Schema::getInstance()`, deprecated since 6.0, is removed. Use `Schema::fromFile()` for a file,
+  `Schema::fromJson()` for a JSON string, or `Schema::fromArray()` for an array; they take the same
+  second argument (`$allowNullValues`). See [Migrating from Schema::getInstance()](docs/migration-guide.md).
+- `OpenApiValidation::assertRequest()`, deprecated since 6.0, is removed. It was the former name of
+  `sendRequest()`, which takes the same requester.
+- `ApiTestCase::makeRequest()`, deprecated since 6.0, is removed. Build the request with
+  `ApiRequester` (`withMethod()`, `withPath()`, `withQuery()`, `withRequestBody()`,
+  `withRequestHeader()`, `expectStatus()`) and pass it to `sendRequest()`. See
+  [Migrating from makeRequest()](docs/migration-guide.md).
 - `Body::match()` takes an optional second argument, `?string $contentType = null`. A class that
   extends `Body` (or one of its subclasses) and overrides `match()` has to add it to its signature.
 - A response is validated against the media type of its `Content-Type` header (see Validation).

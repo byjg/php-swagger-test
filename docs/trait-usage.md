@@ -233,12 +233,11 @@ $this->getRequester(): AbstractRequester|null
 ### Request Validation
 
 ```php
-// Send and validate request (recommended)
+// Send and validate request
 $this->sendRequest(AbstractRequester $request): ResponseInterface
-
-// Legacy method (deprecated, use sendRequest)
-$this->assertRequest(AbstractRequester $request): ResponseInterface
 ```
+
+`assertRequest()`, the former name of `sendRequest()`, was removed in 7.0.
 
 ### Protected Helpers
 
