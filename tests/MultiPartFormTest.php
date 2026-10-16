@@ -91,7 +91,7 @@ class MultiPartFormTest extends TestCase
 
     public function testAPlainFieldIsValidatedAgainstTheSpecification(): void
     {
-        $this->setSchema(Schema::getInstance([
+        $this->setSchema(Schema::fromArray([
             'openapi' => '3.0.0',
             'info' => ['title' => 'Upload', 'version' => '1.0'],
             'paths' => ['/upload' => ['post' => [

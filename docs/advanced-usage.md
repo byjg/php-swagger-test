@@ -6,20 +6,25 @@ sidebar_position: 8
 
 This guide covers advanced features and use cases for PHP Swagger Test.
 
-## Supported Request Content Types
+## Supported Content Types
 
-The request body is parsed before being matched against the specification. Three content types are
-recognised:
+Request and response bodies are parsed by their `Content-Type` before being matched against the
+specification:
 
-| Content-Type                        | Parsed with           |
-|-------------------------------------|-----------------------|
-| `application/json` *(or none)*      | `json_decode()`       |
-| `multipart/*`                       | multipart form parser |
-| `application/x-www-form-urlencoded` | `parse_str()`         |
+| Content-Type                                         | Parsed into                                          |
+|------------------------------------------------------|------------------------------------------------------|
+| `application/json`, any `*/json` or `*+json` type    | the decoded JSON (`json_decode()`)                   |
+| `application/xml`, `text/xml`, any `*+xml` type      | the XML (`simplexml_load_string()`), matched as an array |
+| `multipart/*` *(requests)*                           | the form fields, a file part's value being its content |
+| `application/x-www-form-urlencoded` *(requests)*     | the form fields (`parse_str()`)                      |
+| *none*                                               | the decoded JSON, or the raw string when it is not JSON |
+| anything else (`text/html`, `image/png`, ...)        | the raw string                                       |
 
-Anything else raises `InvalidRequestException` — see [Exception handling](exceptions.md).
+`+json` and `+xml` are the structured syntax suffixes of RFC 6839, e.g. `application/problem+json` or
+`application/merge-patch+json`. An XML body that is not well-formed is kept as a string, so it fails the
+match. A string body matches a `type: string` schema, or a media type documented without a schema.
 
-The parsed body is then validated against the schema of the media type that covers its `Content-Type`,
+A parsed request body is then validated against the schema of the media type that covers its `Content-Type`,
 looked up as for [responses](#response-content-types): the type itself, its range (`multipart/*`), then
 `*/*`. An operation that documents both `application/json` and `multipart/form-data` validates each
 request against its own schema. A request sent with a type the operation does not document fails with
@@ -39,7 +44,7 @@ operation's `content` in this order: the type itself (`text/html`), its range (`
   `content: {"text/html": {}}` passes.
 - A media type the operation does not document fails with
   `NotMatchedException: Content type 'text/html' not found for GET 200 /`.
-- An XML response (`application/xml`, `text/xml`) is validated against its schema as the array it converts to.
+- An XML response (`application/xml`, `text/xml`, any `+xml` type) is validated against its schema as the array it converts to.
 - Without a `Content-Type` header, the type is guessed from the body: JSON is `application/json`, any
   other string `text/plain`.
 

@@ -39,7 +39,7 @@ class RequestContentTypeTest extends TestCase
             'responses' => ['200' => ['description' => 'OK']],
         ]];
 
-        $this->setSchema(Schema::getInstance([
+        $this->setSchema(Schema::fromArray([
             'openapi' => $version,
             'info' => ['title' => 'Request content types', 'version' => '1.0'],
             'paths' => [

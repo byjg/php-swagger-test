@@ -24,7 +24,7 @@ class ResponseContentTypeTest extends TestCase
     {
         $response = fn (array $content) => ['get' => ['responses' => ['200' => ['description' => 'OK', 'content' => $content]]]];
 
-        $this->setSchema(Schema::getInstance([
+        $this->setSchema(Schema::fromArray([
             'openapi' => '3.0.0',
             'info' => ['title' => 'Content types', 'version' => '1.0'],
             'paths' => [

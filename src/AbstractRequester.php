@@ -371,21 +371,8 @@ abstract class AbstractRequester
         $requestContentType = null;
         if (!empty($requestBody)) {
             $contentType = $this->psr7Request->getHeaderLine("content-type");
-            // The media type the body is matched against, without parameters such as charset or boundary
-            $requestContentType = trim(explode(';', $contentType)[0]) ?: null;
-            if (empty($contentType) || str_contains($contentType, "application/json")) {
-                $requestBody = json_decode($requestBody, true);
-            } elseif (str_contains($contentType, "multipart/")) {
-                $requestBody = $this->parseMultiPartForm($contentType, $requestBody);
-            } elseif (str_contains($contentType, "application/x-www-form-urlencoded")) {
-                // Values arrive as strings, which is what the matcher already
-                // expects from multipart bodies; numeric types are checked with
-                // is_numeric(), so a form field still matches an integer schema.
-                parse_str($requestBody, $parsedForm);
-                $requestBody = $parsedForm;
-            } else {
-                throw new InvalidRequestException("Cannot handle Content Type '$contentType'");
-            }
+            $requestContentType = $this->getMediaType($contentType);
+            $requestBody = $this->parseBody($requestBody, $contentType);
         }
 
         // Check if the body is the expected before request
@@ -414,21 +401,8 @@ abstract class AbstractRequester
             }
         }
         $responseBodyStr = $response->getBody()->getContents();
-        // Extract the main content type (before semicolon) to handle "application/json; charset=utf-8"
-        $mainContentType = explode(';', $contentType)[0];
-        $mainContentType = trim($mainContentType);
-
-        // Parse response based on content type, defaulting to JSON for backwards compatibility
-        if ($mainContentType === 'text/xml' || $mainContentType === 'application/xml') {
-            $responseBodyParsed = simplexml_load_string($responseBodyStr);
-        } else {
-            // Default to JSON parsing (for backwards compatibility and when content-type is not set)
-            $responseBodyParsed = json_decode($responseBodyStr, true);
-            // If JSON parsing fails and content-type is explicitly not JSON, use raw string
-            if ($responseBodyParsed === null && $mainContentType !== '' && $mainContentType !== 'application/json') {
-                $responseBodyParsed = $responseBodyStr;
-            }
-        }
+        $responseContentType = $this->getMediaType($contentType);
+        $responseBodyParsed = $this->parseBody($responseBodyStr, $contentType);
         $statusReturned = $response->getStatusCode();
 
         // Assert results
@@ -445,7 +419,7 @@ abstract class AbstractRequester
                 $this->psr7Request->getMethod(),
                 $this->statusExpected
             );
-            $bodyResponseDef->match($responseBodyParsed, $mainContentType !== '' ? $mainContentType : null);
+            $bodyResponseDef->match($responseBodyParsed, $responseContentType);
         }
 
         foreach ($this->assertHeader as $key => $value) {
@@ -466,6 +440,58 @@ abstract class AbstractRequester
         }
 
         return $response;
+    }
+
+    /**
+     * The media type of a Content-Type header, in lower case and without parameters such as charset
+     * or boundary; null when there is none.
+     */
+    protected function getMediaType(string $contentType): ?string
+    {
+        $mediaType = strtolower(trim(explode(';', $contentType)[0]));
+        return $mediaType === '' ? null : $mediaType;
+    }
+
+    /**
+     * A request or response body in the form the matcher validates, by its Content-Type:
+     *
+     * - JSON (application/json and any "+json" type, RFC 6839): the decoded value.
+     * - XML (application/xml, text/xml and any "+xml" type): a SimpleXMLElement, or the raw string
+     *   when it is not well-formed.
+     * - multipart/*: the fields (see parseMultiPartForm()).
+     * - application/x-www-form-urlencoded: the fields. Values are strings, as in multipart bodies;
+     *   numeric types are checked with is_numeric(), so a form field still matches an integer schema.
+     * - No Content-Type: the decoded JSON, or the raw string when it is not JSON.
+     * - Anything else (text/html, image/png, ...): the raw string.
+     */
+    protected function parseBody(string $body, string $contentType): mixed
+    {
+        $mediaType = $this->getMediaType($contentType);
+
+        if ($mediaType === null) {
+            $decoded = json_decode($body, true);
+            return json_last_error() === JSON_ERROR_NONE ? $decoded : $body;
+        }
+        if (str_starts_with($mediaType, 'multipart/')) {
+            return $this->parseMultiPartForm($contentType, $body);
+        }
+        if ($mediaType === 'application/x-www-form-urlencoded') {
+            parse_str($body, $form);
+            return $form;
+        }
+        if (str_ends_with($mediaType, '/json') || str_ends_with($mediaType, '+json')) {
+            return json_decode($body, true);
+        }
+        if (str_ends_with($mediaType, '/xml') || str_ends_with($mediaType, '+xml')) {
+            // A body that is not well-formed is left as a string for the matcher to reject, without warnings
+            $previous = libxml_use_internal_errors(true);
+            $xml = simplexml_load_string($body);
+            libxml_clear_errors();
+            libxml_use_internal_errors($previous);
+            return $xml === false ? $body : $xml;
+        }
+
+        return $body;
     }
 
     /**

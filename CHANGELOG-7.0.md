@@ -57,6 +57,15 @@
   (`boundary="..."`) was not recognised. The parser now splits the body on the boundary and reads
   each part's name and value, with CRLF or LF line endings.
 
+- Request and response bodies are parsed by one rule, by their `Content-Type`: any `*/json` or
+  `*+json` type (RFC 6839, e.g. `application/merge-patch+json`) as JSON, any `*/xml` or `*+xml`
+  type (e.g. `application/problem+xml`) as XML, multipart and urlencoded forms as fields, and
+  anything else as the raw string. Without a `Content-Type`, a body that is not JSON is kept as a
+  string. Before, a request of any other type raised
+  `InvalidRequestException: Cannot handle Content Type`, an XML request could not be validated,
+  only `text/xml` and `application/xml` responses were read as XML, and a non-JSON response
+  without a `Content-Type` became `null` ("Body is expected"); it is now matched as `text/plain`.
+
 ## Requirements
 
 - PHP 8.3, 8.4, 8.5 and 8.6 are now supported: `"php": ">=8.3 <8.7"`.
