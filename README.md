@@ -76,6 +76,16 @@ The ApiTestCase's assertion process is based on throwing exceptions if some vali
 - [ByJG Gluo for Laravel — contract testing and runtime validation inside a Laravel app](https://github.com/byjg/php-gluo-laravel)
 - [Laravel Swagger Test](https://github.com/pionl/laravel-swagger-test)
 
+## References
+
+This project uses the [byjg/webrequest](https://github.com/byjg/webrequest) component.
+It implements the PSR-7 specification, and a HttpClient / MockClient to do the requests.
+Check it out to get more information.
+
+## Questions?
+
+Please raise your issue on [Github issue](https://github.com/byjg/php-swagger-test/issues).
+
 ## Installation
 
 ```bash
@@ -89,16 +99,6 @@ SPEC=swagger php -S 127.0.0.1:8080 tests/rest/app.php &
 SPEC=openapi php -S 127.0.0.1:8081 tests/rest/app.php &
 vendor/bin/phpunit
 ```
-
-## References
-
-This project uses the [byjg/webrequest](https://github.com/byjg/webrequest) component.
-It implements the PSR-7 specification, and a HttpClient / MockClient to do the requests.
-Check it out to get more information.
-
-## Questions?
-
-Please raise your issue on [Github issue](https://github.com/byjg/php-swagger-test/issues).
 
 ----
 [Open source ByJG](https://opensource.byjg.com)

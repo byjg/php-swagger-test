@@ -220,15 +220,15 @@ When you use the `OpenApiValidation` trait, you get these methods:
 ### Configuration
 
 ```php
-// Set the OpenAPI schema to validate against
-$this->setSchema(Schema $schema): void
+// Set the OpenAPI schema to validate against (null clears it)
+$this->setSchema(?Schema $schema): void
 
 // Set a custom requester (optional)
 $this->setRequester(AbstractRequester $requester): void
-
-// Get the current requester instance
-$this->getRequester(): AbstractRequester|null
 ```
+
+`sendRequest()` uses the requester passed to it; the one stored by `setRequester()` is only returned by
+the protected `getRequester()`.
 
 ### Request Validation
 
@@ -242,6 +242,9 @@ $this->sendRequest(AbstractRequester $request): ResponseInterface
 ### Protected Helpers
 
 ```php
+// Get the requester set by setRequester(), or a new ApiRequester
+$this->getRequester(): AbstractRequester|null
+
 // Check that schema is configured (throws exception if not)
 $this->checkSchema(): void
 ```

@@ -30,7 +30,7 @@ The library automatically detects the version - your existing code works with bo
 $schema = Schema::fromFile('/path/to/openapi.json');
 
 // Check which version you're using
-echo $schema->getSpecificationVersion(); // "3.0" or "3.1"
+echo $schema->getSpecificationVersion(); // the "openapi" value, e.g. "3.0.3" or "3.1.0"
 ```
 
 ### Updating Your OpenAPI Schemas

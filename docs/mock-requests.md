@@ -43,9 +43,9 @@ e.g.
 ```php
 <?php
 
-$psr7Request = \ByJG\WebRequest\Psr7\Request::getInstance(new Uri("/method_to_be_tested?param1=value1"))
+$psr7Request = \ByJG\WebRequest\Psr7\Request::getInstance(new \ByJG\Util\Uri("/method_to_be_tested?param1=value1"))
     ->withMethod("GET")
-    ->withBody('{"foo":"bar"}');
+    ->withBody(new \ByJG\WebRequest\Psr7\MemoryStream('{"foo":"bar"}'));
 
 $request = new \ByJG\ApiTools\ApiRequester();
 $request->withPsr7Request($psr7Request);

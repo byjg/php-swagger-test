@@ -162,7 +162,7 @@ For comprehensive documentation on OpenAPI 3.1 features, see the [OpenAPI 3.1 Fe
 
 ## Common Methods
 
-Both schema classes provide the following common methods:
+All schema classes provide the following common methods:
 
 - `getServerUrl()` - Get the server URL from the specification
 - `getBasePath()` - Get the base path from the specification
@@ -171,3 +171,5 @@ Both schema classes provide the following common methods:
 - `getResponseParameters($path, $method, $status)` - Get the response parameters for a specific path, method, and status
   code
 - `getDefinition($name)` - Get a definition by name
+- `getSpecificationVersion()` - The `swagger` or `openapi` value of the specification (e.g. `2.0`, `3.0.3`, `3.1.0`)
+- `isAllowNullValues()` - Whether null values are accepted when the schema does not say (set for Swagger 2.0)

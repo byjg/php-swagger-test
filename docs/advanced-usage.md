@@ -207,42 +207,11 @@ paths:
 
 ### Overriding Server URLs
 
-You can test against different environments by setting the server URL:
-
-```php
-<?php
-use ByJG\ApiTools\Base\Schema;
-use ByJG\ApiTools\ApiRequester;
-
-class MultiEnvironmentTest extends \ByJG\ApiTools\ApiTestCase
-{
-    public function setUp(): void
-    {
-        $schema = Schema::fromFile(__DIR__ . '/openapi.json');
-        $this->setSchema($schema);
-    }
-
-    public function testAgainstDevelopment(): void
-    {
-        $request = new ApiRequester();
-        $request
-            ->withMethod('GET')
-            // Override the server URL from spec
-            ->withRequestHeader(['Host' => 'dev.example.com'])
-            ->withPath('/pet/1');
-
-        // Or modify the request URI
-        $psr7Request = $request->psr7Request;
-        $uri = $psr7Request->getUri()
-            ->withScheme('https')
-            ->withHost('dev.example.com')
-            ->withPort(443);
-        $request->withPsr7Request($psr7Request->withUri($uri));
-
-        $this->sendRequest($request);
-    }
-}
-```
+`send()` builds the request URI from the specification: the scheme, host, port and path of the first
+`servers` entry (OpenAPI 3.x) or of `schemes`/`host`/`basePath` (Swagger 2.0) replace the ones of the
+request. The scheme and host of the request are used only when the specification does not define them.
+To test another environment, choose it in the specification, for example with a server variable (below),
+or load a specification per environment (see [Environment-Specific Configuration](#environment-specific-configuration)).
 
 ### Using Server Variables (OpenAPI 3.0)
 
@@ -298,7 +267,7 @@ PHP Swagger Test is built on PSR-7, allowing seamless integration with PSR-7 com
 ```php
 <?php
 use ByJG\WebRequest\Psr7\Request;
-use ByJG\WebRequest\Psr7\Uri;
+use ByJG\Util\Uri;
 use ByJG\WebRequest\Psr7\MemoryStream;
 use ByJG\ApiTools\ApiRequester;
 
@@ -336,20 +305,14 @@ class Psr7IntegrationTest extends \ByJG\ApiTools\ApiTestCase
 ```php
 public function testModifyPsr7Request(): void
 {
-    $request = new ApiRequester();
-    $request
+    // Build the PSR-7 request yourself and hand it to the requester.
+    // (The requester keeps it in the protected $psr7Request property, reachable from a subclass.)
+    $psr7 = Request::getInstance(new Uri('/pet/1'))
         ->withMethod('GET')
-        ->withPath('/pet/1');
-
-    // Access the underlying PSR-7 request
-    $psr7 = $request->psr7Request;
-
-    // Modify it directly
-    $psr7 = $psr7
         ->withHeader('X-Custom-Header', 'value')
         ->withHeader('Accept-Language', 'en-US');
 
-    // Update the requester
+    $request = new ApiRequester();
     $request->withPsr7Request($psr7);
 
     $this->sendRequest($request);
@@ -635,7 +598,8 @@ class RateLimitTest extends \ByJG\ApiTools\ApiTestCase
                 $requests++;
 
             } catch (StatusCodeNotMatchedException $e) {
-                if ($e->getBody()['statusCode'] === 429) {
+                // getBody() is the raw response body; the status is in the message
+                if (str_contains($e->getMessage(), 'got 429')) {
                     $rateLimited = true;
                     break;
                 }
