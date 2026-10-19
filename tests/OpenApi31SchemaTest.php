@@ -4,6 +4,7 @@ namespace Tests;
 
 use ByJG\ApiTools\Base\Schema;
 use ByJG\ApiTools\OpenApi31\OpenApi31Schema;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class OpenApi31SchemaTest extends TestCase
@@ -130,6 +131,34 @@ class OpenApi31SchemaTest extends TestCase
 
         $this->assertInstanceOf(OpenApi31Schema::class, $schema);
         $this->assertTrue($schema->isJsonSchema202012());
+    }
+
+    public static function schemaDialects(): array
+    {
+        return [
+            'not declared' => [null, true],
+            'OAS 3.1 base dialect' => ['https://spec.openapis.org/oas/3.1/dialect/base', true],
+            'JSON Schema 2020-12' => ['https://json-schema.org/draft/2020-12/schema', true],
+            'JSON Schema draft-07' => ['http://json-schema.org/draft-07/schema#', false],
+        ];
+    }
+
+    #[DataProvider('schemaDialects')]
+    public function testSchemaDialectFromJsonSchemaDialect(?string $dialect, bool $is202012): void
+    {
+        $data = [
+            'openapi' => '3.1.0',
+            'info' => ['title' => 'Test', 'version' => '1.0.0'],
+            'paths' => [],
+        ];
+        if ($dialect !== null) {
+            $data['jsonSchemaDialect'] = $dialect;
+        }
+        $schema = Schema::fromArray($data);
+
+        $this->assertInstanceOf(OpenApi31Schema::class, $schema);
+        $this->assertSame($dialect, $schema->getSchemaDialect());
+        $this->assertSame($is202012, $schema->isJsonSchema202012());
     }
 
     public function testGetServerUrl(): void

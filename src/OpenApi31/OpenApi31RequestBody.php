@@ -3,6 +3,8 @@
 namespace ByJG\ApiTools\OpenApi31;
 
 use ByJG\ApiTools\Base\Body;
+use ByJG\ApiTools\Exception\InvalidDefinitionException;
+use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
 
 class OpenApi31RequestBody extends Body
 {
@@ -13,7 +15,18 @@ class OpenApi31RequestBody extends Body
     public function match(mixed $body, ?string $contentType = null): bool
     {
         if (empty($this->structure)) {
+            if (!empty($body)) {
+                throw new InvalidDefinitionException(
+                    "Request body provided for '{$this->name}' but the OpenAPI 3.1 specification does not define a request body for this operation.\n\n" .
+                    "Suggestion: Either remove the request body from your test using withRequestBody(), or add a 'requestBody' " .
+                    "definition to your OpenAPI specification for this endpoint."
+                );
+            }
             return true;
+        }
+
+        if (isset($this->structure['required']) && $this->structure['required'] === true && empty($body)) {
+            throw new RequiredArgumentNotFound('The body is required but it is empty');
         }
 
         if (!isset($this->structure['content'])) {

@@ -145,23 +145,27 @@ class OpenApi31Schema extends OpenApiBase
     }
 
     /**
-     * Get the JSON Schema dialect used
+     * Get the JSON Schema dialect declared by the root `jsonSchemaDialect` field
      *
      * @return string|null
      */
     public function getSchemaDialect(): ?string
     {
-        return $this->jsonFile['$schema'] ?? null;
+        return $this->jsonFile['jsonSchemaDialect'] ?? null;
     }
 
     /**
      * Check if schema uses JSON Schema 2020-12
+     *
+     * The OAS 3.1 dialect (the default when none is declared) is based on 2020-12.
      *
      * @return bool
      */
     public function isJsonSchema202012(): bool
     {
         $dialect = $this->getSchemaDialect();
-        return $dialect === null || str_contains($dialect, '2020-12');
+        return $dialect === null
+            || str_contains($dialect, '2020-12')
+            || str_starts_with($dialect, 'https://spec.openapis.org/oas/3.1/dialect/');
     }
 }

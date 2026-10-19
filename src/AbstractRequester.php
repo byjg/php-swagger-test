@@ -350,8 +350,11 @@ abstract class AbstractRequester
             $uriSchema = $uriSchema->withScheme($this->psr7Request->getUri()->getScheme());
         }
 
+        // The port goes with the host
         if (empty($uriSchema->getHost())) {
-            $uriSchema = $uriSchema->withHost($this->psr7Request->getUri()->getHost());
+            $uriSchema = $uriSchema
+                ->withHost($this->psr7Request->getUri()->getHost())
+                ->withPort($this->psr7Request->getUri()->getPort());
         }
 
         $uri = $this->psr7Request->getUri()
@@ -423,7 +426,9 @@ abstract class AbstractRequester
         }
 
         foreach ($this->assertHeader as $key => $value) {
-            if (!isset($responseHeader[$key]) || !str_contains($responseHeader[$key][0], $value)) {
+            // getHeader() matches the header name case-insensitively
+            $headerValue = $response->getHeader($key);
+            if (empty($headerValue) || !str_contains($headerValue[0], $value)) {
                 throw new NotMatchedException(
                     "Does not exists header '$key' with value '$value'",
                     $responseHeader

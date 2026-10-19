@@ -209,7 +209,9 @@ paths:
 
 `send()` builds the request URI from the specification: the scheme, host, port and path of the first
 `servers` entry (OpenAPI 3.x) or of `schemes`/`host`/`basePath` (Swagger 2.0) replace the ones of the
-request. The scheme and host of the request are used only when the specification does not define them.
+request. The scheme and host of the request are used only when the specification does not define them;
+when it defines no host, the port of the request is kept too (`servers: [{url: /v2}]` with a request to
+`http://localhost:8080/pet` sends `http://localhost:8080/v2/pet`).
 To test another environment, choose it in the specification, for example with a server variable (below),
 or load a specification per environment (see [Environment-Specific Configuration](#environment-specific-configuration)).
 

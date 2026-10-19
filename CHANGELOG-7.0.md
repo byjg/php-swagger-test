@@ -10,6 +10,9 @@
   second argument (`$allowNullValues`). See [Migrating from Schema::getInstance()](docs/migration-guide.md).
 - `OpenApiValidation::assertRequest()`, deprecated since 6.0, is removed. It was the former name of
   `sendRequest()`, which takes the same requester.
+- `OpenApiValidation::setRequester()`, `getRequester()` and the `$requester` property are removed.
+  They only fed `makeRequest()` (removed, see below); `sendRequest()` never used them. Pass the
+  requester to `sendRequest()` instead: `$this->sendRequest($requester)`.
 - `ApiTestCase::makeRequest()`, deprecated since 6.0, is removed. Build the request with
   `ApiRequester` (`withMethod()`, `withPath()`, `withQuery()`, `withRequestBody()`,
   `withRequestHeader()`, `expectStatus()`) and pass it to `sendRequest()`. See
@@ -27,6 +30,12 @@
   is parsed now (see Validation). A request whose type the operation does not document throws
   `NotMatchedException: Content type '…' not found for <METHOD> <path>` instead. Code that caught
   `InvalidRequestException` for this case has to catch `NotMatchedException`.
+- On OpenAPI 3.1 a request without a body to an operation whose `requestBody` is `required: true`
+  now throws `RequiredArgumentNotFound`, and a request with a body to an operation without a
+  `requestBody` throws `InvalidDefinitionException`, as on OpenAPI 3.0 and Swagger 2.0 (see Bug Fixes).
+- `OpenApi31Schema::getSchemaDialect()` returns the root `jsonSchemaDialect` field instead of a root
+  `$schema` field (see Bug Fixes).
+- When the specification's server URL has no host, the request keeps its own port (see Bug Fixes).
 
 ## Validation
 
@@ -78,6 +87,23 @@
   `InvalidRequestException: Cannot handle Content Type`, an XML request could not be validated,
   only `text/xml` and `application/xml` responses were read as XML, and a non-JSON response
   without a `Content-Type` became `null` ("Body is expected"); it is now matched as `text/plain`.
+
+## Bug Fixes
+
+- `OpenApi31RequestBody::match()` did not enforce `requestBody.required` and accepted a body sent to an
+  operation that defines no `requestBody`. It now throws `RequiredArgumentNotFound`
+  (`The body is required but it is empty`) and `InvalidDefinitionException`
+  (`Request body provided for '…' but the OpenAPI 3.1 specification does not define a request body`),
+  like the OpenAPI 3.0 and Swagger 2.0 implementations.
+- `OpenApi31Schema::getSchemaDialect()` read a root `$schema` field, which OpenAPI 3.1 does not define;
+  the dialect is declared by the root `jsonSchemaDialect` field. `isJsonSchema202012()` is now also true
+  for the OAS 3.1 dialect (`https://spec.openapis.org/oas/3.1/dialect/base`), which is based on 2020-12.
+- `send()` always took the port from the specification's server URL, so with a server URL without a host
+  (`/v2`) the port of the request (`http://localhost:8080/...`) was dropped. The port now goes with the
+  host: the server URL's when it has a host, the request's when it has not.
+- `expectHeaderContains()` matched the header name case-sensitively, so `content-type` did not find
+  `Content-Type`. HTTP header names are case-insensitive; the name is now looked up with PSR-7
+  `getHeader()`.
 
 ## Requirements
 

@@ -53,11 +53,6 @@ trait OpenApiValidation
     protected ?Schema $schema = null;
 
     /**
-     * @var AbstractRequester|null
-     */
-    protected ?AbstractRequester $requester = null;
-
-    /**
      * Configure the schema to use for requests.
      *
      * When set, all requests without an own schema use this one instead.
@@ -67,29 +62,6 @@ trait OpenApiValidation
     public function setSchema(?Schema $schema): void
     {
         $this->schema = $schema;
-    }
-
-    /**
-     * Set a custom requester instance.
-     *
-     * @param AbstractRequester $requester
-     */
-    public function setRequester(AbstractRequester $requester): void
-    {
-        $this->requester = $requester;
-    }
-
-    /**
-     * Get the requester instance, creating a default ApiRequester if needed.
-     *
-     * @return AbstractRequester|null
-     */
-    protected function getRequester(): AbstractRequester|null
-    {
-        if (is_null($this->requester)) {
-            $this->requester = new ApiRequester();
-        }
-        return $this->requester;
     }
 
     /**

@@ -150,7 +150,8 @@ public function testNestedJsonValidation()
 
 ### expectHeaderContains()
 
-Expect a specific header to contain a value:
+Expect a specific header to contain a value. The header name is matched case-insensitively, as HTTP
+defines it (`content-type` finds `Content-Type`); the value is matched case-sensitively:
 
 ```php
 public function testResponseHeaders()
