@@ -6,6 +6,99 @@ sidebar_position: 8
 
 This guide covers advanced features and use cases for PHP Swagger Test.
 
+## Supported Content Types
+
+Request and response bodies are parsed by their `Content-Type` before being matched against the
+specification:
+
+| Content-Type                                         | Parsed into                                          |
+|------------------------------------------------------|------------------------------------------------------|
+| `application/json`, any `*/json` or `*+json` type    | the decoded JSON (`json_decode()`)                   |
+| `application/xml`, `text/xml`, any `*+xml` type      | the XML (`simplexml_load_string()`), matched as an array |
+| `multipart/*` *(requests)*                           | the form fields, a file part's value being its content |
+| `application/x-www-form-urlencoded` *(requests)*     | the form fields (`parse_str()`)                      |
+| *none*                                               | the decoded JSON, or the raw string when it is not JSON |
+| anything else (`text/html`, `image/png`, ...)        | the raw string                                       |
+
+`+json` and `+xml` are the structured syntax suffixes of RFC 6839, e.g. `application/problem+json` or
+`application/merge-patch+json`. An XML body that is not well-formed is kept as a string, so it fails the
+match. A string body matches a `type: string` schema, or a media type documented without a schema.
+
+A parsed request body is then validated against the schema of the media type that covers its `Content-Type`,
+looked up as for [responses](#response-content-types): the type itself, its range (`multipart/*`), then
+`*/*`. An operation that documents both `application/json` and `multipart/form-data` validates each
+request against its own schema. A request sent with a type the operation does not document fails with
+`NotMatchedException: Content type 'application/x-www-form-urlencoded' not found for POST /pet`.
+
+`withRequestBody()` sends an array as JSON without setting a `Content-Type`. Such a request is
+validated against `application/json` when the operation documents it, then `application/xml`,
+`text/xml`, and otherwise the first documented type.
+
+## Response Content Types
+
+The response is validated against the media type of its `Content-Type` header, looked up in the
+operation's `content` in this order: the type itself (`text/html`), its range (`text/*`), then any type
+(`*/*`). Parameters such as `charset` are ignored.
+
+- A media type documented **without a schema** accepts any body, so an HTML page documented as
+  `content: {"text/html": {}}` passes.
+- A media type the operation does not document fails with
+  `NotMatchedException: Content type 'text/html' not found for GET 200 /`.
+- An XML response (`application/xml`, `text/xml`, any `+xml` type) is validated against its schema as the array it converts to.
+- Without a `Content-Type` header, the type is guessed from the body: JSON is `application/json`, any
+  other string `text/plain`.
+
+## Form URL Encoded Requests
+
+Endpoints consuming `application/x-www-form-urlencoded` are matched like any other:
+
+```php
+<?php
+use ByJG\ApiTools\ApiRequester;
+
+$request = new ApiRequester();
+$request
+    ->withMethod('POST')
+    ->withPath('/subscribe')
+    ->withRequestHeader(['Content-Type' => 'application/x-www-form-urlencoded'])
+    ->withRequestBody(http_build_query([
+        'name' => 'John Doe',
+        'email' => 'john@example.com',
+        'age' => 42,
+    ]))
+    ->expectStatus(200);
+
+$this->sendRequest($request);
+```
+
+:::note
+A urlencoded body carries only strings. Numeric properties are validated with `is_numeric()`, so
+`age=42` still matches a schema declaring `type: integer` — the same way multipart form fields have
+always behaved.
+:::
+
+**OpenAPI 3.0:**
+
+```yaml
+paths:
+  /subscribe:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [name, email]
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                age:
+                  type: integer
+```
+
 ## Multipart Form Data and File Uploads
 
 PHP Swagger Test supports testing endpoints that accept `multipart/form-data` requests, commonly used for file uploads.
@@ -114,42 +207,13 @@ paths:
 
 ### Overriding Server URLs
 
-You can test against different environments by setting the server URL:
-
-```php
-<?php
-use ByJG\ApiTools\Base\Schema;
-use ByJG\ApiTools\ApiRequester;
-
-class MultiEnvironmentTest extends \ByJG\ApiTools\ApiTestCase
-{
-    public function setUp(): void
-    {
-        $schema = Schema::fromFile(__DIR__ . '/openapi.json');
-        $this->setSchema($schema);
-    }
-
-    public function testAgainstDevelopment(): void
-    {
-        $request = new ApiRequester();
-        $request
-            ->withMethod('GET')
-            // Override the server URL from spec
-            ->withRequestHeader(['Host' => 'dev.example.com'])
-            ->withPath('/pet/1');
-
-        // Or modify the request URI
-        $psr7Request = $request->psr7Request;
-        $uri = $psr7Request->getUri()
-            ->withScheme('https')
-            ->withHost('dev.example.com')
-            ->withPort(443);
-        $request->withPsr7Request($psr7Request->withUri($uri));
-
-        $this->sendRequest($request);
-    }
-}
-```
+`send()` builds the request URI from the specification: the scheme, host, port and path of the first
+`servers` entry (OpenAPI 3.x) or of `schemes`/`host`/`basePath` (Swagger 2.0) replace the ones of the
+request. The scheme and host of the request are used only when the specification does not define them;
+when it defines no host, the port of the request is kept too (`servers: [{url: /v2}]` with a request to
+`http://localhost:8080/pet` sends `http://localhost:8080/v2/pet`).
+To test another environment, choose it in the specification, for example with a server variable (below),
+or load a specification per environment (see [Environment-Specific Configuration](#environment-specific-configuration)).
 
 ### Using Server Variables (OpenAPI 3.0)
 
@@ -205,7 +269,7 @@ PHP Swagger Test is built on PSR-7, allowing seamless integration with PSR-7 com
 ```php
 <?php
 use ByJG\WebRequest\Psr7\Request;
-use ByJG\WebRequest\Psr7\Uri;
+use ByJG\Util\Uri;
 use ByJG\WebRequest\Psr7\MemoryStream;
 use ByJG\ApiTools\ApiRequester;
 
@@ -243,20 +307,14 @@ class Psr7IntegrationTest extends \ByJG\ApiTools\ApiTestCase
 ```php
 public function testModifyPsr7Request(): void
 {
-    $request = new ApiRequester();
-    $request
+    // Build the PSR-7 request yourself and hand it to the requester.
+    // (The requester keeps it in the protected $psr7Request property, reachable from a subclass.)
+    $psr7 = Request::getInstance(new Uri('/pet/1'))
         ->withMethod('GET')
-        ->withPath('/pet/1');
-
-    // Access the underlying PSR-7 request
-    $psr7 = $request->psr7Request;
-
-    // Modify it directly
-    $psr7 = $psr7
         ->withHeader('X-Custom-Header', 'value')
         ->withHeader('Accept-Language', 'en-US');
 
-    // Update the requester
+    $request = new ApiRequester();
     $request->withPsr7Request($psr7);
 
     $this->sendRequest($request);
@@ -542,7 +600,8 @@ class RateLimitTest extends \ByJG\ApiTools\ApiTestCase
                 $requests++;
 
             } catch (StatusCodeNotMatchedException $e) {
-                if ($e->getBody()['statusCode'] === 429) {
+                // getBody() is the raw response body; the status is in the message
+                if (str_contains($e->getMessage(), 'got 429')) {
                     $rateLimited = true;
                     break;
                 }

@@ -126,6 +126,7 @@ class OpenApiValidationMiddleware implements MiddlewareInterface
         // Validate request
         try {
             $requestBody = json_decode($request->getBody()->getContents(), true);
+            $request->getBody()->rewind(); // getContents() leaves the stream at its end
             $bodyRequestDef = $this->schema->getRequestParameters($path, $method);
             $bodyRequestDef->match($requestBody);
         } catch (BaseException $e) {
@@ -142,6 +143,7 @@ class OpenApiValidationMiddleware implements MiddlewareInterface
         if (getenv('VALIDATE_RESPONSES') === 'true') {
             try {
                 $responseBody = json_decode($response->getBody()->getContents(), true);
+                $response->getBody()->rewind(); // getContents() leaves the stream at its end
                 $bodyResponseDef = $this->schema->getResponseParameters(
                     $path,
                     $method,
@@ -198,6 +200,7 @@ $app->add(function (Request $request, $handler) use ($schema) {
 
     try {
         $body = json_decode($request->getBody()->getContents(), true);
+        $request->getBody()->rewind(); // getContents() leaves the stream at its end
         $bodyRequestDef = $schema->getRequestParameters($path, $method);
         $bodyRequestDef->match($body ?? []);
     } catch (BaseException $e) {

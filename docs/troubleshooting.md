@@ -135,7 +135,7 @@ $this->sendRequest($request);
 
 ---
 
-### "Path '...' not found in specifications"
+### "Path "..." not found"
 
 **Cause:**
 The path you're testing doesn't exist in your OpenAPI/Swagger specification.
@@ -189,7 +189,7 @@ paths:
 
 ---
 
-### "Method '...' not found for path '...'"
+### "The http method '...' not found in '...'"
 
 **Cause:**
 The HTTP method you're testing doesn't exist for that path in your specification.
@@ -216,7 +216,7 @@ paths:
 
 ---
 
-### "Expected status code ..., got ..."
+### "Status code not matched: Expected ..., got ..."
 
 **Cause:**
 The API returned a different status code than expected.
@@ -286,7 +286,7 @@ pattern: '^[a-zA-Z]+$'  # Allow both upper and lowercase
 
 ---
 
-### "Property '...' is required but not found"
+### "Required property '...' in '...' not found in object"
 
 **Cause:**
 Your request/response is missing a required field defined in the specification.
@@ -319,7 +319,7 @@ schema:
 
 ---
 
-### "Additional properties are not allowed"
+### "The property(ies) '...' has not defined in '...'"
 
 **Cause:**
 You're sending fields that aren't defined in your OpenAPI schema, and `additionalProperties`
@@ -421,10 +421,11 @@ Use `MockRequester` to test your specification without making actual HTTP calls:
 
 ```php
 use ByJG\ApiTools\MockRequester;
+use ByJG\WebRequest\Psr7\MemoryStream;
 use ByJG\WebRequest\Psr7\Response;
 
 $expectedResponse = Response::getInstance(200)
-    ->withBody(json_encode(['id' => 1, 'name' => 'Fluffy']));
+    ->withBody(new MemoryStream(json_encode(['id' => 1, 'name' => 'Fluffy'])));
 
 $request = new MockRequester($expectedResponse);
 $request

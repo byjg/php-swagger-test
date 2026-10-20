@@ -11,7 +11,7 @@ class SwaggerResponseBody extends Body
      * @inheritDoc
      */
     #[\Override]
-    public function match(mixed $body): bool
+    public function match(mixed $body, ?string $contentType = null): bool
     {
         if (!isset($this->structure['schema'])) {
             if (!empty($body)) {

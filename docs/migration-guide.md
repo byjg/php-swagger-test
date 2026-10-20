@@ -30,7 +30,7 @@ The library automatically detects the version - your existing code works with bo
 $schema = Schema::fromFile('/path/to/openapi.json');
 
 // Check which version you're using
-echo $schema->getSpecificationVersion(); // "3.0" or "3.1"
+echo $schema->getSpecificationVersion(); // the "openapi" value, e.g. "3.0.3" or "3.1.0"
 ```
 
 ### Updating Your OpenAPI Schemas
@@ -97,10 +97,10 @@ For detailed information on OpenAPI 3.1 features, see [OpenAPI 3.1 Features Guid
 
 ---
 
-## Migrating from Schema::getInstance() (Deprecated in 6.0)
+## Migrating from Schema::getInstance() (Removed in 7.0)
 
 :::warning Deprecated
-The `Schema::getInstance()` method has been deprecated in version 6.0 and will be removed in version 7.0.
+The `Schema::getInstance()` method was deprecated in version 6.0 and is removed in version 7.0.
 :::
 
 ### Why the Change?
@@ -114,7 +114,7 @@ pattern). This is confusing for developers.
 
 Three new, clearer factory methods have been added:
 
-**Old Way (Deprecated):**
+**Old Way (removed in 7.0):**
 
 ```php
 // From JSON string
@@ -155,10 +155,10 @@ $schema = Schema::fromArray($arrayData, allowNullValues: true);
 
 ---
 
-## Migrating from assertRequest() (Deprecated in 6.0)
+## Migrating from assertRequest() (Removed in 7.0)
 
-:::warning Deprecated
-The `assertRequest()` method has been renamed to `sendRequest()` for clarity.
+:::warning Removed
+The `assertRequest()` method was renamed to `sendRequest()` for clarity in version 6.0, and removed in version 7.0.
 :::
 
 ### Why the Change?
@@ -173,7 +173,7 @@ The method name `assertRequest()` is misleading because:
 
 ### Migration
 
-**Old Way (Deprecated):**
+**Old Way (removed in 7.0):**
 
 ```php
 $response = $this->assertRequest($request);
@@ -244,10 +244,10 @@ $request
 
 ---
 
-## Migrating from makeRequest() (Deprecated in 6.0)
+## Migrating from makeRequest() (Removed in 7.0)
 
-:::warning Deprecated
-The `makeRequest()` method with 6 parameters has been deprecated in version 6.0 and will be removed in version 7.0.
+:::warning Removed
+The `makeRequest()` method with 6 parameters was deprecated in version 6.0 and is removed in version 7.0.
 :::
 
 ### Why the Change?
@@ -270,7 +270,7 @@ The `makeRequest()` method with 6 parameters has been deprecated in version 6.0 
 
 #### Example 1: Simple GET Request
 
-**Old Way (Deprecated):**
+**Old Way (removed in 7.0):**
 
 ```php
 protected function testGetPet()
@@ -302,7 +302,7 @@ public function testGetPet()
 
 #### Example 2: POST with Body
 
-**Old Way (Deprecated):**
+**Old Way (removed in 7.0):**
 
 ```php
 protected function testCreatePet()
@@ -336,7 +336,7 @@ public function testCreatePet()
 
 #### Example 3: GET with Query Parameters
 
-**Old Way (Deprecated):**
+**Old Way (removed in 7.0):**
 
 ```php
 protected function testFindPets()
@@ -369,7 +369,7 @@ public function testFindPets()
 
 #### Example 4: Request with Headers
 
-**Old Way (Deprecated):**
+**Old Way (removed in 7.0):**
 
 ```php
 protected function testAuthenticatedRequest()
@@ -402,7 +402,7 @@ public function testAuthenticatedRequest()
 
 #### Example 5: Complex Request with All Parameters
 
-**Old Way (Deprecated):**
+**Old Way (removed in 7.0):**
 
 ```php
 protected function testComplexRequest()
@@ -505,7 +505,7 @@ $this->assertEquals('Fluffy', $body['name']);
     - `Schema::getInstance()` deprecated (use `fromJson()`, `fromArray()`, or `fromFile()`)
     - `assertRequest()` deprecated (use `sendRequest()`)
     - `makeRequest()` deprecated (use `ApiRequester` fluent interface)
-- **Version 7.0**: All deprecated methods will be removed
+- **Version 7.0**: all three are removed
 
 :::
 

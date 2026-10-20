@@ -10,9 +10,10 @@ Currently, this library supports the OpenApi specifications `2.0` (formerly swag
 
 [![Sponsor](https://img.shields.io/badge/Sponsor-%23ea4aaa?logo=githubsponsors&logoColor=white&labelColor=0d1117)](https://github.com/sponsors/byjg)
 [![Build Status](https://github.com/byjg/php-swagger-test/actions/workflows/phpunit.yml/badge.svg?branch=master)](https://github.com/byjg/php-swagger-test/actions/workflows/phpunit.yml)
-[![Opensource ByJG](https://img.shields.io/badge/opensource-byjg-success.svg)](http://opensource.byjg.com)
+[![Opensource ByJG](https://img.shields.io/badge/opensource-byjg-success.svg)](https://opensource.byjg.com)
+[![Install MCP Server](https://img.shields.io/badge/Install-MCP_Server-8A2BE2?logo=modelcontextprotocol&logoColor=white)](https://opensource.byjg.com/docs/ai/mcpserver-byjg-docs/)
 [![GitHub source](https://img.shields.io/badge/Github-source-informational?logo=github)](https://github.com/byjg/php-swagger-test/)
-[![GitHub license](https://img.shields.io/github/license/byjg/php-swagger-test.svg)](https://opensource.byjg.com/opensource/licensing.html)
+[![GitHub license](https://img.shields.io/github/license/byjg/php-swagger-test.svg)](https://opensource.byjg.com/license/)
 [![GitHub release](https://img.shields.io/github/release/byjg/php-swagger-test.svg)](https://github.com/byjg/php-swagger-test/releases/)
 
 ## OpenAPI Version Support
@@ -75,20 +76,6 @@ The ApiTestCase's assertion process is based on throwing exceptions if some vali
 - [ByJG Gluo for Laravel — contract testing and runtime validation inside a Laravel app](https://github.com/byjg/php-gluo-laravel)
 - [Laravel Swagger Test](https://github.com/pionl/laravel-swagger-test)
 
-## Install
-
-```bash
-composer require "byjg/swagger-test"
-```
-
-## Tests
-
-```bash
-SPEC=swagger php -S 127.0.0.1:8080 tests/rest/app.php &
-SPEC=openapi php -S 127.0.0.1:8081 tests/rest/app.php &
-vendor/bin/phpunit
-```
-
 ## References
 
 This project uses the [byjg/webrequest](https://github.com/byjg/webrequest) component.
@@ -99,12 +86,19 @@ Check it out to get more information.
 
 Please raise your issue on [Github issue](https://github.com/byjg/php-swagger-test/issues).
 
-## Dependencies
+## Installation
 
-```mermaid
-flowchart TD
-    byjg/swagger-test --> byjg/webrequest
+```bash
+composer require "byjg/swagger-test"
+```
+
+## Running Tests
+
+```bash
+SPEC=swagger php -S 127.0.0.1:8080 tests/rest/app.php &
+SPEC=openapi php -S 127.0.0.1:8081 tests/rest/app.php &
+vendor/bin/phpunit
 ```
 
 ----
-[Open source ByJG](http://opensource.byjg.com)
+[Open source ByJG](https://opensource.byjg.com)

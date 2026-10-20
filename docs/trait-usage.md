@@ -220,25 +220,18 @@ When you use the `OpenApiValidation` trait, you get these methods:
 ### Configuration
 
 ```php
-// Set the OpenAPI schema to validate against
-$this->setSchema(Schema $schema): void
-
-// Set a custom requester (optional)
-$this->setRequester(AbstractRequester $requester): void
-
-// Get the current requester instance
-$this->getRequester(): AbstractRequester|null
+// Set the OpenAPI schema to validate against (null clears it)
+$this->setSchema(?Schema $schema): void
 ```
 
 ### Request Validation
 
 ```php
-// Send and validate request (recommended)
+// Send and validate request
 $this->sendRequest(AbstractRequester $request): ResponseInterface
-
-// Legacy method (deprecated, use sendRequest)
-$this->assertRequest(AbstractRequester $request): ResponseInterface
 ```
+
+`assertRequest()`, the former name of `sendRequest()`, was removed in 7.0.
 
 ### Protected Helpers
 

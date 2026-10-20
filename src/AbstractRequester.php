@@ -350,8 +350,11 @@ abstract class AbstractRequester
             $uriSchema = $uriSchema->withScheme($this->psr7Request->getUri()->getScheme());
         }
 
+        // The port goes with the host
         if (empty($uriSchema->getHost())) {
-            $uriSchema = $uriSchema->withHost($this->psr7Request->getUri()->getHost());
+            $uriSchema = $uriSchema
+                ->withHost($this->psr7Request->getUri()->getHost())
+                ->withPort($this->psr7Request->getUri()->getPort());
         }
 
         $uri = $this->psr7Request->getUri()
@@ -368,21 +371,17 @@ abstract class AbstractRequester
 
         // Prepare Body to Match Against Specification
         $requestBody = $this->psr7Request->getBody()->getContents();
+        $requestContentType = null;
         if (!empty($requestBody)) {
             $contentType = $this->psr7Request->getHeaderLine("content-type");
-            if (empty($contentType) || str_contains($contentType, "application/json")) {
-                $requestBody = json_decode($requestBody, true);
-            } elseif (str_contains($contentType, "multipart/")) {
-                $requestBody = $this->parseMultiPartForm($contentType, $requestBody);
-            } else {
-                throw new InvalidRequestException("Cannot handle Content Type '$contentType'");
-            }
+            $requestContentType = $this->getMediaType($contentType);
+            $requestBody = $this->parseBody($requestBody, $contentType);
         }
 
         // Check if the body is the expected before request
         if ($this->schema !== null) {
             $bodyRequestDef = $this->schema->getRequestParameters($this->psr7Request->getUri()->getPath(), $this->psr7Request->getMethod());
-            $bodyRequestDef->match($requestBody);
+            $bodyRequestDef->match($requestBody, $requestContentType);
         }
 
         // Handle Request
@@ -405,21 +404,8 @@ abstract class AbstractRequester
             }
         }
         $responseBodyStr = $response->getBody()->getContents();
-        // Extract the main content type (before semicolon) to handle "application/json; charset=utf-8"
-        $mainContentType = explode(';', $contentType)[0];
-        $mainContentType = trim($mainContentType);
-
-        // Parse response based on content type, defaulting to JSON for backwards compatibility
-        if ($mainContentType === 'text/xml' || $mainContentType === 'application/xml') {
-            $responseBodyParsed = simplexml_load_string($responseBodyStr);
-        } else {
-            // Default to JSON parsing (for backwards compatibility and when content-type is not set)
-            $responseBodyParsed = json_decode($responseBodyStr, true);
-            // If JSON parsing fails and content-type is explicitly not JSON, use raw string
-            if ($responseBodyParsed === null && $mainContentType !== '' && $mainContentType !== 'application/json') {
-                $responseBodyParsed = $responseBodyStr;
-            }
-        }
+        $responseContentType = $this->getMediaType($contentType);
+        $responseBodyParsed = $this->parseBody($responseBodyStr, $contentType);
         $statusReturned = $response->getStatusCode();
 
         // Assert results
@@ -436,11 +422,13 @@ abstract class AbstractRequester
                 $this->psr7Request->getMethod(),
                 $this->statusExpected
             );
-            $bodyResponseDef->match($responseBodyParsed);
+            $bodyResponseDef->match($responseBodyParsed, $responseContentType);
         }
 
         foreach ($this->assertHeader as $key => $value) {
-            if (!isset($responseHeader[$key]) || !str_contains($responseHeader[$key][0], $value)) {
+            // getHeader() matches the header name case-insensitively
+            $headerValue = $response->getHeader($key);
+            if (empty($headerValue) || !str_contains($headerValue[0], $value)) {
                 throw new NotMatchedException(
                     "Does not exists header '$key' with value '$value'",
                     $responseHeader
@@ -459,37 +447,92 @@ abstract class AbstractRequester
         return $response;
     }
 
+    /**
+     * The media type of a Content-Type header, in lower case and without parameters such as charset
+     * or boundary; null when there is none.
+     */
+    protected function getMediaType(string $contentType): ?string
+    {
+        $mediaType = strtolower(trim(explode(';', $contentType)[0]));
+        return $mediaType === '' ? null : $mediaType;
+    }
+
+    /**
+     * A request or response body in the form the matcher validates, by its Content-Type:
+     *
+     * - JSON (application/json and any "+json" type, RFC 6839): the decoded value.
+     * - XML (application/xml, text/xml and any "+xml" type): a SimpleXMLElement, or the raw string
+     *   when it is not well-formed.
+     * - multipart/*: the fields (see parseMultiPartForm()).
+     * - application/x-www-form-urlencoded: the fields. Values are strings, as in multipart bodies;
+     *   numeric types are checked with is_numeric(), so a form field still matches an integer schema.
+     * - No Content-Type: the decoded JSON, or the raw string when it is not JSON.
+     * - Anything else (text/html, image/png, ...): the raw string.
+     */
+    protected function parseBody(string $body, string $contentType): mixed
+    {
+        $mediaType = $this->getMediaType($contentType);
+
+        if ($mediaType === null) {
+            $decoded = json_decode($body, true);
+            return json_last_error() === JSON_ERROR_NONE ? $decoded : $body;
+        }
+        if (str_starts_with($mediaType, 'multipart/')) {
+            return $this->parseMultiPartForm($contentType, $body);
+        }
+        if ($mediaType === 'application/x-www-form-urlencoded') {
+            parse_str($body, $form);
+            return $form;
+        }
+        if (str_ends_with($mediaType, '/json') || str_ends_with($mediaType, '+json')) {
+            return json_decode($body, true);
+        }
+        if (str_ends_with($mediaType, '/xml') || str_ends_with($mediaType, '+xml')) {
+            // A body that is not well-formed is left as a string for the matcher to reject, without warnings
+            $previous = libxml_use_internal_errors(true);
+            $xml = simplexml_load_string($body);
+            libxml_clear_errors();
+            libxml_use_internal_errors($previous);
+            return $xml === false ? $body : $xml;
+        }
+
+        return $body;
+    }
+
+    /**
+     * The fields of a multipart body, name => value (a file part's value is its content).
+     *
+     * Each part is "--boundary", its headers, a blank line and its value (RFC 7578). Lines end in
+     * CRLF, or in LF as byjg/webrequest's MultiPartItem writes them.
+     */
     protected function parseMultiPartForm(?string $contentType, string $body): array|null
     {
+        if ($contentType === null) {
+            return null;
+        }
+        if (!str_contains($contentType, "multipart/")) {
+            return null;
+        }
+
+        if (!preg_match('/\bboundary="?([^";]+)"?/i', $contentType, $matches)) {
+            return null;
+        }
+        $boundary = trim($matches[1]);
+
         $matchRequest = [];
-
-        if (empty($contentType) || !str_contains($contentType, "multipart/")) {
-            return null;
-        }
-
-        $matches = [];
-
-        preg_match('/boundary=(.*)$/', $contentType ?? '', $matches);
-        $boundary = $matches[1];
-
-        // split content by boundary and get rid of last -- element
-        $blocks = preg_split("/-+$boundary/", $body);
-        if ($blocks === false) {
-            return null;
-        }
-        array_pop($blocks);
-
-        // loop data blocks
-        foreach ($blocks as $block) {
-            if (empty($block))
+        foreach (explode("--$boundary", $body) as $part) {
+            // The preamble, the closing "--" and anything without headers is not a part
+            $headersAndValue = preg_split('/\r?\n\r?\n/', $part, 2);
+            if ($headersAndValue === false || count($headersAndValue) < 2) {
                 continue;
-
-            if (str_contains($block, 'application/octet-stream')) {
-                preg_match("/name=\"([^\"]*)\".*stream[\n|\r]+([^\n\r].*)?$/s", $block, $matches);
-            } else {
-                preg_match('/\bname=\"([^\"]*)\"\s*;.*?[\n|\r]+([^\n\r].*)?[\r|\n]$/s', $block, $matches);
             }
-            $matchRequest[$matches[1]] = $matches[2];
+            [$headers, $value] = $headersAndValue;
+
+            if (!preg_match('/\bname="([^"]*)"/i', $headers, $name)) {
+                continue;
+            }
+            // The line break before the next boundary belongs to the delimiter, not to the value
+            $matchRequest[$name[1]] = (string)preg_replace('/\r?\n$/', '', $value);
         }
 
         return $matchRequest;

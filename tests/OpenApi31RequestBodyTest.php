@@ -3,7 +3,9 @@
 namespace Tests;
 
 use ByJG\ApiTools\Base\Schema;
+use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\NotMatchedException;
+use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
 use PHPUnit\Framework\TestCase;
 
 class OpenApi31RequestBodyTest extends TestCase
@@ -71,5 +73,29 @@ class OpenApi31RequestBodyTest extends TestCase
         ];
 
         $requestBody->match($invalidBody);
+    }
+
+    public function testRequestBodyRequiredButEmpty(): void
+    {
+        $this->expectException(RequiredArgumentNotFound::class);
+        $this->expectExceptionMessage('The body is required');
+
+        $requestBody = $this->schema->getRequestParameters('/users', 'post');
+        $requestBody->match(null);
+    }
+
+    public function testRequestBodyNotDefinedButProvided(): void
+    {
+        $this->expectException(InvalidDefinitionException::class);
+        $this->expectExceptionMessage("Request body provided for 'get /users' but the OpenAPI 3.1 specification does not define a request body for this operation");
+
+        $requestBody = $this->schema->getRequestParameters('/users', 'get');
+        $requestBody->match(['name' => 'John Doe']);
+    }
+
+    public function testRequestBodyNotDefinedAndNotProvided(): void
+    {
+        $requestBody = $this->schema->getRequestParameters('/users', 'get');
+        $this->assertTrue($requestBody->match(null));
     }
 }

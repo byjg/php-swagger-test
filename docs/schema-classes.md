@@ -32,8 +32,8 @@ $schemaArray = json_decode(file_get_contents('/path/to/specification.json'), tru
 $schema = \ByJG\ApiTools\Base\Schema::fromArray($schemaArray);
 ```
 
-**Note:** The `getInstance()` method is deprecated since version 6.0. Use `fromFile()`, `fromJson()`, or `fromArray()`
-instead.
+**Note:** The `getInstance()` method, deprecated since version 6.0, is removed in version 7.0. Use `fromFile()`,
+`fromJson()`, or `fromArray()` instead.
 
 ## SwaggerSchema Specific Features
 
@@ -129,17 +129,18 @@ if ($schema->hasWebhooks()) {
 
 ### Schema Dialect Detection
 
-OpenAPI 3.1 can declare its JSON Schema dialect:
+OpenAPI 3.1 can declare its JSON Schema dialect in the root `jsonSchemaDialect` field:
 
 ```php
 <?php
 $schema = \ByJG\ApiTools\Base\Schema::fromFile('/path/to/openapi31.json');
 
-// Get the declared schema dialect
+// Get the declared schema dialect (the root "jsonSchemaDialect" field)
 $dialect = $schema->getSchemaDialect();
 // Returns: "https://spec.openapis.org/oas/3.1/dialect/base" or null
 
-// Check if using JSON Schema 2020-12
+// Check if using JSON Schema 2020-12: true when no dialect is declared,
+// for the OAS 3.1 dialect (based on 2020-12) and for a 2020-12 dialect
 if ($schema->isJsonSchema202012()) {
     // Can use advanced JSON Schema 2020-12 features
 }
@@ -155,14 +156,14 @@ if ($schema->isJsonSchema202012()) {
 
 ### Schema Dialect Methods
 
-- `getSchemaDialect(): ?string` - Get the JSON Schema dialect declaration
+- `getSchemaDialect(): ?string` - Get the root `jsonSchemaDialect` field, or null when it is not declared
 - `isJsonSchema202012(): bool` - Check if using JSON Schema 2020-12
 
 For comprehensive documentation on OpenAPI 3.1 features, see the [OpenAPI 3.1 Features Guide](openapi-3.1-features.md).
 
 ## Common Methods
 
-Both schema classes provide the following common methods:
+All schema classes provide the following common methods:
 
 - `getServerUrl()` - Get the server URL from the specification
 - `getBasePath()` - Get the base path from the specification
@@ -171,3 +172,5 @@ Both schema classes provide the following common methods:
 - `getResponseParameters($path, $method, $status)` - Get the response parameters for a specific path, method, and status
   code
 - `getDefinition($name)` - Get a definition by name
+- `getSpecificationVersion()` - The `swagger` or `openapi` value of the specification (e.g. `2.0`, `3.0.3`, `3.1.0`)
+- `isAllowNullValues()` - Whether null values are accepted when the schema does not say (set for Swagger 2.0)

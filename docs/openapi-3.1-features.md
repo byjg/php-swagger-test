@@ -28,7 +28,7 @@ $schema30 = Schema::fromJson('{"openapi": "3.0.3", ...}');
 $schema31 = Schema::fromJson('{"openapi": "3.1.0", ...}');
 
 // Check version
-echo $schema31->getSpecificationVersion(); // "3.1"
+echo $schema31->getSpecificationVersion(); // "3.1.0" (the "openapi" value)
 ```
 
 ## Nullable Types

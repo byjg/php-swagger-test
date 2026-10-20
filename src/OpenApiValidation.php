@@ -53,11 +53,6 @@ trait OpenApiValidation
     protected ?Schema $schema = null;
 
     /**
-     * @var AbstractRequester|null
-     */
-    protected ?AbstractRequester $requester = null;
-
-    /**
      * Configure the schema to use for requests.
      *
      * When set, all requests without an own schema use this one instead.
@@ -67,29 +62,6 @@ trait OpenApiValidation
     public function setSchema(?Schema $schema): void
     {
         $this->schema = $schema;
-    }
-
-    /**
-     * Set a custom requester instance.
-     *
-     * @param AbstractRequester $requester
-     */
-    public function setRequester(AbstractRequester $requester): void
-    {
-        $this->requester = $requester;
-    }
-
-    /**
-     * Get the requester instance, creating a default ApiRequester if needed.
-     *
-     * @return AbstractRequester|null
-     */
-    protected function getRequester(): AbstractRequester|null
-    {
-        if (is_null($this->requester)) {
-            $this->requester = new ApiRequester();
-        }
-        return $this->requester;
     }
 
     /**
@@ -145,27 +117,6 @@ trait OpenApiValidation
         }
 
         return $response;
-    }
-
-    /**
-     * Send a request and validate it against the OpenAPI/Swagger schema.
-     *
-     * @param AbstractRequester $request
-     * @return ResponseInterface
-     * @throws DefinitionNotFoundException
-     * @throws GenericApiException
-     * @throws HttpMethodNotFoundException
-     * @throws InvalidDefinitionException
-     * @throws InvalidRequestException
-     * @throws NotMatchedException
-     * @throws PathNotFoundException
-     * @throws RequiredArgumentNotFound
-     * @throws StatusCodeNotMatchedException
-     * @deprecated Since version 6.0, use sendRequest() instead. Will be removed in version 7.0
-     */
-    public function assertRequest(AbstractRequester $request): ResponseInterface
-    {
-        return $this->sendRequest($request);
     }
 
     /**

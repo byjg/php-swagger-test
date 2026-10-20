@@ -21,7 +21,7 @@ class OpenApiBodyTestCase extends TestCase
      */
     protected static function openApiSchema(bool $allowNullValues = false): OpenApiSchema|SwaggerSchema
     {
-        return Schema::getInstance(
+        return Schema::fromJson(
             self::getOpenApiJsonContent(),
             $allowNullValues
         );
@@ -33,7 +33,7 @@ class OpenApiBodyTestCase extends TestCase
      */
     protected static function openApiSchema2(bool $allowNullValues = false): OpenApiSchema|SwaggerSchema
     {
-        return Schema::getInstance(
+        return Schema::fromJson(
             self::getOpenApiJsonContent_No2(),
             $allowNullValues
         );
@@ -45,7 +45,7 @@ class OpenApiBodyTestCase extends TestCase
      */
     protected static function openApiSchema3(bool $allowNullValues = false): OpenApiSchema|SwaggerSchema
     {
-        return Schema::getInstance(
+        return Schema::fromJson(
             self::getOpenApiJsonContent_No3(),
             $allowNullValues
         );
@@ -57,7 +57,7 @@ class OpenApiBodyTestCase extends TestCase
      */
     protected static function openApiSchema5(bool $allowNullValues = false): OpenApiSchema|SwaggerSchema
     {
-        return Schema::getInstance(
+        return Schema::fromJson(
             self::getOpenApiJsonContent_No5(),
             $allowNullValues
         );

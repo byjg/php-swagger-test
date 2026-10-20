@@ -46,7 +46,7 @@ server.
 
 ```php
 <?php
-use ByJG\RestServer\HttpRequestHandler;
+use ByJG\RestServer\Server;
 use ByJG\RestServer\Route\OpenApiRouteList;
 
 // Load the OpenAPI/Swagger specification
@@ -56,9 +56,14 @@ $specification = '/path/to/specification.json';
 $routeDefinition = new OpenApiRouteList($specification);
 
 // Create a request handler and handle the routes
-$restServer = new HttpRequestHandler();
+$restServer = new Server();
 $restServer->handle($routeDefinition);
 ```
+
+:::note
+On `byjg/restserver` 6.x this class was named `HttpRequestHandler`. It was renamed to `Server` in
+7.0; the `handle()` signature is unchanged.
+:::
 
 This code will create a server that handles requests according to the routes defined in your OpenAPI/Swagger
 specification.
@@ -85,10 +90,10 @@ $path = '/path/to/method';
 $statusExpected = 200;
 $method = 'POST';
 
-// Returns a SwaggerRequestBody instance
+// Returns a Body instance (SwaggerRequestBody, OpenApiRequestBody or OpenApi31RequestBody)
 $bodyRequestDef = $schema->getRequestParameters($path, $method);
 
-// Returns a SwaggerResponseBody instance
+// Returns a Body instance (SwaggerResponseBody, OpenApiResponseBody or OpenApi31ResponseBody)
 $bodyResponseDef = $schema->getResponseParameters($path, $method, $statusExpected);
 ```
 
@@ -99,10 +104,14 @@ $bodyResponseDef = $schema->getResponseParameters($path, $method, $statusExpecte
 if (!empty($requestBody)) {
     $bodyRequestDef->match($requestBody);
 }
-$bodyResponseDef->match($responseBody);
+$bodyResponseDef->match($responseBody, $responseContentType);
 ```
 
-If the request or response body does not match with the definition an exception NotMatchException will
+`$responseContentType` is the media type of the response's `Content-Type` header, without parameters
+(`text/html`, not `text/html; charset=utf-8`). Pass `null` when there is none: the type is then guessed from
+the body (an array is `application/json`, a string `text/plain`).
+
+If the request or response body does not match with the definition an exception NotMatchedException will
 be thrown.
 
 ---

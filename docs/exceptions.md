@@ -139,7 +139,7 @@ components:
 try {
     $this->sendRequest($request);
 } catch (\ByJG\ApiTools\Exception\DefinitionNotFoundException $e) {
-    // Not find reference #/components/schemas/Categoryy
+    // Component'#/components/schemas/Categoryy' not found
     echo $e->getMessage();
 }
 ```
@@ -209,9 +209,9 @@ $request
 try {
     $this->sendRequest($request);
 } catch (\ByJG\ApiTools\Exception\NotMatchedException $e) {
-    // Value 'abc' in 'id' is not integer
+    // Expected 'id' to be numeric, but found 'abc'.
     echo $e->getMessage();
-    print_r($e->getBody());  // Shows the full request body
+    print_r($e->getBody());  // Shows the schema definition the value was matched against
 }
 ```
 
@@ -234,6 +234,30 @@ try {
     echo $e->getMessage();
 }
 ```
+
+#### Constraint Mismatch
+
+```php
+// Spec has name: { type: string, maxLength: 5 } and price: { type: number, minimum: 0 }
+$request = new ApiRequester();
+$request
+    ->withMethod('POST')
+    ->withPath('/pet')
+    ->withRequestBody([
+        'name' => 'Fluffy',  // ❌ 6 characters
+        'price' => 10
+    ]);
+
+try {
+    $this->sendRequest($request);
+} catch (\ByJG\ApiTools\Exception\NotMatchedException $e) {
+    // Value 'Fluffy' in 'name' is longer than maxLength 5
+    echo $e->getMessage();
+}
+```
+
+`minLength` and `maxLength` count characters; `minimum` and `maximum` are inclusive.
+A negative `price` would fail with `Value '-1' in 'price' is less than minimum 0`.
 
 #### Enum Mismatch
 
@@ -271,7 +295,7 @@ $request
 try {
     $this->sendRequest($request);
 } catch (\ByJG\ApiTools\Exception\NotMatchedException $e) {
-    // Additional properties are not allowed
+    // The property(ies) 'extraField' has not defined in '...'
     echo $e->getMessage();
 }
 ```
@@ -310,11 +334,7 @@ try {
 }
 ```
 
-### RequiredArgumentNotFound
-
-**Thrown when:** A required property is missing from the request or response.
-
-**Example:**
+#### Missing Required Property
 
 ```php
 // Spec requires 'name' and 'photoUrls'
@@ -329,8 +349,31 @@ $request
 
 try {
     $this->sendRequest($request);
+} catch (\ByJG\ApiTools\Exception\NotMatchedException $e) {
+    // Required property 'photoUrls' in '...' not found in object
+    echo $e->getMessage();
+}
+```
+
+### RequiredArgumentNotFound
+
+**Thrown when:** The operation marks the request body as required and the request has none
+(`The body is required but it is empty`), or a required Swagger 2.0 `formData` parameter is missing.
+A missing property inside the body is a `NotMatchedException` (see above).
+
+**Example:**
+
+```php
+// Spec has requestBody.required: true
+$request = new ApiRequester();
+$request
+    ->withMethod('POST')
+    ->withPath('/pet');  // ❌ No body
+
+try {
+    $this->sendRequest($request);
 } catch (\ByJG\ApiTools\Exception\RequiredArgumentNotFound $e) {
-    // The property 'photoUrls' is required but not found
+    // The body is required but it is empty
     echo $e->getMessage();
 }
 ```
@@ -363,24 +406,22 @@ try {
 
 **Common causes:**
 - Empty path
-- Invalid Content-Type
 - Malformed request structure
 - Invalid path parameters
+
+A request body of an unexpected Content-Type is not an `InvalidRequestException`: it is parsed (or kept as a
+string) and matched, so it fails with `NotMatchedException` — see
+[Supported Content Types](advanced-usage.md#supported-content-types).
 
 **Example:**
 
 ```php
-$request = new ApiRequester();
-$request
-    ->withMethod('POST')
-    ->withPath('/pet')
-    ->withRequestBody('invalid data')
-    ->withRequestHeader(['Content-Type' => 'application/xml']);  // ❌ Unsupported
+$schema = \ByJG\ApiTools\Base\Schema::fromFile('openapi.json');
 
 try {
-    $this->sendRequest($request);
+    $schema->getPathDefinition('', 'get');
 } catch (\ByJG\ApiTools\Exception\InvalidRequestException $e) {
-    // Cannot handle Content Type 'application/xml'
+    // The path is empty
     echo $e->getMessage();
 }
 ```
@@ -550,7 +591,7 @@ class ApiController
 | `DefinitionNotFoundException`   | Schema reference not found  | 500 (spec error)   |
 | `InvalidDefinitionException`    | Spec structure invalid      | 500 (spec error)   |
 | `NotMatchedException`           | Data doesn't match schema   | 400 (validation)   |
-| `RequiredArgumentNotFound`      | Missing required field      | 400 (validation)   |
+| `RequiredArgumentNotFound`      | Missing required body       | 400 (validation)   |
 | `StatusCodeNotMatchedException` | Wrong status code           | N/A                |
 | `InvalidRequestException`       | Malformed request           | 400 (client error) |
 | `GenericApiException`           | General API error           | Varies             |
