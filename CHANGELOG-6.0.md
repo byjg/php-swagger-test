@@ -107,7 +107,7 @@ The documentation was restructured into topic pages for Docusaurus:
 
 | Before (5.x) | After (6.0) | Description |
 |--------------|-------------|-------------|
-| PHP >=8.1 <8.4 | PHP >=8.3 <8.6 | Minimum PHP raised to 8.3; PHP 8.4 and 8.5 supported |
+| `PHP >=8.1 <8.4` | `PHP >=8.3 <8.6` | Minimum PHP raised to 8.3; PHP 8.4 and 8.5 supported |
 | `byjg/webrequest` ^5.0 | `byjg/webrequest` ^6.0 | Updated to major version 6 |
 | `byjg/restserver` ^5.0 (dev) | `byjg/restserver` ^6.0 (dev) | Updated to major version 6 |
 | PHPUnit ^9.6 | PHPUnit ^10.5 \| ^11.5 | Updated test framework |
