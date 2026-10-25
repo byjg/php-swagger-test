@@ -1,5 +1,6 @@
 ---
 sidebar_key: swagger-test
+sidebar_category: http-apis
 tags: [php, http, testing]
 ---
 
