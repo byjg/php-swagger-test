@@ -5,7 +5,7 @@ tags: [php, http, testing]
 
 # Swagger Test
 
-A set of tools for testing your REST calls based on the OpenApi specification using PHPUnit.
+Test your REST API against its OpenAPI specification with PHPUnit: every request and response is checked against the contract.
 Currently, this library supports the OpenApi specifications `2.0` (formerly swagger), `3.0.x`, and **`3.1.x`**.
 
 [![Sponsor](https://img.shields.io/badge/Sponsor-%23ea4aaa?logo=githubsponsors&logoColor=white&labelColor=0d1117)](https://github.com/sponsors/byjg)
@@ -15,6 +15,29 @@ Currently, this library supports the OpenApi specifications `2.0` (formerly swag
 [![GitHub source](https://img.shields.io/badge/Github-source-informational?logo=github)](https://github.com/byjg/php-swagger-test/)
 [![GitHub license](https://img.shields.io/github/license/byjg/php-swagger-test.svg)](https://opensource.byjg.com/license/)
 [![GitHub release](https://img.shields.io/github/release/byjg/php-swagger-test.svg)](https://github.com/byjg/php-swagger-test/releases/)
+
+## Why
+
+An API test usually checks a status code and a few fields. The rest of the response, and
+the request the client sent, can drift from the documentation without any test failing,
+and the clients that rely on the documentation are the ones who find out.
+
+Swagger Test checks every request and response against the OpenAPI specification (2.0,
+3.0 and 3.1). A test only says what to call and what to expect:
+
+```php
+$request = (new ApiRequester())
+    ->withMethod('GET')
+    ->withPath('/pet/1');
+
+$this->sendRequest($request);   // fails if the request or the response breaks the spec
+```
+
+- **Without a web server.** Contract tests send the PSR-7 request straight to your
+  application in the same process (`AbstractRequester`), for RestServer, Laravel, Symfony or
+  Slim.
+- **In production too.** The same validation can check live requests at runtime, from the
+  same specification.
 
 ## OpenAPI Version Support
 
