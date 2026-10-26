@@ -75,6 +75,15 @@ abstract class Body
      * The documented media type that covers $contentType: the type itself, then its range
      * ("text/*"), then any type ("*\/*"), as OpenAPI defines it.
      */
+    /**
+     * Whether no body was sent at all. An empty JSON value (`[]`, `{}`, `0`, `false`) is a
+     * body: an endpoint that lists nothing still answers with `[]`.
+     */
+    protected function isAbsent(mixed $body): bool
+    {
+        return $body === null || $body === '';
+    }
+
     protected function findMediaType(string $contentType): ?string
     {
         $contentType = strtolower($contentType);

@@ -18,7 +18,7 @@ class SwaggerRequestBody extends Body
         $hasFormData = false;
         foreach ($this->structure as $parameter) {
             if ($parameter['in'] === "body") {
-                if (isset($parameter['required']) && $parameter['required'] === true && empty($body)) {
+                if (isset($parameter['required']) && $parameter['required'] === true && $this->isAbsent($body)) {
                     throw new RequiredArgumentNotFound('The body is required but it is empty');
                 }
                 return $this->matchSchema($this->name, $parameter['schema'], $body) ?? false;

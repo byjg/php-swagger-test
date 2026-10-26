@@ -19,7 +19,7 @@ class OpenApiResponseBody extends Body
                 throw new NotMatchedException("Expected empty body for " . $this->name);
             }
             return true;
-        } elseif (!empty($this->structure['content']) && empty($body)) {
+        } elseif (!empty($this->structure['content']) && $this->isAbsent($body)) {
             throw new NotMatchedException("Body is expected for " . $this->name);
         }
 

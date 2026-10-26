@@ -7,36 +7,24 @@ use ByJG\ApiTools\Exception\NotMatchedException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-class OpenApiConstraintsTest extends TestCase
+/**
+ * The length and range constraints of a schema, checked on a request and on a response.
+ * Each subclass builds the specification in one version.
+ */
+abstract class ConstraintsTestCase extends TestCase
 {
     /**
-     * A spec with a single property `value` using the given schema, as both the
-     * request body of POST /test and its 200 response.
+     * POST /test with a required request body and a 200 response, both using the given
+     * schema.
      */
-    protected function schemaFor(array $property): Schema
-    {
-        $content = [
-            'application/json' => [
-                'schema' => [
-                    'type' => 'object',
-                    'properties' => ['value' => $property],
-                ],
-            ],
-        ];
+    abstract protected function schemaFor(array $schema): Schema;
 
-        return Schema::fromArray([
-            'openapi' => '3.0.3',
-            'info' => ['title' => 'Test', 'version' => '1.0.0'],
-            'paths' => [
-                '/test' => [
-                    'post' => [
-                        'requestBody' => ['content' => $content],
-                        'responses' => [
-                            '200' => ['description' => 'Success', 'content' => $content],
-                        ],
-                    ],
-                ],
-            ],
+    /** A spec whose body is an object with a single property `value` using the given schema. */
+    protected function schemaWithValue(array $property): Schema
+    {
+        return $this->schemaFor([
+            'type' => 'object',
+            'properties' => ['value' => $property],
         ]);
     }
 
@@ -66,7 +54,7 @@ class OpenApiConstraintsTest extends TestCase
     #[DataProvider('acceptedProvider')]
     public function testValueWithinConstraintsIsAccepted(array $property, mixed $value): void
     {
-        $schema = $this->schemaFor($property);
+        $schema = $this->schemaWithValue($property);
 
         $this->assertTrue($schema->getRequestParameters('/test', 'post')->match(['value' => $value]));
         $this->assertTrue($schema->getResponseParameters('/test', 'post', 200)->match(['value' => $value]));
@@ -94,7 +82,7 @@ class OpenApiConstraintsTest extends TestCase
     #[DataProvider('rejectedProvider')]
     public function testRequestOutsideConstraintsIsRejected(array $property, mixed $value, string $message): void
     {
-        $body = $this->schemaFor($property)->getRequestParameters('/test', 'post');
+        $body = $this->schemaWithValue($property)->getRequestParameters('/test', 'post');
 
         $this->expectException(NotMatchedException::class);
         $this->expectExceptionMessage($message);
@@ -104,7 +92,7 @@ class OpenApiConstraintsTest extends TestCase
     #[DataProvider('rejectedProvider')]
     public function testResponseOutsideConstraintsIsRejected(array $property, mixed $value, string $message): void
     {
-        $body = $this->schemaFor($property)->getResponseParameters('/test', 'post', 200);
+        $body = $this->schemaWithValue($property)->getResponseParameters('/test', 'post', 200);
 
         $this->expectException(NotMatchedException::class);
         $this->expectExceptionMessage($message);
@@ -113,7 +101,7 @@ class OpenApiConstraintsTest extends TestCase
 
     public function testConstraintsApplyToArrayItemsAndNestedObjects(): void
     {
-        $body = $this->schemaFor([
+        $body = $this->schemaWithValue([
             'type' => 'array',
             'items' => [
                 'type' => 'object',
