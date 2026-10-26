@@ -258,6 +258,10 @@ $schema->matchDefinition('#/components/schemas/Product', ['name' => ''], true);
 `$partial` applies to the schema named, not to the ones it refers to with `$ref`: a referenced
 object that is present is matched in full.
 
+The value is one being written, so it follows the rules of a request: a property marked `readOnly`
+(for example an `id` the database generates) is not required, even when the schema lists it in
+`required`. A response still requires it.
+
 ---
 
 ## Webhook Validation

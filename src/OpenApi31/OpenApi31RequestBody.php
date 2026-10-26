@@ -40,4 +40,10 @@ class OpenApi31RequestBody extends Body
         }
         return $this->matchSchema($this->name, $schema, $body) ?? false;
     }
+
+    #[\Override]
+    protected function isRequest(): bool
+    {
+        return true;
+    }
 }

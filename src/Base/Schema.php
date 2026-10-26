@@ -236,7 +236,8 @@ abstract class Schema
 
     /**
      * Matches a value against a schema of this specification, outside a request or a
-     * response: for example a model before it is saved.
+     * response: for example a model before it is saved. The value is one being written, so
+     * a `readOnly` property listed in `required` is not required, as in a request.
      *
      * @param string $name The reference of the schema: '#/components/schemas/Product' in
      *                     OpenAPI 3, '#/definitions/Product' in Swagger 2.0

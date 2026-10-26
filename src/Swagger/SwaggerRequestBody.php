@@ -44,4 +44,10 @@ class SwaggerRequestBody extends Body
 
         return false;
     }
+
+    #[\Override]
+    protected function isRequest(): bool
+    {
+        return true;
+    }
 }

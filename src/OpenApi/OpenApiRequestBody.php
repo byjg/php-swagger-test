@@ -41,4 +41,10 @@ class OpenApiRequestBody extends Body
 
         return false;
     }
+
+    #[\Override]
+    protected function isRequest(): bool
+    {
+        return true;
+    }
 }

@@ -94,8 +94,15 @@
   value may hold only some of the properties, as in an update: the schema's `required` list is not
   checked, while every property present still has to match. See
   [Runtime Parameters Validator](docs/runtime-parameters-validator.md#validating-a-value-against-a-schema).
+  The value is one being written: a `readOnly` property is not required, as in a request.
 
 ## Bug Fixes
+
+- `readOnly` and `writeOnly` were ignored. A property listed in `required` and marked `readOnly` (an id
+  the server generates) was required in requests too, so a request that left it out, as OpenAPI says
+  it should, failed with `Required property … not found`. As OpenAPI defines it, a `readOnly` property
+  is now required only in a response, and a `writeOnly` one only in a request. A property that is sent
+  is still matched against its schema.
 
 - An empty JSON value (`[]`, `{}`) was taken for a missing body: a response with an empty list
   failed with `Body is expected`, and an empty list sent as a required request body failed with
