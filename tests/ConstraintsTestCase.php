@@ -17,7 +17,7 @@ abstract class ConstraintsTestCase extends TestCase
      * POST /test with a required request body and a 200 response, both using the given
      * schema.
      */
-    abstract protected function schemaFor(array $schema): Schema;
+    abstract protected function schemaFor(array $schema, array $definitions = []): Schema;
 
     /** A spec whose body is an object with a single property `value` using the given schema. */
     protected function schemaWithValue(array $property): Schema

@@ -172,5 +172,7 @@ All schema classes provide the following common methods:
 - `getResponseParameters($path, $method, $status)` - Get the response parameters for a specific path, method, and status
   code
 - `getDefinition($name)` - Get a definition by name
+- `matchDefinition($name, $value, $partial = false)` - Match a value against a definition, outside a request or a
+  response (see [Validating a value against a schema](runtime-parameters-validator.md#validating-a-value-against-a-schema))
 - `getSpecificationVersion()` - The `swagger` or `openapi` value of the specification (e.g. `2.0`, `3.0.3`, `3.1.0`)
 - `isAllowNullValues()` - Whether null values are accepted when the schema does not say (set for Swagger 2.0)

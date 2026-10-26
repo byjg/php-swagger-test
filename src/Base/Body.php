@@ -72,10 +72,6 @@ abstract class Body
     abstract public function match(mixed $body, ?string $contentType = null): bool;
 
     /**
-     * The documented media type that covers $contentType: the type itself, then its range
-     * ("text/*"), then any type ("*\/*"), as OpenAPI defines it.
-     */
-    /**
      * Whether no body was sent at all. An empty JSON value (`[]`, `{}`, `0`, `false`) is a
      * body: an endpoint that lists nothing still answers with `[]`.
      */
@@ -84,6 +80,10 @@ abstract class Body
         return $body === null || $body === '';
     }
 
+    /**
+     * The documented media type that covers $contentType: the type itself, then its range
+     * ("text/*"), then any type ("*\/*"), as OpenAPI defines it.
+     */
     protected function findMediaType(string $contentType): ?string
     {
         $contentType = strtolower($contentType);

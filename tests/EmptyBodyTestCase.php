@@ -18,7 +18,7 @@ abstract class EmptyBodyTestCase extends TestCase
      * POST /test with a required request body and a 200 response, both using the given
      * schema.
      */
-    abstract protected function schemaFor(array $schema): Schema;
+    abstract protected function schemaFor(array $schema, array $definitions = []): Schema;
 
     protected function listSchema(): array
     {
