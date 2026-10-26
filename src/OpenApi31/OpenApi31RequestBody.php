@@ -25,7 +25,7 @@ class OpenApi31RequestBody extends Body
             return true;
         }
 
-        if (isset($this->structure['required']) && $this->structure['required'] === true && empty($body)) {
+        if (isset($this->structure['required']) && $this->structure['required'] === true && $this->isAbsent($body)) {
             throw new RequiredArgumentNotFound('The body is required but it is empty');
         }
 
@@ -39,5 +39,11 @@ class OpenApi31RequestBody extends Body
             return true;
         }
         return $this->matchSchema($this->name, $schema, $body) ?? false;
+    }
+
+    #[\Override]
+    protected function isRequest(): bool
+    {
+        return true;
     }
 }

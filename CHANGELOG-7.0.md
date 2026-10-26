@@ -88,8 +88,26 @@
   only `text/xml` and `application/xml` responses were read as XML, and a non-JSON response
   without a `Content-Type` became `null` ("Body is expected"); it is now matched as `text/plain`.
 
+- `Schema::matchDefinition($name, $value, $partial = false)` matches a value against a named schema
+  of the specification (`#/components/schemas/Product`, or `#/definitions/Product` in Swagger 2.0),
+  outside a request or a response: for example a model before it is saved. With `$partial`, the
+  value may hold only some of the properties, as in an update: the schema's `required` list is not
+  checked, while every property present still has to match. See
+  [Runtime Parameters Validator](docs/runtime-parameters-validator.md#validating-a-value-against-a-schema).
+  The value is one being written: a `readOnly` property is not required, as in a request.
+
 ## Bug Fixes
 
+- `readOnly` and `writeOnly` were ignored. A property listed in `required` and marked `readOnly` (an id
+  the server generates) was required in requests too, so a request that left it out, as OpenAPI says
+  it should, failed with `Required property … not found`. As OpenAPI defines it, a `readOnly` property
+  is now required only in a response, and a `writeOnly` one only in a request. A property that is sent
+  is still matched against its schema.
+
+- An empty JSON value (`[]`, `{}`) was taken for a missing body: a response with an empty list
+  failed with `Body is expected`, and an empty list sent as a required request body failed with
+  `RequiredArgumentNotFound`. Only `null` and `""` now mean that no body was sent; an empty value
+  is matched against the schema like any other.
 - `OpenApi31RequestBody::match()` did not enforce `requestBody.required` and accepted a body sent to an
   operation that defines no `requestBody`. It now throws `RequiredArgumentNotFound`
   (`The body is required but it is empty`) and `InvalidDefinitionException`

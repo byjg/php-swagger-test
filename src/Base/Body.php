@@ -72,6 +72,39 @@ abstract class Body
     abstract public function match(mixed $body, ?string $contentType = null): bool;
 
     /**
+     * Whether no body was sent at all. An empty JSON value (`[]`, `{}`, `0`, `false`) is a
+     * body: an endpoint that lists nothing still answers with `[]`.
+     */
+    protected function isAbsent(mixed $body): bool
+    {
+        return $body === null || $body === '';
+    }
+
+    /**
+     * Whether this body is sent to the API (a request) rather than returned by it (a response).
+     * It decides which `required` properties apply: see isRequiredHere().
+     */
+    protected function isRequest(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Whether a property listed in `required` is required in this body. As OpenAPI defines it, a
+     * `readOnly` property is required only in a response, and a `writeOnly` one only in a request.
+     */
+    protected function isRequiredHere(mixed $property): bool
+    {
+        if (!is_array($property)) {
+            return true;
+        }
+        if ($this->isRequest()) {
+            return empty($property['readOnly']);
+        }
+        return empty($property['writeOnly']);
+    }
+
+    /**
      * The documented media type that covers $contentType: the type itself, then its range
      * ("text/*"), then any type ("*\/*"), as OpenAPI defines it.
      */
@@ -598,6 +631,10 @@ abstract class Body
 
         foreach ($schemaArray[self::SWAGGER_PROPERTIES] as $prop => $def) {
             $required = array_search($prop, $schemaArray[self::SWAGGER_REQUIRED]);
+            if ($required !== false && !$this->isRequiredHere($def)) {
+                unset($schemaArray[self::SWAGGER_REQUIRED][$required]);
+                $required = false;
+            }
 
             if (!array_key_exists($prop, $body)) {
                 if ($required !== false) {

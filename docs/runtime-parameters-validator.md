@@ -220,6 +220,50 @@ $app->run();
 
 ---
 
+## Validating a Value Against a Schema
+
+The request and the response are not the only places where data enters the system. A command, a
+queue consumer or a service can create the same object without going through the API.
+`matchDefinition()` validates a value against a named schema of the specification, so those paths
+can use the same rules:
+
+```php
+<?php
+use ByJG\ApiTools\Base\Schema;
+use ByJG\ApiTools\Exception\NotMatchedException;
+
+$schema = Schema::fromFile(__DIR__ . '/openapi.json');
+
+try {
+    // '#/definitions/Product' in a Swagger 2.0 specification
+    $schema->matchDefinition('#/components/schemas/Product', ['name' => 'Keyboard', 'price' => 49.9]);
+} catch (NotMatchedException $e) {
+    echo "Invalid product: " . $e->getMessage();
+}
+```
+
+The value is decoded JSON: an associative array for an object.
+
+For an update that changes only some of the properties, pass `true` as the third argument. The
+schema's `required` list is then not checked, while every property present still has to match:
+
+```php
+// Accepted: 'name' is missing, but this is an update.
+$schema->matchDefinition('#/components/schemas/Product', ['price' => 10], true);
+
+// Rejected: the name that is present is empty (minLength: 1).
+$schema->matchDefinition('#/components/schemas/Product', ['name' => ''], true);
+```
+
+`$partial` applies to the schema named, not to the ones it refers to with `$ref`: a referenced
+object that is present is matched in full.
+
+The value is one being written, so it follows the rules of a request: a property marked `readOnly`
+(for example an `id` the database generates) is not required, even when the schema lists it in
+`required`. A response still requires it.
+
+---
+
 ## Webhook Validation
 
 Validate incoming webhook payloads:

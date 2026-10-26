@@ -15,7 +15,7 @@ class OpenApiRequestBody extends Body
     public function match(mixed $body, ?string $contentType = null): bool
     {
         if (isset($this->structure['content']) || isset($this->structure['$ref'])) {
-            if (isset($this->structure['required']) && $this->structure['required'] === true && empty($body)) {
+            if (isset($this->structure['required']) && $this->structure['required'] === true && $this->isAbsent($body)) {
                 throw new RequiredArgumentNotFound('The body is required but it is empty');
             }
 
@@ -40,5 +40,11 @@ class OpenApiRequestBody extends Body
         }
 
         return false;
+    }
+
+    #[\Override]
+    protected function isRequest(): bool
+    {
+        return true;
     }
 }

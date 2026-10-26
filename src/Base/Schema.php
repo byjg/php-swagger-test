@@ -3,6 +3,7 @@
 namespace ByJG\ApiTools\Base;
 
 use ByJG\ApiTools\Exception\DefinitionNotFoundException;
+use ByJG\ApiTools\Exception\GenericApiException;
 use ByJG\ApiTools\Exception\HttpMethodNotFoundException;
 use ByJG\ApiTools\Exception\InvalidDefinitionException;
 use ByJG\ApiTools\Exception\InvalidRequestException;
@@ -232,6 +233,33 @@ abstract class Schema
      * @throws InvalidDefinitionException
      */
     abstract public function getDefinition(string $name): mixed;
+
+    /**
+     * Matches a value against a schema of this specification, outside a request or a
+     * response: for example a model before it is saved. The value is one being written, so
+     * a `readOnly` property listed in `required` is not required, as in a request.
+     *
+     * @param string $name The reference of the schema: '#/components/schemas/Product' in
+     *                     OpenAPI 3, '#/definitions/Product' in Swagger 2.0
+     * @param mixed $value The value, as decoded JSON (an associative array for an object)
+     * @param bool $partial Whether the value holds only some of the properties, as in an
+     *                      update: the `required` list of the schema is not checked, while
+     *                      every property present still has to match
+     * @return bool
+     * @throws DefinitionNotFoundException
+     * @throws InvalidDefinitionException
+     * @throws NotMatchedException
+     * @throws GenericApiException
+     */
+    public function matchDefinition(string $name, mixed $value, bool $partial = false): bool
+    {
+        $definition = $this->getDefinition($name);
+        if ($partial && is_array($definition)) {
+            unset($definition['required']);
+        }
+
+        return (new DefinitionBody($this, $name, $definition, $this->allowNullValues))->match($value);
+    }
 
     /**
      * @param string $path
