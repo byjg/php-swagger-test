@@ -7,6 +7,7 @@ use ByJG\ApiTools\Exception\NotMatchedException;
 use ByJG\ApiTools\MockRequester;
 use ByJG\ApiTools\OpenApiValidation;
 use ByJG\Util\Uri;
+use ByJG\WebRequest\HttpMethod;
 use ByJG\WebRequest\Helper\RequestMultiPart;
 use ByJG\WebRequest\MultiPartItem;
 use ByJG\WebRequest\Psr7\MemoryStream;
@@ -78,7 +79,7 @@ class MultiPartFormTest extends TestCase
     public function testParsesTheFormatOfByjgWebRequest(): void
     {
         // LF line endings and a ";" after each name
-        $request = RequestMultiPart::build(new Uri('/upload'), 'post', [
+        $request = RequestMultiPart::build(new Uri('/upload'), HttpMethod::Post, [
             new MultiPartItem('note', 'some note'),
             new MultiPartItem('upfile', "\x89PNG", 'smile', 'image/png'),
         ], 'boundary123');

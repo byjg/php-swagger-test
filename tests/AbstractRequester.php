@@ -14,6 +14,7 @@ use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
 use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
 use ByJG\ApiTools\MockRequester;
 use ByJG\Util\Uri;
+use ByJG\WebRequest\HttpMethod;
 use ByJG\WebRequest\Exception\MessageException;
 use ByJG\WebRequest\Exception\RequestException;
 use ByJG\WebRequest\Psr7\MemoryStream;
@@ -54,7 +55,7 @@ abstract class AbstractRequester extends ApiTestCase
 
         // PSR7 Request
         $psr7Request = Request::getInstance(new Uri("/pet/1"))
-            ->withMethod("get");
+            ->withMethod(HttpMethod::Get);
 
         $request = new MockRequester($expectedResponse);
         $request->withPsr7Request($psr7Request);

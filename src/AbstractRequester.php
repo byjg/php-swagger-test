@@ -13,6 +13,7 @@ use ByJG\ApiTools\Exception\PathNotFoundException;
 use ByJG\ApiTools\Exception\RequiredArgumentNotFound;
 use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
 use ByJG\Util\Uri;
+use ByJG\WebRequest\HttpMethod;
 use ByJG\WebRequest\Exception\MessageException;
 use ByJG\WebRequest\Exception\RequestException;
 use ByJG\WebRequest\Psr7\MemoryStream;
@@ -58,7 +59,7 @@ abstract class AbstractRequester
      */
     public function __construct()
     {
-        $this->withPsr7Request(Request::getInstance(new Uri("/"))->withMethod("get"));
+        $this->withPsr7Request(Request::getInstance(new Uri("/"))->withMethod(HttpMethod::Get));
     }
 
     /**
