@@ -6,6 +6,7 @@ use ByJG\ApiTools\AbstractRequester;
 use ByJG\ApiTools\Base\Schema;
 use ByJG\ApiTools\OpenApiValidation;
 use ByJG\Util\Uri;
+use ByJG\WebRequest\HttpMethod;
 use ByJG\WebRequest\Psr7\Request;
 use ByJG\WebRequest\Psr7\Response;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -50,7 +51,7 @@ class RequestUriTest extends TestCase
                 return Response::getInstance(200);
             }
         };
-        $request->withPsr7Request(Request::getInstance(new Uri('http://localhost:8080/pet'))->withMethod('get'));
+        $request->withPsr7Request(Request::getInstance(new Uri('http://localhost:8080/pet'))->withMethod(HttpMethod::Get));
 
         $this->sendRequest($request);
 

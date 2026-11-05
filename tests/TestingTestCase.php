@@ -15,6 +15,7 @@ use ByJG\ApiTools\Exception\StatusCodeNotMatchedException;
 use ByJG\ApiTools\MockRequester;
 use ByJG\ApiTools\OpenApiValidation;
 use ByJG\Util\Uri;
+use ByJG\WebRequest\HttpMethod;
 use ByJG\WebRequest\Exception\MessageException;
 use ByJG\WebRequest\Exception\RequestException;
 use ByJG\WebRequest\Helper\RequestMultiPart;
@@ -101,7 +102,7 @@ abstract class TestingTestCase extends TestCase
 
         // PSR7 Request
         $psr7Request = Request::getInstance(new Uri("/pet"))
-            ->withMethod("post")
+            ->withMethod(HttpMethod::Post)
             ->withBody(new MemoryStream(json_encode($body)));
 
         $expectedResponse = new Response();
@@ -193,7 +194,7 @@ abstract class TestingTestCase extends TestCase
             new MultiPartItem("note", "somenote"),
             new MultiPartItem("upfile", file_get_contents(__DIR__ . "/smile.png"), "smile", "image/png")
         ];
-        $psr7Requester = RequestMultiPart::build(new Uri("/inventory"), "post", $multipart);
+        $psr7Requester = RequestMultiPart::build(new Uri("/inventory"), HttpMethod::Post, $multipart);
 
         $request = new ApiRequester();
         $request

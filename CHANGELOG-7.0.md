@@ -36,6 +36,11 @@
 - `OpenApi31Schema::getSchemaDialect()` returns the root `jsonSchemaDialect` field instead of a root
   `$schema` field (see Bug Fixes).
 - When the specification's server URL has no host, the request keeps its own port (see Bug Fixes).
+- The HTTP method is sent as given: byjg/webrequest 7.0 no longer uppercases it, since PSR-7 methods
+  are case-sensitive. A test that calls `withMethod('post')` (or builds a request with `'post'`) and
+  sends it to a real server with `ApiRequester` now gets the server's answer to a lowercase method,
+  usually `400 Bad Request`. Use uppercase (`'POST'`) or `ByJG\WebRequest\HttpMethod::Post`. The
+  lookup of the request's path in the specification is not affected (it ignores the method's case).
 
 ## Validation
 
