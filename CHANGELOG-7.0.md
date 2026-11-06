@@ -128,6 +128,12 @@
   `Content-Type`. HTTP header names are case-insensitive; the name is now looked up with PSR-7
   `getHeader()`.
 
+## Performance
+
+- Validating a body is about twice as fast: `Body::matchTypes()`, called for every value of the body, built six
+  closures on each call to try the validators in turn. It now calls them directly, in the same order. Validating a
+  list of 50 objects went from ~310 us to ~165 us.
+
 ## Requirements
 
 - PHP 8.3, 8.4, 8.5 and 8.6 are now supported: `"php": ">=8.3 <8.7"`.

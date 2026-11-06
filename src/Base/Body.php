@@ -397,46 +397,13 @@ abstract class Body
         $type = $schemaArray['type'];
         $nullable = isset($schemaArray['nullable']) ? (bool)$schemaArray['nullable'] : $this->schema->isAllowNullValues();
 
-        $validators = [
-            function () use ($name, $body, $type, $nullable): bool|null
-            {
-                return $this->matchNull($name, $body, $type, $nullable);
-            },
-
-            function () use ($name, $schemaArray, $body, $type): bool|null
-            {
-                return $this->matchString($name, $schemaArray, $body, $type);
-            },
-
-            function () use ($name, $schemaArray, $body, $type): bool|null
-            {
-                return $this->matchNumber($name, $schemaArray, $body, $type);
-            },
-
-            function () use ($name, $body, $type): bool|null
-            {
-                return $this->matchBool($name, $body, $type);
-            },
-
-            function () use ($name, $schemaArray, $body, $type): bool|null
-            {
-                return $this->matchArray($name, $schemaArray, $body, $type);
-            },
-
-            function () use ($name, $schemaArray, $body, $type): bool|null
-            {
-                return $this->matchFile($name, $schemaArray, $body, $type);
-            },
-        ];
-
-        foreach ($validators as $validator) {
-            $result = $validator();
-            if (!is_null($result)) {
-                return $result;
-            }
-        }
-
-        return null;
+        // The first validator that knows the type decides, in this order (each returns null for another type)
+        return $this->matchNull($name, $body, $type, $nullable)
+            ?? $this->matchString($name, $schemaArray, $body, $type)
+            ?? $this->matchNumber($name, $schemaArray, $body, $type)
+            ?? $this->matchBool($name, $body, $type)
+            ?? $this->matchArray($name, $schemaArray, $body, $type)
+            ?? $this->matchFile($name, $schemaArray, $body, $type);
     }
 
     /**
