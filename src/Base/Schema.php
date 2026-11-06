@@ -52,9 +52,11 @@ abstract class Schema
     }
 
     /**
-     * Create schema from file path.
+     * Create schema from file path: a JSON file, or a PHP file that returns the specification as an array
+     * (`<?php return [...];`). OPcache keeps the array of a PHP file in memory, so a web request does not decode
+     * the JSON again.
      *
-     * @param string $filePath Path to JSON file containing OpenAPI/Swagger specification
+     * @param string $filePath Path to the JSON or PHP file of the OpenAPI/Swagger specification
      * @param bool $allowNullValues Whether to allow null values (Swagger 2.0 only)
      * @return SwaggerSchema|OpenApiSchema|OpenApi31Schema
      * @throws InvalidArgumentException
@@ -63,6 +65,13 @@ abstract class Schema
     {
         if (!file_exists($filePath)) {
             throw new InvalidArgumentException("File not found: $filePath");
+        }
+        if (strtolower(pathinfo($filePath, PATHINFO_EXTENSION)) === 'php') {
+            $data = require $filePath;
+            if (!is_array($data)) {
+                throw new InvalidArgumentException("The file $filePath does not return the specification as an array");
+            }
+            return self::fromArray($data, $allowNullValues);
         }
         $jsonString = file_get_contents($filePath);
         if ($jsonString === false) {
