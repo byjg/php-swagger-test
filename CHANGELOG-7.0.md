@@ -130,6 +130,10 @@
 
 ## Performance
 
+- `Schema::fromFile()` also reads a PHP file that returns the specification as an array (`<?php return [...];`).
+  OPcache keeps that array in memory: a web request that validates against the schema no longer decodes the JSON
+  (~160 us for a 66 KB `openapi.json`). byjg/gluo writes it next to `openapi.json`.
+
 - Validating a body is about twice as fast: `Body::matchTypes()`, called for every value of the body, built six
   closures on each call to try the validators in turn. It now calls them directly, in the same order. Validating a
   list of 50 objects went from ~310 us to ~165 us.
